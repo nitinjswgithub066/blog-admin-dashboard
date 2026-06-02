@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FiMenu, FiSearch, FiBell } from 'react-icons/fi';
+import ProfileDropdown from '../dropdown/ProfileDropdown';
 import styles from './Topbar.module.css';
 
 interface TopbarProps {
@@ -40,20 +41,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           <span className={styles.badge}></span>
         </motion.button>
 
-        {/* Profile Dropdown Trigger Placeholder */}
-        <motion.button 
-          className={styles.profileTrigger}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <div className={styles.avatar}>
-            AD
-          </div>
-          <div className={styles.profileInfo}>
-            <span className={styles.profileName}>Admin User</span>
-            <span className={styles.profileRole}>Super Admin</span>
-          </div>
-        </motion.button>
+        <ProfileDropdown />
       </div>
     </header>
   );
