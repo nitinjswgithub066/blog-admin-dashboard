@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  FiHome, 
-  FiEdit3, 
-  FiFileText, 
-  FiPieChart, 
-  FiSettings, 
-  FiChevronLeft, 
-  FiChevronRight,
-  FiBox
-} from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiBox } from 'react-icons/fi';
+import { navigationItems } from '../../navigation/navigation';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }
-
-const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: FiHome },
-  { path: '/posts/create', label: 'Create Post', icon: FiEdit3 },
-  { path: '/posts', label: 'All Posts', icon: FiFileText },
-  { path: '/stats', label: 'Statistics', icon: FiPieChart },
-  { path: '/settings', label: 'Settings', icon: FiSettings },
-];
 
 const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }) => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -67,9 +51,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
       </div>
 
       <nav className={styles.nav}>
-        {navItems.map((item) => (
+        {navigationItems.map((item) => (
           <NavLink
-            key={item.path}
+            key={item.id}
             to={item.path}
             onClick={onMobileClose}
             className={({ isActive }) => 
