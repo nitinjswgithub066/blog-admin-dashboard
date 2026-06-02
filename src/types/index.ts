@@ -34,7 +34,7 @@ export interface DashboardMetric {
 
 export interface ChartDataPoint {
   name: string;
-  value: number;
+  value?: number;
   [key: string]: any; // Allow dynamic keys for multi-line charts
 }
 
