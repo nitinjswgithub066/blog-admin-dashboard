@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiUser, FiUserPlus, FiKey } from 'react-icons/fi';
+import { FiMail, FiLock, FiUser, FiUserPlus, FiKey, FiAtSign } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
 
 const registerSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters' }),
   email: z.string().email({ message: 'Invalid email address' }),
+  username: z.string().min(3, { message: 'Username must be at least 3 characters' }),
   password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
   confirmPassword: z.string(),
   adminCode: z.string().min(1, { message: 'Admin registration code is required' })
@@ -114,6 +115,28 @@ const RegisterPage: React.FC = () => {
               />
             </div>
             {errors.email && <span className={styles.errorText}>{errors.email.message}</span>}
+          </motion.div>
+
+          <motion.div 
+            className={styles.inputGroup}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.42 }}
+          >
+            <label htmlFor="username" className={styles.label}>
+              Username
+            </label>
+            <div className={styles.inputWrapper}>
+              <FiAtSign className={styles.inputIcon} />
+              <input
+                id="username"
+                type="text"
+                placeholder="admin123"
+                className={styles.input}
+                {...register('username')}
+              />
+            </div>
+            {errors.username && <span className={styles.errorText}>{errors.username.message}</span>}
           </motion.div>
 
           <motion.div 
