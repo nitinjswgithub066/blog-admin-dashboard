@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
             }}
             transition={{ duration: 0.2 }}
           >
-            BlogAdmin
+            VEXIRAHUB
           </motion.span>
         </div>
       </div>
