@@ -4,6 +4,7 @@ import RegisterPage from './pages/auth/register/RegisterPage';
 import ForgotPasswordPage from './pages/auth/forgot-password/ForgotPasswordPage';
 import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import DashboardPage from './pages/dashboard/DashboardPage';
+import CreatePostPage from './pages/create-post/CreatePostPage';
 import './App.css';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
       {/* Dashboard Routes wrapped in Layout */}
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/posts/create" element={<div>Create Post placeholder</div>} />
+        <Route path="/posts/create" element={<CreatePostPage />} />
         <Route path="/posts" element={<div>All Posts placeholder</div>} />
         <Route path="/stats" element={<div>Statistics placeholder</div>} />
         <Route path="/settings" element={<div>Settings placeholder</div>} />

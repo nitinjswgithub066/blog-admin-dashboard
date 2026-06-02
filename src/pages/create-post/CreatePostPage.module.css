@@ -1,0 +1,31 @@
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pageDescription {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-1);
+}
+
+.contentShell {
+  width: 100%;
+  height: 60vh;
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+  background: rgba(255, 255, 255, 0.01);
+}
