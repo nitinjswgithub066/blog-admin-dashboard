@@ -6,6 +6,7 @@ import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import CreatePostPage from './pages/create-post/CreatePostPage';
 import PostsPage from './pages/posts/PostsPage';
+import StatsPage from './pages/stats/StatsPage';
 import './App.css';
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/posts/create" element={<CreatePostPage />} />
         <Route path="/posts" element={<PostsPage />} />
-        <Route path="/stats" element={<div>Statistics placeholder</div>} />
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="/settings" element={<div>Settings placeholder</div>} />
       </Route>
     </Routes>
