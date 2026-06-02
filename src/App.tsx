@@ -5,6 +5,7 @@ import ForgotPasswordPage from './pages/auth/forgot-password/ForgotPasswordPage'
 import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import CreatePostPage from './pages/create-post/CreatePostPage';
+import PostsPage from './pages/posts/PostsPage';
 import './App.css';
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/posts/create" element={<CreatePostPage />} />
-        <Route path="/posts" element={<div>All Posts placeholder</div>} />
+        <Route path="/posts" element={<PostsPage />} />
         <Route path="/stats" element={<div>Statistics placeholder</div>} />
         <Route path="/settings" element={<div>Settings placeholder</div>} />
       </Route>
