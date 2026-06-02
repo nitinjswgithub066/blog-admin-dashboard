@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -27,7 +27,14 @@ const navItems = [
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const savedState = localStorage.getItem('sidebarCollapsed');
+    return savedState === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', String(isCollapsed));
+  }, [isCollapsed]);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
