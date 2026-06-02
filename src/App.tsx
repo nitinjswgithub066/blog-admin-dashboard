@@ -7,6 +7,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import CreatePostPage from './pages/create-post/CreatePostPage';
 import PostsPage from './pages/posts/PostsPage';
 import StatsPage from './pages/stats/StatsPage';
+import SettingsPage from './pages/settings/SettingsPage';
 import './App.css';
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
         <Route path="/posts/create" element={<CreatePostPage />} />
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/stats" element={<StatsPage />} />
-        <Route path="/settings" element={<div>Settings placeholder</div>} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
     </Routes>
   );
