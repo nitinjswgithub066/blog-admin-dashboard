@@ -1,0 +1,48 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Important to prevent flex items from overflowing */
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.pageContainer {
+  padding: var(--spacing-4);
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.mobileOverlay {
+  display: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: var(--spacing-3);
+  }
+
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 35; /* Below sidebar (40) but above topbar (30) */
+  }
+}
