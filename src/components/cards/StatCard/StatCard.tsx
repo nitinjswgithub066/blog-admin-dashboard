@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiTrendingUp, FiTrendingDown, FiActivity } from 'react-icons/fi';
-import Card from '../ui/Card';
-import type { DashboardMetric } from '../../types';
+import Card from '../../ui/Card';
+import type { DashboardMetric } from '../../../types';
 import styles from './StatCard.module.css';
 
 interface StatCardProps {

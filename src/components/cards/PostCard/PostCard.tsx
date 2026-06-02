@@ -1,9 +1,9 @@
 import React from 'react';
 import { FiEye, FiMousePointer, FiClock, FiCalendar, FiEdit2, FiTrash2 } from 'react-icons/fi';
-import type { Post } from '../../types';
-import Card from '../ui/Card';
-import Badge from '../ui/Badge';
-import Button from '../ui/Button';
+import type { Post } from '../../../types';
+import Card from '../../ui/Card';
+import Badge from '../../ui/Badge';
+import Button from '../../ui/Button';
 import styles from './PostCard.module.css';
 
 interface PostCardProps {
