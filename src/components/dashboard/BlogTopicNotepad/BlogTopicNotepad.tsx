@@ -91,31 +91,34 @@ const BlogTopicNotepad: React.FC = () => {
             onChange={(e) => setNewCategory(e.target.value)}
             disabled={topics.length >= 5}
           >
-            <option value="">Category</option>
+            <option className={styles.option} value="">Category</option>
             {DEFAULT_CATEGORIES.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option className={styles.option} key={cat} value={cat}>{cat}</option>
             ))}
           </select>
-          <button 
-            type="submit" 
-            className={styles.addBtn}
-            disabled={!newTitle.trim() || topics.length >= 5}
-          >
-            <FiPlus /> Add Topic
-          </button>
           
-          <AnimatePresence>
-            {topics.length >= 5 && (
-              <motion.span 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                className={styles.limitMsg}
-              >
-                Maximum 5 blog ideas allowed.
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <div className={styles.actionsRight}>
+            <AnimatePresence>
+              {topics.length >= 5 && (
+                <motion.span 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className={styles.limitMsg}
+                >
+                  Maximum 5 blog ideas allowed.
+                </motion.span>
+              )}
+            </AnimatePresence>
+            
+            <button 
+              type="submit" 
+              className={styles.addBtn}
+              disabled={!newTitle.trim() || topics.length >= 5}
+            >
+              <FiPlus /> Add Topic
+            </button>
+          </div>
         </div>
       </form>
 
