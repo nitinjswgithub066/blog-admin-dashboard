@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+const fs = require('fs');
+const path = require('path');
+
+const srcDir = path.join(__dirname, 'src');
+const stylesDir = path.join(srcDir, 'styles');
+
+if (!fs.existsSync(stylesDir)) {
+  fs.mkdirSync(stylesDir, { recursive: true });
+}
+
+const tokensCSS = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Colors */
@@ -15,6 +25,11 @@
 
   --text-primary: #F5F7FA;
   --text-muted: #9CA3AF;
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #38BDF8;
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -45,7 +60,7 @@
   --radius-xl: 1rem;
   --radius-full: 9999px;
 
-  /* Shadows (Glassmorphism & premium feel) */
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -56,8 +71,9 @@
   --transition-normal: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
 }
+`;
 
-* {
+const resetCSS = `* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -99,17 +115,7 @@ ul, ol {
   list-style: none;
 }
 
-/* Utility Classes for Glassmorphism */
-.glass-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-glass);
-}
-
-/* Base Form Inputs reset (if any global is needed) */
+/* Base Form Inputs reset */
 input, textarea, select {
   font-family: inherit;
   font-size: var(--font-size-base);
@@ -129,3 +135,50 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   overflow-x: hidden;
 }
+`;
+
+const utilitiesCSS = `/* Utility Classes for Glassmorphism */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-glass);
+}
+`;
+
+const animationsCSS = `/* Global Animations */
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.4s ease infinite;
+}
+`;
+
+const globalCSS = `@import './tokens.css';
+@import './reset.css';
+@import './utilities.css';
+@import './animations.css';
+`;
+
+fs.writeFileSync(path.join(stylesDir, 'tokens.css'), tokensCSS);
+fs.writeFileSync(path.join(stylesDir, 'reset.css'), resetCSS);
+fs.writeFileSync(path.join(stylesDir, 'utilities.css'), utilitiesCSS);
+fs.writeFileSync(path.join(stylesDir, 'animations.css'), animationsCSS);
+fs.writeFileSync(path.join(stylesDir, 'global.css'), globalCSS);
+
+// Remove old global.css
+const oldGlobalPath = path.join(srcDir, 'global.css');
+if (fs.existsSync(oldGlobalPath)) {
+  fs.unlinkSync(oldGlobalPath);
+}
+
+console.log('CSS refactor complete!');
