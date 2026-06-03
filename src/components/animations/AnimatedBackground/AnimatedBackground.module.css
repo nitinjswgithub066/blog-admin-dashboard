@@ -1,0 +1,39 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--bg-primary);
+  pointer-events: none;
+}
+
+.blob1, .blob2 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+.blob1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: var(--accent-primary);
+  opacity: 0.15;
+}
+
+.blob2 {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: var(--accent-secondary, #3a82f6);
+  opacity: 0.1;
+}
+
+:global(.dark) .blob1, :global(.dark) .blob2 {
+  mix-blend-mode: screen;
+  opacity: 0.08;
+}
