@@ -4,7 +4,7 @@ import {
   LuAlignLeft, LuAlignCenter, LuAlignRight, LuAlignJustify,
   LuList, LuListOrdered, LuListTodo,
   LuLink2, LuImage, LuVideo, LuTable,
-  LuQuote, LuMinus, LuMoreHorizontal, LuChevronDown
+  LuQuote, LuMinus, LuEllipsis, LuChevronDown
 } from 'react-icons/lu';
 import styles from './TravelToolbar.module.css';
 
@@ -115,7 +115,7 @@ const TravelToolbar: React.FC<TravelToolbarProps> = ({ onMoreClick }) => {
       </div>
 
       <button type="button" className={styles.moreToolsBtn} onClick={onMoreClick}>
-        <LuMoreHorizontal size={18} />
+        <LuEllipsis size={18} />
         <span>More Tools</span>
       </button>
 

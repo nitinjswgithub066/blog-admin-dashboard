@@ -1,0 +1,137 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+}
+
+.menuContainer {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 1rem;
+  z-index: 50;
+  width: 320px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.menuContainer::-webkit-scrollbar {
+  width: 6px;
+}
+.menuContainer::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+}
+
+[data-theme='light'] .menuContainer {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.categoryGroup {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.categoryGroup:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.categoryTitle {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.menuItem:hover, .menuItem:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+  outline: none;
+}
+
+[data-theme='light'] .menuItem:hover, [data-theme='light'] .menuItem:focus-visible {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.menuItemIcon {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuItem:hover .menuItemIcon, .menuItem:focus-visible .menuItemIcon {
+  color: var(--text-primary);
+}
+
+.travelBlockItem {
+  color: var(--accent-primary);
+}
+
+.travelBlockItem .menuItemIcon {
+  color: var(--accent-primary);
+}
+
+.travelBlockItem:hover, .travelBlockItem:focus-visible {
+  background: rgba(109, 93, 246, 0.1);
+}
+
+[data-theme='light'] .travelBlockItem:hover, [data-theme='light'] .travelBlockItem:focus-visible {
+  background: rgba(109, 93, 246, 0.05);
+}
+
+/* Mobile Bottom Sheet */
+@media (max-width: 640px) {
+  .overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .menuContainer {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 80vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .menuItem {
+    padding: 0.75rem;
+    font-size: var(--font-size-base);
+  }
+}
