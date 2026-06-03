@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCheckCircle } from 'react-icons/fi';
 import CreatePostOptions from '../../components/create-post/CreatePostOptions/CreatePostOptions';
-import MockTextEditor from '../../components/create-post/MockTextEditor/MockTextEditor';
+import TravelEditor from '../../components/create-post/TravelEditor/TravelEditor';
 import DocumentUploadPanel from '../../components/create-post/DocumentUploadPanel/DocumentUploadPanel';
 import PostDetailsPanel from '../../components/create-post/PostDetailsPanel/PostDetailsPanel';
 import RecentPostGrid from '../../components/create-post/RecentPostGrid/RecentPostGrid';
@@ -173,7 +173,7 @@ const CreatePostPage: React.FC = () => {
           >
             <div className={styles.mainContent}>
               {mode === 'text' ? (
-                <MockTextEditor value={content} onChange={setContent} />
+                <TravelEditor value={content} onChange={setContent} />
               ) : (
                 <DocumentUploadPanel onConverted={setContent} />
               )}
