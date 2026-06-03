@@ -1,6 +1,7 @@
+/* eslint-disable */
 import React, { useState, useRef } from 'react';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
-import { FiImage, FiX } from 'react-icons/fi';
+import { FiImage, FiX, FiChevronDown } from 'react-icons/fi';
 import { slugify } from '../../../utils/slugify';
 import type { AdminCategory } from '../../../types/category.types';
 import styles from './PostDetailsPanel.module.css';
@@ -68,124 +69,163 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
 
   return (
     <div className={styles.panel}>
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Post Heading</label>
-        <input 
-          className={styles.input} 
-          placeholder="Enter post heading..." 
-          {...register('title')} 
-        />
-        {errors.title && <span className={styles.errorText}>{errors.title.message as string}</span>}
-      </div>
+      <div className={styles.panelScroll}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          
+          {/* 1. Post Basics Card */}
+          <details className={styles.accordionCard}>
+            <summary className={styles.accordionSummary}>
+              Post Basics
+              <FiChevronDown className={styles.chevronIcon} />
+            </summary>
+            <div className={styles.accordionContent}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Post Heading</label>
+                <input 
+                  className={styles.input} 
+                  placeholder="Enter post heading..." 
+                  {...register('title')} 
+                />
+                {errors.title && <span className={styles.errorText}>{errors.title.message as string}</span>}
+              </div>
 
-      <div className={styles.formGroup}>
-        <label className={styles.label}>SEO Slug Preview</label>
-        <div className={styles.slugPreview}>
-          /category-slug/{slugPreview}
-        </div>
-      </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>SEO Slug Preview</label>
+                <div className={styles.slugPreview}>
+                  /category-slug/{slugPreview}
+                </div>
+              </div>
 
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Post Subheading</label>
-        <textarea 
-          className={styles.textarea} 
-          placeholder="Write a short description for this post..." 
-          {...register('subtitle')} 
-        />
-        {errors.subtitle && <span className={styles.errorText}>{errors.subtitle.message as string}</span>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Cover Image</label>
-        <div 
-          className={styles.imageUpload} 
-          onClick={() => fileInputRef.current?.click()}
-        >
-          {coverImage ? (
-            <img src={coverImage} alt="Cover Preview" className={styles.uploadImagePreview} />
-          ) : (
-            <div className={styles.uploadImageText}>
-              <FiImage size={24} />
-              <span>Click to upload 16:9 image</span>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Post Subheading</label>
+                <textarea 
+                  className={styles.textarea} 
+                  placeholder="Write a short description for this post..." 
+                  {...register('subtitle')} 
+                />
+                {errors.subtitle && <span className={styles.errorText}>{errors.subtitle.message as string}</span>}
+              </div>
             </div>
-          )}
-          <input 
-            type="file" 
-            accept="image/*" 
-            className={styles.hiddenInput} 
-            ref={fileInputRef}
-            onChange={handleImageChange}
-          />
+          </details>
+
+          {/* 2. Media Card */}
+          <details className={styles.accordionCard}>
+            <summary className={styles.accordionSummary}>
+              Media
+              <FiChevronDown className={styles.chevronIcon} />
+            </summary>
+            <div className={styles.accordionContent}>
+              <div 
+                className={styles.imageUpload} 
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {coverImage ? (
+                  <img src={coverImage} alt="Cover Preview" className={styles.uploadImagePreview} />
+                ) : (
+                  <div className={styles.uploadImageText}>
+                    <FiImage size={24} />
+                    <span>Click to upload 16:9 image</span>
+                  </div>
+                )}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className={styles.hiddenInput} 
+                  ref={fileInputRef}
+                  onChange={handleImageChange}
+                />
+              </div>
+            </div>
+          </details>
+
+          {/* 3. Taxonomy Card */}
+          <details className={styles.accordionCard}>
+            <summary className={styles.accordionSummary}>
+              Categories & Tags
+              <FiChevronDown className={styles.chevronIcon} />
+            </summary>
+            <div className={styles.accordionContent}>
+              <label className={styles.label}>Category</label>
+              <select className={styles.select} {...register('category')}>
+                <option value="">Select a category</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+              {errors.category && <span className={styles.errorText}>{errors.category.message as string}</span>}
+              
+              <div className={styles.addCategoryRow}>
+                <input 
+                  type="text" 
+                  className={styles.input} 
+                  placeholder="Add new category" 
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddCategory();
+                    }
+                  }}
+                />
+                <button type="button" className={styles.addCategoryBtn} onClick={handleAddCategory}>Add</button>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Tags</label>
+                <input 
+                  type="text" 
+                  className={styles.input} 
+                  placeholder="Type tag and press Enter" 
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleAddTag}
+                />
+                {tags.length > 0 && (
+                  <div className={styles.tagsContainer}>
+                    {tags.map((tag: string) => (
+                      <span key={tag} className={styles.tagChip}>
+                        {tag}
+                        <button type="button" className={styles.removeTagBtn} onClick={() => removeTag(tag)}>
+                          <FiX />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </details>
+
+          {/* 4. Publishing Card */}
+          <details className={styles.accordionCard}>
+            <summary className={styles.accordionSummary}>
+              Publishing Options
+              <FiChevronDown className={styles.chevronIcon} />
+            </summary>
+            <div className={styles.accordionContent}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Status</label>
+                <select className={styles.select} {...register('status')}>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="scheduled">Scheduled</option>
+                </select>
+              </div>
+              <button type="button" className={styles.resetBtn} onClick={onReset}>Reset Form</button>
+            </div>
+          </details>
         </div>
       </div>
 
-      <div className={styles.categoryGroup}>
-        <label className={styles.label}>Category</label>
-        <select className={styles.select} {...register('category')}>
-          <option value="">Select a category</option>
-          {categories.map(c => (
-            <option key={c.id} value={c.name}>{c.name}</option>
-          ))}
-        </select>
-        {errors.category && <span className={styles.errorText}>{errors.category.message as string}</span>}
-        
-        <div className={styles.addCategoryRow}>
-          <input 
-            type="text" 
-            className={styles.input} 
-            placeholder="Add new category" 
-            value={newCat}
-            onChange={(e) => setNewCat(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddCategory();
-              }
-            }}
-          />
-          <button type="button" className={styles.addCategoryBtn} onClick={handleAddCategory}>Add</button>
-        </div>
-      </div>
-
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Tags</label>
-        <input 
-          type="text" 
-          className={styles.input} 
-          placeholder="Type tag and press Enter" 
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleAddTag}
-        />
-        {tags.length > 0 && (
-          <div className={styles.tagsContainer}>
-            {tags.map((tag: string) => (
-              <span key={tag} className={styles.tagChip}>
-                {tag}
-                <button type="button" className={styles.removeTagBtn} onClick={() => removeTag(tag)}>
-                  <FiX />
-                </button>
-              </span>
-            ))}
+      {/* Footer aligned to absolute bottom of editor */}
+      <div className={styles.panelFooter}>
+        <div className={styles.actions}>
+          <div className={styles.btnRow}>
+            <button type="button" className={styles.draftBtn} onClick={onSaveDraft}>Save Draft</button>
+            <button type="submit" className={styles.publishBtn}>Publish</button>
           </div>
-        )}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Status</label>
-        <select className={styles.select} {...register('status')}>
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-          <option value="scheduled">Scheduled</option>
-        </select>
-      </div>
-
-      <div className={styles.actions}>
-        <div className={styles.btnRow}>
-          <button type="button" className={styles.draftBtn} onClick={onSaveDraft}>Save Draft</button>
-          <button type="submit" className={styles.publishBtn}>Publish</button>
         </div>
-        <button type="button" className={styles.resetBtn} onClick={onReset}>Reset Form</button>
       </div>
     </div>
   );

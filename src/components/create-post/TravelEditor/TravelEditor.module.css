@@ -25,10 +25,72 @@
   font-size: var(--font-size-lg);
   line-height: 1.8;
   padding: 2rem 3rem;
-  resize: vertical;
+  resize: none;
   outline: none;
-  min-height: 500px;
   font-family: inherit;
+  min-height: 420px;
+}
+
+.emptyStateHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  flex: 1;
+}
+
+.emptyTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.emptySubtitle {
+  font-size: var(--font-size-md);
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.emptyActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.startWritingBtn {
+  background: var(--accent-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.startWritingBtn:hover {
+  background: var(--accent-hover);
+}
+
+.importBtn {
+  background: transparent;
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.importBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.blocksWrapper {
+  padding: 0 3rem;
 }
 
 .textarea::placeholder {
@@ -40,5 +102,16 @@
   .textarea {
     padding: 1.5rem;
     font-size: var(--font-size-md);
+    min-height: 320px;
+  }
+  
+  .emptyStateHelper {
+    top: 4.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+  
+  .blocksWrapper {
+    padding: 0 1.5rem;
   }
 }

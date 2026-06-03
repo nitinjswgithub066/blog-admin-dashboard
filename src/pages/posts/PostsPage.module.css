@@ -19,13 +19,32 @@
 
 .contentShell {
   width: 100%;
-  height: 60vh;
-  border-radius: var(--radius-xl);
-  border: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.primaryBtn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: var(--font-size-lg);
-  background: rgba(255, 255, 255, 0.01);
+  gap: 0.5rem;
+  background: var(--accent-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.primaryBtn:hover {
+  background: var(--accent-hover);
+}
+
+@media (max-width: 640px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }

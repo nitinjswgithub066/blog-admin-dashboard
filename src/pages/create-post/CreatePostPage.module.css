@@ -1,7 +1,7 @@
 .pageContainer {
   padding: 2rem;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -23,7 +23,13 @@
   margin: 0;
 }
 
-.backBtn {
+.topActionBar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.actionBtnSecondary, .actionBtnDanger {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -32,18 +38,54 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: var(--font-size-sm);
+  font-weight: 500;
 }
 
-.backBtn:hover {
+.actionBtnSecondary:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: var(--text-muted);
 }
 
+.actionBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.sidebarForm {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-glass);
+}
+
 .editorLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 1.5rem;
-  align-items: start;
+  grid-template-columns: 7fr 3fr;
+  gap: 2rem;
+  /* align-items: stretch by default so both columns match height */
 }
 
 .toast {
@@ -62,7 +104,17 @@
   font-weight: 500;
 }
 
-@media (max-width: 1023px) {
+.recentPostsWrapper {
+  margin-top: 0;
+}
+
+@media (max-width: 1200px) {
+  .editorLayout {
+    grid-template-columns: 6.5fr 3.5fr;
+  }
+}
+
+@media (max-width: 992px) {
   .editorLayout {
     grid-template-columns: 1fr;
   }

@@ -1,35 +1,118 @@
 .toolbarContainer {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.5rem;
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1rem;
-  background: rgba(15, 23, 42, 0.7); /* Dark glass background */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: rgba(255, 255, 255, 0.8);
 }
 
-[data-theme='light'] .toolbarContainer {
-  background: rgba(255, 255, 255, 0.7);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+:global(.dark) .toolbarContainer {
+  background: var(--bg-primary, rgba(22, 23, 29, 0.8));
 }
+
+.scrollWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  min-width: 0; /* Important to allow flex child to shrink and trigger overflow */
+  overflow: hidden;
+}
+
+/* Scroll Fade Indicators */
+.scrollWrapper::before,
+.scrollWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scrollWrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-secondary) 0%, transparent 100%);
+}
+:global(.dark) .scrollWrapper::before {
+  background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+}
+
+.scrollWrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-secondary) 0%, transparent 100%);
+}
+:global(.dark) .scrollWrapper::after {
+  background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+}
+
+.showLeftShadow::before { opacity: 1; }
+.showRightShadow::after { opacity: 1; }
+
+/* Navigation Arrows */
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: all var(--transition-fast);
+}
+
+.scrollWrapper:hover .navArrow {
+  opacity: 1;
+}
+
+.navArrow:hover {
+  background: var(--bg-tertiary);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.navLeft { left: 4px; }
+.navRight { right: 4px; }
 
 .primaryActions {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
   flex-grow: 1;
+  overflow-x: auto;
+  gap: 0.5rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  cursor: grab;
+  scroll-behavior: smooth;
 }
 
 .primaryActions::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none; /* Chrome/Safari */
+}
+
+.isDragging {
+  cursor: grabbing;
+  scroll-behavior: auto; /* disable smooth scrolling while dragging */
+  user-select: none;
 }
 
 .toolbarGroup {
@@ -117,17 +200,18 @@
 .moreToolsBtn {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  background: transparent;
-  color: var(--text-primary);
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .moreToolsBtn:hover {
@@ -139,26 +223,30 @@
 }
 
 /* Responsive Behavior */
-/* Tablet */
+
+/* Tablet (< 1024px) */
 @media (max-width: 1023px) {
-  .groupAlign, .groupInsertContent {
+  .groupHistory, .groupLists, .groupAlign {
+    display: none;
+  }
+  
+  .hideOnTablet {
     display: none;
   }
 }
 
-/* Mobile */
-@media (max-width: 640px) {
-  .groupHistory, .groupHeading, .groupLists {
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  .groupHeading {
     display: none;
   }
   
-  .groupFormat {
-    border-right: none;
-  }
-  
-  /* On mobile, only Bold, Italic, Link, Image are strictly visible */
   .hideOnMobile {
     display: none;
+  }
+
+  .groupFormat {
+    border-right: none;
   }
 
   .moreToolsBtn {

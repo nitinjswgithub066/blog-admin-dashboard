@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { mockCategories } from '../data/categoriesData';
 import type { Category } from '../types';

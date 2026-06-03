@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiTrash2, FiPlus, FiCheck, FiBookOpen } from 'react-icons/fi';

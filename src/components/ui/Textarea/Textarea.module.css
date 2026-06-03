@@ -18,10 +18,10 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: var(--font-size-base);
-  transition: var(--transition-fast);
+  font-size: var(--font-size-md);
+  transition: all var(--transition-fast);
+  resize: none;
   min-height: 100px;
-  resize: vertical;
 }
 
 .textarea:focus {

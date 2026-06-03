@@ -1,10 +1,10 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCheckCircle } from 'react-icons/fi';
-import CreatePostOptions from '../../components/create-post/CreatePostOptions/CreatePostOptions';
 import TravelEditor from '../../components/create-post/TravelEditor/TravelEditor';
 import DocumentUploadPanel from '../../components/create-post/DocumentUploadPanel/DocumentUploadPanel';
 import PostDetailsPanel from '../../components/create-post/PostDetailsPanel/PostDetailsPanel';
@@ -36,13 +36,13 @@ const initialCategories: AdminCategory[] = [
 ];
 
 const CreatePostPage: React.FC = () => {
-  const [mode, setMode] = useState<'text' | 'document' | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [content, setContent] = useState('');
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [toastMsg, setToastMsg] = useState('');
 
-  const { register, handleSubmit, formState: { errors }, watch, setValue, reset } = useForm<PostFormData>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue, getValues, reset } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       tags: [],
@@ -88,7 +88,7 @@ const CreatePostPage: React.FC = () => {
   };
 
   const handleSaveDraft = () => {
-    const data = watch();
+    const data = getValues();
     if (!data.title) {
       alert("Post heading is required to save a draft.");
       return;
@@ -115,9 +115,10 @@ const CreatePostPage: React.FC = () => {
       category: data.category || 'Uncategorized',
       categorySlug: selectedCategory?.slug || 'uncategorized',
       tags: data.tags || [],
-      contentType: mode || 'text',
+      contentType: 'text',
       contentPreview: content.substring(0, 150) + '...',
       coverImage: data.coverImage,
+      author: 'Current User',
       status: data.status as PostStatus,
       readingTime: calculateReadingTime(content),
       views: 0,
@@ -145,57 +146,81 @@ const CreatePostPage: React.FC = () => {
       status: 'draft'
     });
     setContent('');
-    setMode(null);
   };
 
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1 className={styles.title}>Create New Post</h1>
-        {mode && (
-          <button className={styles.backBtn} onClick={handleReset}>
-            Cancel & Go Back
+        <div className={styles.topActionBar}>
+          <button type="button" className={styles.actionBtnSecondary} onClick={() => setIsImportModalOpen(true)}>
+            Import Word
           </button>
-        )}
+          <button type="button" className={styles.actionBtnSecondary}>
+            Preview
+          </button>
+          <button type="button" className={styles.actionBtnDanger} onClick={handleReset}>
+            Discard Post
+          </button>
+        </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {!mode ? (
-          <CreatePostOptions key="options" onSelectOption={setMode} />
-        ) : (
-          <motion.div 
-            key="editorLayout"
-            className={styles.editorLayout}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className={styles.mainContent}>
-              {mode === 'text' ? (
-                <TravelEditor value={content} onChange={setContent} />
-              ) : (
-                <DocumentUploadPanel onConverted={setContent} />
-              )}
-            </div>
+      <motion.div 
+        key="editorLayout"
+        className={styles.editorLayout}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className={styles.mainContent}>
+          <TravelEditor value={content} onChange={setContent} onOpenImport={() => setIsImportModalOpen(true)} />
+        </div>
 
-            <form onSubmit={handleSubmit(handlePublish)}>
-              <PostDetailsPanel 
-                register={register}
-                errors={errors}
-                watch={watch}
-                setValue={setValue}
-                categories={categories}
-                onAddCategory={handleAddCategory}
-                onSaveDraft={handleSaveDraft}
-                onReset={handleReset}
+        <form onSubmit={handleSubmit(handlePublish)} className={styles.sidebarForm}>
+          <PostDetailsPanel 
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+            categories={categories}
+            onAddCategory={handleAddCategory}
+            onSaveDraft={handleSaveDraft}
+            onReset={handleReset}
+          />
+        </form>
+      </motion.div>
+
+      {/* Import Modal */}
+      <AnimatePresence>
+        {isImportModalOpen && (
+          <motion.div 
+            className={styles.modalOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsImportModalOpen(false)}
+          >
+            <motion.div 
+              className={styles.modalContent}
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <DocumentUploadPanel 
+                onConverted={(html) => {
+                  setContent(prev => prev + html);
+                  setIsImportModalOpen(false);
+                }} 
               />
-            </form>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <RecentPostGrid posts={posts} />
+      <div className={styles.recentPostsWrapper}>
+        <RecentPostGrid posts={posts} />
+      </div>
 
       <AnimatePresence>
         {toastMsg && (

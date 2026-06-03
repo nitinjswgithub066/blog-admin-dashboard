@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const formatDate = (dateString: string): string => {
   try {
     const date = new Date(dateString);

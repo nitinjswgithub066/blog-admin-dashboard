@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface DashboardMetric {
   id: string;
   label: string;

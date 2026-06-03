@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiUploadCloud, FiFileText, FiCheckCircle } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiUploadCloud, FiFileText } from 'react-icons/fi';
 import styles from './DocumentUploadPanel.module.css';
 
 interface DocumentUploadPanelProps {
@@ -10,12 +10,27 @@ interface DocumentUploadPanelProps {
 const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [isConverted, setIsConverted] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-      setIsConverted(false);
+      const selected = e.target.files[0];
+      const validTypes = [
+        'application/msword', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+      const validExtensions = ['.doc', '.docx'];
+      
+      const hasValidExt = validExtensions.some(ext => selected.name.toLowerCase().endsWith(ext));
+      
+      if (!validTypes.includes(selected.type) && !hasValidExt) {
+        setError('Only Microsoft Word (.doc, .docx) documents are supported.');
+        setFile(null);
+        return;
+      }
+      
+      setFile(selected);
     }
   };
 
@@ -24,8 +39,6 @@ const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted }
   };
 
   const handleProceed = () => {
-    setIsConverted(true);
-    // Mock HTML that would come from a real docx parser backend
     const mockHtml = `<h2>Imported Document Heading</h2><p>This is mock content converted from <strong>${file?.name}</strong>.</p><p>In a real application, the DOCX file would be sent to a backend parser, which would return clean HTML matching the blog's design system.</p>`;
     onConverted(mockHtml);
   };
@@ -66,31 +79,17 @@ const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted }
               <p className={styles.fileSize}>{formatSize(file.size)}</p>
             </div>
           </div>
-          {!isConverted && (
-            <button className={styles.proceedBtn} onClick={handleProceed}>
-              Proceed
-            </button>
-          )}
+          <button className={styles.proceedBtn} onClick={handleProceed}>
+            Import Content
+          </button>
         </motion.div>
       )}
 
-      <AnimatePresence>
-        {isConverted && (
-          <motion.div 
-            className={styles.previewArea}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            transition={{ duration: 0.3 }}
-          >
-            <h4 className={styles.previewTitle}>
-              <FiCheckCircle /> Document converted to HTML preview.
-            </h4>
-            <div className={styles.mockPreviewContent}>
-              <p>The document content has been loaded into the content state. You can publish or save it as a draft.</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {error && (
+        <div className={styles.errorAlert}>
+          {error}
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -1,48 +1,22 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: transparent;
-}
-
 .menuContainer {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 1rem;
-  z-index: 50;
-  width: 320px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
+  position: relative;
+  width: 100%;
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  padding: 0.5rem;
-  scrollbar-width: thin;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
+  overflow: hidden;
 }
 
-.menuContainer::-webkit-scrollbar {
-  width: 6px;
-}
-.menuContainer::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: var(--radius-full);
-}
-
-[data-theme='light'] .menuContainer {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+.categoriesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
 .categoryGroup {
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.categoryGroup:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+  flex: 1;
+  min-width: 200px;
 }
 
 .categoryTitle {
@@ -79,6 +53,19 @@
   background: rgba(0, 0, 0, 0.03);
 }
 
+.menuItem.active {
+  background: rgba(109, 93, 246, 0.15);
+  color: var(--accent-primary);
+}
+
+[data-theme='light'] .menuItem.active {
+  background: rgba(109, 93, 246, 0.1);
+}
+
+.menuItem.active .menuItemIcon {
+  color: var(--accent-primary);
+}
+
 .menuItemIcon {
   color: var(--text-muted);
   display: flex;
@@ -106,32 +93,16 @@
   background: rgba(109, 93, 246, 0.05);
 }
 
-/* Mobile Bottom Sheet */
+/* Mobile adjustments */
 @media (max-width: 640px) {
-  .overlay {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-
   .menuContainer {
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-height: 80vh;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    padding: 1.5rem 1rem;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
+    padding: 1rem;
   }
-
-  .menuItem {
-    padding: 0.75rem;
-    font-size: var(--font-size-base);
+  .categoriesWrapper {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .categoryGroup {
+    width: 100%;
   }
 }

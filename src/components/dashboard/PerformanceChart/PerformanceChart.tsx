@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useMemo } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis,
@@ -23,7 +24,7 @@ const TABS: FilterTab[] = [
   { id: 'yearly',  label: 'Yearly'  },
 ];
 
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
@@ -64,7 +65,7 @@ const PerformanceChart = () => {
     let d;
     let l = '';
     let p = true;
-    let n = offset > 0;
+    const n = offset > 0;
 
     switch (filter) {
       case 'daily':

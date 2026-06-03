@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LuHighlighter, LuEraser, LuSubscript, LuSuperscript, LuPalette,
+  LuHighlighter, LuEraser, LuSubscript, LuSuperscript, LuPalette, LuStrikethrough,
+  LuAlignCenter, LuAlignRight, LuAlignJustify, LuListOrdered, LuListTodo,
   LuMapPin, LuWallet, LuCloudSun, LuLightbulb, LuTriangleAlert, LuHotel, LuUtensils, LuBackpack, LuCalendarDays, LuCircleHelp, LuMap,
   LuListTree, LuSquareSplitHorizontal, LuMousePointerClick, LuCode, LuImagePlus, LuShare2, LuYoutube,
+  LuVideo, LuTable, LuQuote, LuMinus,
   LuSearch, LuSettings,
   LuSave, LuEye, LuSend
 } from 'react-icons/lu';
@@ -12,9 +14,12 @@ import styles from './MoreToolsMenu.module.css';
 interface MoreToolsMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onInsertBlock?: (type: 'destination' | 'budget') => void;
+  activeTools: string[];
+  onToggleTool: (toolId: string) => void;
 }
 
-const MoreToolsMenu: React.FC<MoreToolsMenuProps> = ({ isOpen, onClose }) => {
+const MoreToolsMenu: React.FC<MoreToolsMenuProps> = ({ isOpen, onClose, onInsertBlock, activeTools, onToggleTool }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,53 +30,64 @@ const MoreToolsMenu: React.FC<MoreToolsMenuProps> = ({ isOpen, onClose }) => {
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as HTMLElement;
+      if (target.closest('#more-tools-btn')) {
+        return; // Handled by the button's own onClick
+      }
+
+      if (menuRef.current && !menuRef.current.contains(target)) {
         onClose();
       }
     };
 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      // Use setTimeout to prevent immediate close on the button click that opened it
-      setTimeout(() => {
-        document.addEventListener('click', handleClickOutside);
-      }, 0);
+      document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className={styles.overlay} aria-hidden="true">
+      {isOpen && (
         <motion.div 
           ref={menuRef}
           className={styles.menuContainer}
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           role="menu"
         >
-          
-          <div className={styles.categoryGroup}>
-            <div className={styles.categoryTitle}>Text Tools</div>
-            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuPalette size={16} /></span> Text Color</button>
-            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuHighlighter size={16} /></span> Highlight</button>
+          <div className={styles.categoriesWrapper}>
+            
+            <div className={styles.categoryGroup}>
+            <div className={styles.categoryTitle}>Text & Formatting</div>
+            <button className={`${styles.menuItem} ${activeTools.includes('strikethrough') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('strikethrough')}><span className={styles.menuItemIcon}><LuStrikethrough size={16} /></span> Strikethrough</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('highlight') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('highlight')}><span className={styles.menuItemIcon}><LuHighlighter size={16} /></span> Highlight</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('textColor') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('textColor')}><span className={styles.menuItemIcon}><LuPalette size={16} /></span> Text Color</button>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuEraser size={16} /></span> Clear Formatting</button>
-            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSuperscript size={16} /></span> Superscript</button>
-            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSubscript size={16} /></span> Subscript</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('superscript') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('superscript')}><span className={styles.menuItemIcon}><LuSuperscript size={16} /></span> Superscript</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('subscript') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('subscript')}><span className={styles.menuItemIcon}><LuSubscript size={16} /></span> Subscript</button>
+          </div>
+
+          <div className={styles.categoryGroup}>
+            <div className={styles.categoryTitle}>Paragraph & Lists</div>
+            <button className={`${styles.menuItem} ${activeTools.includes('numberedList') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('numberedList')}><span className={styles.menuItemIcon}><LuListOrdered size={16} /></span> Numbered List</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('checklist') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('checklist')}><span className={styles.menuItemIcon}><LuListTodo size={16} /></span> Checklist</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('alignCenter') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('alignCenter')}><span className={styles.menuItemIcon}><LuAlignCenter size={16} /></span> Align Center</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('alignRight') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('alignRight')}><span className={styles.menuItemIcon}><LuAlignRight size={16} /></span> Align Right</button>
+            <button className={`${styles.menuItem} ${activeTools.includes('justify') ? styles.active : ''}`} role="menuitem" onClick={() => onToggleTool('justify')}><span className={styles.menuItemIcon}><LuAlignJustify size={16} /></span> Justify</button>
           </div>
 
           <div className={styles.categoryGroup}>
             <div className={styles.categoryTitle}>Travel Blocks</div>
-            <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem"><span className={styles.menuItemIcon}><LuMapPin size={16} /></span> Destination Facts</button>
-            <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem"><span className={styles.menuItemIcon}><LuWallet size={16} /></span> Budget Box</button>
+            <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem" onClick={() => onInsertBlock?.('destination')}><span className={styles.menuItemIcon}><LuMapPin size={16} /></span> Destination Facts</button>
+            <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem" onClick={() => onInsertBlock?.('budget')}><span className={styles.menuItemIcon}><LuWallet size={16} /></span> Budget Box</button>
             <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem"><span className={styles.menuItemIcon}><LuCloudSun size={16} /></span> Weather Box</button>
             <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem"><span className={styles.menuItemIcon}><LuLightbulb size={16} /></span> Travel Tips</button>
             <button className={`${styles.menuItem} ${styles.travelBlockItem}`} role="menuitem"><span className={styles.menuItemIcon}><LuTriangleAlert size={16} /></span> Travel Warning</button>
@@ -85,6 +101,10 @@ const MoreToolsMenu: React.FC<MoreToolsMenuProps> = ({ isOpen, onClose }) => {
 
           <div className={styles.categoryGroup}>
             <div className={styles.categoryTitle}>Advanced Content</div>
+            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuVideo size={16} /></span> Video</button>
+            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuTable size={16} /></span> Table</button>
+            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuQuote size={16} /></span> Quote</button>
+            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuMinus size={16} /></span> Divider</button>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuListTree size={16} /></span> Accordion</button>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSquareSplitHorizontal size={16} /></span> Tabs</button>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuMousePointerClick size={16} /></span> Button</button>
@@ -104,11 +124,12 @@ const MoreToolsMenu: React.FC<MoreToolsMenuProps> = ({ isOpen, onClose }) => {
             <div className={styles.categoryTitle}>Publishing</div>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSave size={16} /></span> Save Draft</button>
             <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuEye size={16} /></span> Preview</button>
-            <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSend size={16} /></span> Schedule / Publish</button>
-          </div>
+              <button className={styles.menuItem} role="menuitem"><span className={styles.menuItemIcon}><LuSend size={16} /></span> Schedule / Publish</button>
+            </div>
 
+          </div>
         </motion.div>
-      </div>
+      )}
     </AnimatePresence>
   );
 };

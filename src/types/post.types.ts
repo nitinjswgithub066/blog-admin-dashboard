@@ -1,4 +1,4 @@
-export type PostStatus = 'draft' | 'published' | 'scheduled';
+export type PostStatus = 'draft' | 'published' | 'scheduled' | 'archived';
 
 export type AdminPost = {
   id: string;
@@ -10,7 +10,9 @@ export type AdminPost = {
   tags: string[];
   contentType: 'text' | 'document';
   contentPreview: string;
+  excerpt?: string;
   coverImage?: string;
+  author: string;
   status: PostStatus;
   readingTime: number;
   views: number;
@@ -18,6 +20,7 @@ export type AdminPost = {
   shares: number;
   createdAt: string;
   updatedAt: string;
+  publishedAt?: string;
 };
 
 export interface Post {

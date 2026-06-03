@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { type ReactNode } from 'react';
 import { AuthProvider } from './authStore';
 import { SidebarProvider } from './sidebarStore';
