@@ -55,6 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
           <NavLink
             key={item.id}
             to={item.path}
+            end={item.path === '/posts'}
             onClick={onMobileClose}
             className={({ isActive }) => 
               `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
