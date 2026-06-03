@@ -56,6 +56,8 @@
 
 .select {
   color: var(--text-muted);
+  width: 120px;
+  flex-shrink: 0;
 }
 
 .option {
