@@ -1,4 +1,4 @@
-import type { AdminProfile, SiteSettings } from '../types';
+import type { AdminProfile } from '../types';
 
 export const mockAdminProfile: AdminProfile = {
   id: 'admin-001',
@@ -13,13 +13,4 @@ export const mockAdminProfile: AdminProfile = {
     linkedin: 'https://linkedin.com/company/vexirahub',
     website: 'https://vexirahub.com',
   },
-};
-
-export const mockSiteSettings: SiteSettings = {
-  siteName: 'VEXIRAHUB',
-  tagline: 'The future of modern technology blogs.',
-  defaultTheme: 'dark',
-  featuredPostStrategy: 'latest',
-  showCategories: true,
-  contactEmail: 'contact@vexirahub.com',
 };

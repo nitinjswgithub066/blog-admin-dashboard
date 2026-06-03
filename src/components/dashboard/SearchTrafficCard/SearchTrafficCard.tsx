@@ -1,7 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import Card from '../../ui/Card';
-import { mockPieChartData } from '../../../data/mockDashboard';
+import { mockPieChartData } from '../../../data/dashboardData';
 import styles from './SearchTrafficCard.module.css';
 
 const COLORS = ['#6D5DF6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6'];

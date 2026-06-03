@@ -16,7 +16,7 @@ import {
   mockLineChartDataDaily,
   mockLineChartDataWeekly,
   mockLineChartDataMonthly
-} from '../../../data/mockDashboard';
+} from '../../../data/dashboardData';
 import styles from './PerformanceChart.module.css';
 
 const TABS: FilterTab[] = [
