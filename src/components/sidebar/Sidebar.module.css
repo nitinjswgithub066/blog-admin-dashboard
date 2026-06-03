@@ -18,11 +18,13 @@
 }
 
 .header {
-  height: 70px;
+  height: var(--admin-topbar-height);
+  min-height: var(--admin-topbar-height);
   display: flex;
   align-items: center;
-  padding: 0 var(--spacing-4);
+  padding-inline: 1.25rem;
   border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
   overflow: hidden;
 }
 

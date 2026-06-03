@@ -9,11 +9,13 @@
   position: sticky;
   top: 0;
   z-index: 30;
-  height: 64px;            /* fixed height always */
+  height: var(--admin-topbar-height);
+  min-height: var(--admin-topbar-height);
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 20px;
+  padding-inline: 1.5rem;
+  padding-block: 0;
   background: rgba(8, 16, 32, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -54,6 +56,8 @@
   position: relative;
   max-width: 420px;
   display: none;    /* hidden on mobile */
+  height: 44px;
+  align-items: center;
 }
 
 /* When mobile search is toggled open */
@@ -63,7 +67,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 64px;
+  height: var(--admin-topbar-height);
   max-width: 100%;
   background: rgba(8, 16, 32, 0.98);
   padding: 0 16px;
@@ -134,6 +138,7 @@
   gap: 8px;
   margin-left: auto;
   flex-shrink: 0;
+  height: 44px;
 }
 
 /* Icon buttons (bell, search-mobile) */

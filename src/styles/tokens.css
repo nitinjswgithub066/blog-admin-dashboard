@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Layout */
+  --admin-topbar-height: 72px;
+
   /* Colors */
   --bg-primary: #071120;
   --bg-secondary: #0A1428;
