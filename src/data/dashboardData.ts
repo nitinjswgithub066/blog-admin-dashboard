@@ -8,12 +8,16 @@ export const mockDashboardMetrics: DashboardMetric[] = [
 ];
 
 export const mockPieChartData: ChartDataPoint[] = [
-  { name: 'Technology', value: 400 },
-  { name: 'Programming', value: 300 },
-  { name: 'AI', value: 500 },
-  { name: 'Career', value: 200 },
-  { name: 'Startups', value: 278 },
-  { name: 'Thoughts', value: 189 },
+  { name: 'Technology', value: 480 },
+  { name: 'Programming', value: 310 },
+  { name: 'Artificial Intelligence', value: 540 },
+  { name: 'Career & Growth', value: 210 },
+  { name: 'Startups', value: 290 },
+  { name: 'Thoughts & Opinions', value: 175 },
+  { name: 'News & Updates', value: 390 },
+  { name: 'Tutorials', value: 430 },
+  { name: 'Open Source', value: 220 },
+  { name: 'Other', value: 145 },
 ];
 
 export const mockLineChartDataDaily: ChartDataPoint[] = [

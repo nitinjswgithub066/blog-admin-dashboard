@@ -1,56 +1,84 @@
-import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import Card from '../../ui/Card';
 import { mockPieChartData } from '../../../data/dashboardData';
 import styles from './SearchTrafficCard.module.css';
 
-const COLORS = ['#6D5DF6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6'];
+const COLORS = [
+  '#6D5DF6', '#10B981', '#F59E0B', '#EF4444',
+  '#8B5CF6', '#3B82F6', '#EC4899', '#14B8A6',
+  '#F97316', '#94A3B8',
+];
 
-const SearchTrafficCard: React.FC = () => {
+const total = mockPieChartData.reduce((s, d) => s + (d.value ?? 0), 0);
+
+const SearchTrafficCard = () => {
   return (
-    <Card title="Traffic by Category" subtitle="Distribution of views across blog categories">
-      <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={mockPieChartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={90}
-              paddingAngle={5}
-              dataKey="value"
-              stroke="none"
-            >
-              {mockPieChartData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip 
-              contentStyle={{ 
-                background: '#071120', 
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: '#fff'
-              }}
-              itemStyle={{ color: '#fff' }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>Traffic by Category</h3>
+        <p className={styles.subtitle}>Distribution of views across blog categories</p>
       </div>
 
-      <div className={styles.legend}>
-        {mockPieChartData.map((entry, index) => (
-          <div key={entry.name} className={styles.legendItem}>
-            <span 
-              className={styles.legendColor} 
-              style={{ background: COLORS[index % COLORS.length] }} 
-            />
-            {entry.name}
+      <div className={styles.body}>
+        {/* Donut chart */}
+        <div className={styles.chartWrap}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={mockPieChartData}
+                cx="50%"
+                cy="50%"
+                innerRadius="55%"
+                outerRadius="80%"
+                paddingAngle={3}
+                dataKey="value"
+                stroke="none"
+              >
+                {mockPieChartData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '12px',
+                }}
+                itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(value, name) => {
+                  const v = typeof value === 'number' ? value : 0;
+                  return [
+                    `${((v / total) * 100).toFixed(1)}% · ${v.toLocaleString()} views`,
+                    String(name)
+                  ] as [string, string];
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+
+          {/* Centre label */}
+          <div className={styles.centreLabel}>
+            <span className={styles.centreNumber}>{total.toLocaleString()}</span>
+            <span className={styles.centreText}>Total Views</span>
           </div>
-        ))}
+        </div>
+
+        {/* Legend */}
+        <div className={styles.legend}>
+          {mockPieChartData.map((entry, index) => {
+            const pct = (((entry.value ?? 0) / total) * 100).toFixed(1);
+            return (
+              <div key={entry.name} className={styles.legendItem}>
+                <span className={styles.dot} style={{ background: COLORS[index % COLORS.length] }} />
+                <span className={styles.legendName}>{entry.name}</span>
+                <span className={styles.legendPct}>{pct}%</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
