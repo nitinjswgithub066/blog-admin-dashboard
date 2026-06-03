@@ -1,31 +1,67 @@
-.pageHeader {
+.page {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-6);
+  flex-direction: column;
+  gap: var(--spacing-6);
+  min-width: 0;
+  width: 100%;
 }
 
-.pageTitle {
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.title {
   font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--text-primary);
+  margin-bottom: var(--spacing-1);
 }
 
-.pageDescription {
+.description {
+  font-size: var(--font-size-base);
   color: var(--text-muted);
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-1);
 }
 
-.contentShell {
-  width: 100%;
-  height: 60vh;
-  border-radius: var(--radius-xl);
-  border: 1px dashed var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: var(--font-size-lg);
-  background: rgba(255, 255, 255, 0.01);
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--spacing-6);
+  min-width: 0;
+}
+
+.dateTimeCard {
+  grid-column: span 12;
+}
+
+.trafficCard {
+  grid-column: span 12;
+}
+
+.topPostsCard {
+  grid-column: span 12;
+}
+
+.chartCard {
+  grid-column: span 12;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .dateTimeCard { grid-column: span 6; }
+  .trafficCard { grid-column: span 6; }
+}
+
+@media (min-width: 1024px) {
+  .dateTimeCard { grid-column: span 4; }
+  .trafficCard { grid-column: span 4; }
+  .topPostsCard { grid-column: span 4; }
+}
+
+@media (min-width: 1280px) {
+  .dateTimeCard { grid-column: span 3; }
+  .trafficCard { grid-column: span 5; }
+  .topPostsCard { grid-column: span 4; }
 }
