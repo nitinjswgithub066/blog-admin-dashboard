@@ -1,33 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiTrash2, FiPlus, FiCheck } from 'react-icons/fi';
+import { FiTrash2, FiPlus, FiCheck, FiBookOpen } from 'react-icons/fi';
 import { STORAGE_KEYS } from '../../../constants/storageKeys';
 import type { BlogTopicIdea } from '../../../types';
 import styles from './BlogTopicNotepad.module.css';
 
 const DEFAULT_CATEGORIES = [
   'Technology', 'Programming', 'AI', 'Career', 'Startups', 'Thoughts'
-];
-
-const DEFAULT_TOPICS: BlogTopicIdea[] = [
-  {
-    id: '1',
-    title: 'Best AI tools for students in 2026',
-    category: 'AI',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: '2',
-    title: 'How to build a production-ready React dashboard',
-    category: 'Programming',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: '3',
-    title: 'Why blogging is changing after AI search',
-    category: 'Thoughts',
-    createdAt: new Date().toISOString()
-  }
 ];
 
 const BlogTopicNotepad: React.FC = () => {
@@ -43,10 +22,10 @@ const BlogTopicNotepad: React.FC = () => {
       try {
         setTopics(JSON.parse(saved));
       } catch (e) {
-        setTopics(DEFAULT_TOPICS);
+        setTopics([]);
       }
     } else {
-      setTopics(DEFAULT_TOPICS);
+      setTopics([]);
     }
     setIsLoaded(true);
   }, []);
@@ -93,7 +72,7 @@ const BlogTopicNotepad: React.FC = () => {
       </div>
 
       <form className={styles.addForm} onSubmit={handleAdd}>
-        <div className={styles.inputGroup}>
+        <div className={styles.notepadForm}>
           <input
             type="text"
             className={styles.input}
@@ -116,54 +95,62 @@ const BlogTopicNotepad: React.FC = () => {
           </select>
         </div>
         
-        <button 
-          type="submit" 
-          className={styles.addBtn}
-          disabled={!newTitle.trim() || topics.length >= 5}
-        >
-          <FiPlus /> Add Topic
-        </button>
-
-        <AnimatePresence>
-          {topics.length >= 5 && (
-            <motion.p 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className={styles.limitMsg}
-            >
-              Maximum 5 blog ideas allowed.
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <div className={styles.actionsRow}>
+          <button 
+            type="submit" 
+            className={styles.addBtn}
+            disabled={!newTitle.trim() || topics.length >= 5}
+          >
+            <FiPlus /> Add Topic
+          </button>
+          
+          <AnimatePresence>
+            {topics.length >= 5 && (
+              <motion.span 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className={styles.limitMsg}
+              >
+                Maximum 5 blog ideas allowed.
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
       </form>
 
-      <div className={styles.list}>
+      <div className={styles.topicList}>
         <AnimatePresence initial={false}>
           {topics.map(topic => (
             <motion.div
               key={topic.id}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className={`${styles.item} ${topic.completed ? styles.completed : ''}`}
+              className={`${styles.topicItem} ${topic.completed ? styles.completed : ''}`}
             >
-              <button 
-                className={styles.checkBtn}
-                onClick={() => toggleCompleted(topic.id)}
-                aria-label="Mark complete"
-              >
-                <div className={styles.checkbox}>
-                  {topic.completed && <FiCheck size={12} />}
+              <div className={styles.itemMain}>
+                <button 
+                  className={styles.checkBtn}
+                  onClick={() => toggleCompleted(topic.id)}
+                  aria-label="Mark complete"
+                >
+                  <div className={styles.checkbox}>
+                    {topic.completed && <FiCheck size={12} />}
+                  </div>
+                </button>
+                
+                <div className={styles.itemInfo}>
+                  <span className={styles.topicTitle}>{topic.title}</span>
+                  <div className={styles.itemMeta}>
+                    {topic.category && (
+                      <span className={styles.badge}>{topic.category}</span>
+                    )}
+                    {topic.category && <span className={styles.dot}>·</span>}
+                    <span className={styles.date}>Today</span>
+                  </div>
                 </div>
-              </button>
-              
-              <div className={styles.itemInfo}>
-                <span className={styles.itemTitle}>{topic.title}</span>
-                {topic.category && (
-                  <span className={styles.badge}>{topic.category}</span>
-                )}
               </div>
 
               <button 
@@ -178,9 +165,17 @@ const BlogTopicNotepad: React.FC = () => {
         </AnimatePresence>
         
         {topics.length === 0 && (
-          <div className={styles.emptyState}>
-            No ideas saved. Add your next big topic above!
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={styles.emptyState}
+          >
+            <div className={styles.emptyIcon}>
+              <FiBookOpen />
+            </div>
+            <p className={styles.emptyTitle}>No ideas saved yet</p>
+            <p className={styles.emptyHint}>Write a topic above and save it before you forget.</p>
+          </motion.div>
         )}
       </div>
     </div>
