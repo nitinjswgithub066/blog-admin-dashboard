@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import Card from '../../ui/Card';
+import styles from './MotionCard.module.css';
 
 interface MotionCardProps {
   children: ReactNode;
+  /** Applied to the outer motion.div — use this for grid-column spans */
   className?: string;
+  /** Applied to the inner Card — use for padding/style overrides */
+  cardClassName?: string;
   delay?: number;
 }
 
@@ -21,7 +25,7 @@ const variants = {
   })
 };
 
-const MotionCard = ({ children, className, delay = 0 }: MotionCardProps) => {
+const MotionCard = ({ children, className, cardClassName, delay = 0 }: MotionCardProps) => {
   return (
     <motion.div
       custom={delay}
@@ -30,9 +34,9 @@ const MotionCard = ({ children, className, delay = 0 }: MotionCardProps) => {
       viewport={{ once: true, margin: '-20px' }}
       variants={variants}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      style={{ height: '100%' }}
+      className={`${styles.wrapper} ${className ?? ''}`}
     >
-      <Card className={className}>
+      <Card className={`${styles.card} ${cardClassName ?? ''}`}>
         {children}
       </Card>
     </motion.div>
