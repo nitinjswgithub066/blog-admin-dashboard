@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiBell, FiSearch, FiX } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiBell, FiSearch, FiX } from 'react-icons/fi';
 import ProfileDropdown from '../dropdown/ProfileDropdown';
 import styles from './Topbar.module.css';
 
@@ -13,71 +13,53 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
 
   return (
     <header className={styles.topbar}>
-      {/* Left: hamburger + (desktop) search */}
-      <div className={styles.leftSection}>
-        <button
-          className={styles.menuBtn}
-          onClick={onMenuClick}
-          aria-label="Open Menu"
-        >
-          <FiMenu />
-        </button>
+      {/* Hamburger — mobile/tablet only (hidden on desktop via CSS) */}
+      <button className={styles.menuBtn} onClick={onMenuClick} aria-label="Open Menu">
+        <span className={styles.menuBar} />
+        <span className={styles.menuBar} />
+        <span className={styles.menuBar} />
+      </button>
 
-        {/* Desktop search — always visible ≥768px */}
-        <div className={styles.searchContainer}>
-          <FiSearch className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Search posts, users, or settings..."
-            className={styles.searchInput}
-          />
-        </div>
+      {/* Search — desktop always visible, mobile via toggle */}
+      <div className={`${styles.searchContainer} ${searchOpen ? styles.searchOpen : ''}`}>
+        <FiSearch className={styles.searchIcon} />
+        <input
+          type="text"
+          placeholder="Search posts, users, or settings..."
+          className={styles.searchInput}
+        />
+        {searchOpen && (
+          <button className={styles.searchClose} onClick={() => setSearchOpen(false)} aria-label="Close search">
+            <FiX />
+          </button>
+        )}
       </div>
 
-      {/* Right: mobile search toggle + notifications + profile */}
+      {/* Right section */}
       <div className={styles.rightSection}>
-        {/* Mobile search icon — toggles overlay search */}
+        {/* Mobile: search icon toggle */}
         <button
-          className={`${styles.iconBtn} ${styles.mobileSearchBtn}`}
+          className={`${styles.iconBtn} ${styles.mobileSearchTrigger}`}
           onClick={() => setSearchOpen(s => !s)}
-          aria-label="Toggle search"
+          aria-label="Search"
         >
-          {searchOpen ? <FiX /> : <FiSearch />}
+          <FiSearch />
         </button>
 
+        {/* Notifications */}
         <motion.button
           className={styles.iconBtn}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
           aria-label="Notifications"
         >
           <FiBell />
           <span className={styles.badge} />
         </motion.button>
 
+        {/* Profile */}
         <ProfileDropdown />
       </div>
-
-      {/* Mobile search overlay */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            className={styles.mobileSearch}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-          >
-            <FiSearch className={styles.mobileSearchIcon} />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Search posts, users, or settings..."
-              className={styles.mobileSearchInput}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };

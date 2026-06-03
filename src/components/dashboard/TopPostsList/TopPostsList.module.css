@@ -1,79 +1,156 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   height: 100%;
+  min-width: 0;
 }
 
 .title {
-  font-size: var(--font-size-lg);
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
+  margin: 0 0 4px 0;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: 10px;
   flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+  padding-right: 4px; /* Space for scrollbar if it appears */
 }
 
+/* Custom scrollbar for list if needed */
+.list::-webkit-scrollbar {
+  width: 4px;
+}
+.list::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* ── Item Card ── */
 .item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-3);
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  transition: var(--transition-fast);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
   text-decoration: none;
+  transition: all var(--transition-fast);
+  min-width: 0;
 }
 
 .item:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(3px);
 }
 
+/* Highlight style for the top #1 item */
+.topItem {
+  background: linear-gradient(145deg, rgba(109, 93, 246, 0.08), rgba(16, 185, 129, 0.03));
+  border-color: rgba(109, 93, 246, 0.3);
+}
+
+.topItem:hover {
+  background: linear-gradient(145deg, rgba(109, 93, 246, 0.12), rgba(16, 185, 129, 0.05));
+  border-color: rgba(109, 93, 246, 0.5);
+}
+
+/* ── Rank Number ── */
 .rank {
-  font-size: var(--font-size-xl);
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-muted);
-  width: 24px;
+  width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
+.topRank {
+  color: var(--accent-primary);
+}
+
+/* ── Info Column ── */
 .info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: 6px;
   flex: 1;
   min-width: 0;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .postTitle {
   font-size: var(--font-size-sm);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0;
+  line-height: 1.3;
 }
 
+.trendBadge {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap; /* On very small screens, let metrics wrap */
+}
+
+/* ── Category Badge ── */
+.categoryBadge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+/* ── Metrics ── */
 .metrics {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: 12px;
 }
 
 .metric {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 .metricIcon {

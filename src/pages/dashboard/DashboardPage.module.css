@@ -1,82 +1,95 @@
+/*
+  DashboardPage layout — mobile-first
+  The key requirement: all 3 top cards equal height.
+  We use CSS Grid with align-items: stretch to achieve this.
+*/
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
+  gap: 1.5rem;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
 
-.header {
-  min-width: 0;
-}
+/* ── Welcome header ── */
+.header { min-width: 0; }
 
 .title {
-  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-1) 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0 0 4px 0;
 }
 
 .description {
-  font-size: var(--font-size-base);
+  font-size: 0.9rem;
   color: var(--text-muted);
   margin: 0;
 }
 
-/* ---------- Top row ---------- */
+/* ── Row 1: 3 equal-height cards ── */
 .topRow {
   display: grid;
-  /* 3 equal columns by default; stack on mobile */
-  grid-template-columns: 1fr;
-  gap: var(--spacing-6);
+  grid-template-columns: 1fr;      /* mobile: stack */
+  align-items: stretch;            /* ← makes all cells same height */
+  gap: 1.5rem;
   min-width: 0;
 }
 
-/* slots have no extra class needed — MotionCard.wrapper handles sizing */
-.dateTimeSlot,
-.trafficSlot,
-.topPostsSlot,
+/*
+  .cardSlot is the className passed to MotionCard's outer wrapper div.
+  It just needs to participate in the grid and have min-width: 0.
+  Height is controlled by align-items: stretch on the parent grid.
+*/
+.cardSlot {
+  min-width: 0;
+  /* height: 100% already set in MotionCard.module.css .wrapper */
+}
+
+/* ── Row 2: full-width chart ── */
 .chartSlot {
   min-width: 0;
   width: 100%;
 }
 
-@media (min-width: 480px) {
-  /* sm phones — still single column, a little more breathing room */
-  .topRow { gap: var(--spacing-4); }
-}
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
 
+/* Tablet ≥ 768px: 2 columns, third card full width */
 @media (min-width: 768px) {
-  /* Tablets — 2 cols, TopPosts spans full width */
   .topRow {
     grid-template-columns: 1fr 1fr;
   }
-  .topPostsSlot { grid-column: 1 / -1; }
+  /* Third card (TopPosts) spans full width on tablet */
+  .topRow > *:nth-child(3) {
+    grid-column: 1 / -1;
+  }
 }
 
+/* Laptop ≥ 1024px: 3 equal columns */
 @media (min-width: 1024px) {
-  /* Laptops — 3 equal cols */
   .topRow {
     grid-template-columns: 1fr 1fr 1fr;
   }
-  .topPostsSlot { grid-column: auto; }
+  .topRow > *:nth-child(3) {
+    grid-column: auto;
+  }
 }
 
+/* Desktop ≥ 1280px: proportional widths */
 @media (min-width: 1280px) {
-  /* Desktop — fixed-size DateTimeCard, fluid traffic, fixed TopPosts */
   .topRow {
-    grid-template-columns: 300px 1fr 340px;
+    grid-template-columns: 310px minmax(0, 1fr) 360px;
   }
 }
 
+/* Large ≥ 1536px */
 @media (min-width: 1536px) {
-  /* Large screens */
   .topRow {
-    grid-template-columns: 320px 1fr 380px;
+    grid-template-columns: 340px minmax(0, 1fr) 400px;
   }
+  .page { gap: 2rem; }
 }
-

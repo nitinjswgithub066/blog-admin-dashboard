@@ -1,52 +1,113 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: 12px;
   height: 100%;
   min-width: 0;
 }
 
+/* ── Header ── */
 .header { min-width: 0; }
 
 .title {
-  font-size: var(--font-size-lg);
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 2px 0;
+  margin: 0 0 3px 0;
 }
 
 .subtitle {
-  font-size: var(--font-size-xs);
+  font-size: 11.5px;
   color: var(--text-muted);
   margin: 0;
+  line-height: 1.4;
 }
 
-/* Full-height chart – no scroll */
-.chartWrap {
-  position: relative;
+/* ── Chart — expands to fill remaining space ── */
+.chartArea {
   flex: 1;
-  min-height: 200px;
+  min-height: 160px;
+  min-width: 0;
+  overflow: hidden;     /* prevents SVG labels from escaping the card */
 }
 
-.centreLabel {
-  position: absolute;
-  inset: 0;
+/* ── Mobile legend (2-column grid of dots + names) ── */
+.mobileLegend {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 8px;
+}
+
+.legendItem {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  pointer-events: none;
+  gap: 5px;
+  min-width: 0;
 }
 
-.centreNumber {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.centreText {
+.legendName {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Insight strip ── */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+}
+
+.insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+}
+
+.insightIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.insightLabel {
   font-size: 10px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-bottom: 1px;
+  white-space: nowrap;
+}
+
+.insightValue {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.pct {
+  color: #10B981;
+  font-size: 11px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 479px) {
+  .insights { grid-template-columns: 1fr; gap: 10px; }
+  .mobileLegend { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .insights { grid-template-columns: repeat(3, 1fr); }
 }
