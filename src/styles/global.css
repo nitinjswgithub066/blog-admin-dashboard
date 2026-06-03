@@ -2,3 +2,37 @@
 @import './reset.css';
 @import './utilities.css';
 @import './animations.css';
+
+/* Global scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(109, 93, 246, 0.45) transparent;
+}
+
+body {
+  overflow-x: hidden;
+  background: var(--bg-primary);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(109, 93, 246, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(109, 93, 246, 0.45);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(109, 93, 246, 0.7);
+}
