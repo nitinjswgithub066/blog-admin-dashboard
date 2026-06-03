@@ -56,8 +56,11 @@
 
 .select {
   color: var(--text-muted);
-  width: 110px;
+  width: 130px;
   flex-shrink: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .option {
