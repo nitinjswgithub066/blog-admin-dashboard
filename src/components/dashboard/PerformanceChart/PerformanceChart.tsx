@@ -48,7 +48,7 @@ const DATA_PAGES: Record<FilterId, { label: string; data: typeof mockLineChartDa
 };
 
 const PerformanceChart = () => {
-  const [filter, setFilter] = useState<FilterId>('weekly');
+  const [filter, setFilter] = useState<FilterId>('daily');
   const [pageIdx, setPageIdx] = useState(0);
 
   const pages = DATA_PAGES[filter];
@@ -62,17 +62,15 @@ const PerformanceChart = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      {/* Header row */}
-      <div className={styles.header}>
-        <div className={styles.titleBlock}>
+    <div className={styles.performanceCard}>
+      <div className={styles.performanceHeader}>
+        <div>
           <h2 className={styles.title}>Blog Performance</h2>
           <p className={styles.subtitle}>Traffic and engagement over time</p>
         </div>
 
-        <div className={styles.controls}>
-          {/* Time-navigation arrows */}
-          <div className={styles.navGroup}>
+        <div className={styles.performanceControls}>
+          <div className={styles.periodControl}>
             <button
               className={styles.navBtn}
               onClick={() => setPageIdx(i => i + 1)}
@@ -92,16 +90,17 @@ const PerformanceChart = () => {
             </button>
           </div>
 
-          <FilterTabs
-            tabs={TABS}
-            activeTabId={filter}
-            onTabChange={handleFilterChange}
-          />
+          <div className={styles.filterTabs}>
+            <FilterTabs
+              tabs={TABS}
+              activeTabId={filter}
+              onTabChange={handleFilterChange}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Chart */}
-      <div className={styles.chartContainer}>
+      <div className={styles.chartWrapper}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={current.data}

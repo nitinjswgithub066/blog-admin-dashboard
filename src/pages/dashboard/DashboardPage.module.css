@@ -48,10 +48,21 @@
   /* height: 100% already set in MotionCard.module.css .wrapper */
 }
 
-/* ── Row 2: full-width chart ── */
-.chartSlot {
-  min-width: 0;
+/* ── Row 2: Performance Graph & Notepad ── */
+.performanceSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
   width: 100%;
+  min-width: 0;
+}
+
+.performanceCard, .notepadCard {
+  width: 100%;
+  min-width: 0;
+  /* MotionCard automatically applies border-radius and hidden overflow, but just in case */
+  border-radius: 24px;
 }
 
 /* ══════════════════════════════════════
@@ -84,9 +95,19 @@
   .topRow {
     grid-template-columns: 310px minmax(0, 1fr) 360px;
   }
+  .performanceSection {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
 }
 
-/* Large ≥ 1536px */
+/* Large ≥ 1440px */
+@media (min-width: 1440px) {
+  .performanceSection {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+/* Extra Large ≥ 1536px */
 @media (min-width: 1536px) {
   .topRow {
     grid-template-columns: 340px minmax(0, 1fr) 400px;

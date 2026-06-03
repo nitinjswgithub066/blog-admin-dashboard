@@ -4,4 +4,5 @@ export const STORAGE_KEYS = {
   THEME: "blog_admin_theme",
   PROFILE: "blog_admin_profile",
   SETTINGS: "blog_admin_settings",
+  BLOG_TOPIC_IDEAS: "blog_admin_topic_ideas",
 };

@@ -4,6 +4,7 @@ import DateTimeCard from '../../components/dashboard/DateTimeCard';
 import PerformanceChart from '../../components/dashboard/PerformanceChart';
 import SearchTrafficCard from '../../components/dashboard/SearchTrafficCard';
 import TopPostsList from '../../components/dashboard/TopPostsList';
+import BlogTopicNotepad from '../../components/dashboard/BlogTopicNotepad/BlogTopicNotepad';
 import { useProfileStore } from '../../store';
 import styles from './DashboardPage.module.css';
 
@@ -38,10 +39,16 @@ const DashboardPage = () => {
         </MotionCard>
       </div>
 
-      {/* ── Row 2: Full-width chart ── */}
-      <MotionCard delay={4} className={styles.chartSlot}>
-        <PerformanceChart />
-      </MotionCard>
+      {/* ── Row 2: Performance Graph & Notepad ── */}
+      <div className={styles.performanceSection}>
+        <MotionCard delay={4} className={styles.performanceCard}>
+          <PerformanceChart />
+        </MotionCard>
+        
+        <MotionCard delay={5} className={styles.notepadCard}>
+          <BlogTopicNotepad />
+        </MotionCard>
+      </div>
     </PageTransition>
   );
 };
