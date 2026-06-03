@@ -1,178 +1,201 @@
+/* ─────────────────────────────────────────────
+   Topbar — responsive from 320px → ∞
+   Breakpoints (mobile-first):
+     xs  < 480px   (small phones, android / ios)
+     sm  480–767px (large phones)
+     md  768–1023px (tablets)
+     lg  1024–1279px (laptops)
+     xl  1280–1535px (desktop / PC)
+     2xl ≥ 1536px  (large screens)
+───────────────────────────────────────────── */
+
 .topbar {
-  height: 70px;
-  background: rgba(10, 20, 40, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--spacing-4);
   position: sticky;
   top: 0;
   z-index: 30;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: 0 var(--spacing-3);
+  background: rgba(10, 20, 40, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  /* never let the bar shrink below readable size */
+  min-width: 0;
+  overflow: visible;
 }
 
+/* ── Left ── */
 .leftSection {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   flex: 1;
+  min-width: 0;
 }
 
 .menuBtn {
-  display: none;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  background: transparent;
+  flex-shrink: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: transparent;
   border: 1px solid transparent;
-  transition: all var(--transition-fast);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
 }
-
 .menuBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255,255,255,0.06);
   border-color: var(--border-color);
 }
 
+/* Desktop search (hidden on mobile) */
 .searchContainer {
   position: relative;
-  width: 100%;
-  max-width: 320px;
+  flex: 1;
+  max-width: 360px;
+  display: none;       /* hidden on xs/sm */
 }
 
 .searchIcon {
   position: absolute;
-  left: var(--spacing-3);
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: 15px;
+  pointer-events: none;
 }
 
 .searchInput {
   width: 100%;
-  padding: var(--spacing-2) var(--spacing-3) var(--spacing-2) 2.5rem;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 14px 8px 36px;
+  background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
   color: var(--text-primary);
   font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
-
+.searchInput::placeholder { color: var(--text-muted); }
 .searchInput:focus {
-  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+  background: rgba(255,255,255,0.08);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(109, 93, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(109,93,246,0.2);
 }
 
+/* ── Right ── */
 .rightSection {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-2);
+  flex-shrink: 0;
 }
 
 .iconBtn {
+  flex-shrink: 0;
   position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-color);
-  transition: all var(--transition-fast);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
+.iconBtn:hover { background: rgba(255,255,255,0.1); }
 
-.iconBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
-}
+/* Mobile search button — only visible on xs/sm */
+.mobileSearchBtn { display: flex; }
 
 .badge {
   position: absolute;
   top: -2px;
   right: -2px;
-  width: 10px;
-  height: 10px;
-  background: #ef4444; /* red-500 */
-  border-radius: var(--radius-full);
+  width: 9px;
+  height: 9px;
+  background: #ef4444;
+  border-radius: 50%;
   border: 2px solid var(--bg-secondary);
 }
 
-.profileTrigger {
+/* ── Mobile search overlay (drops below topbar) ── */
+.mobileSearch {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-1);
-  padding-right: var(--spacing-3);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
-  transition: all var(--transition-fast);
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(10, 20, 40, 0.97);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(16px);
+  z-index: 29;
 }
 
-.profileTrigger:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-}
-
-.profileInfo {
-  display: none;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.profileName {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.profileRole {
-  font-size: 0.7rem;
+.mobileSearchIcon {
   color: var(--text-muted);
-  line-height: 1.2;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-@media (min-width: 640px) {
-  .profileInfo {
-    display: flex;
-  }
+.mobileSearchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+.mobileSearchInput:focus { outline: none; }
+.mobileSearchInput::placeholder { color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS  (mobile-first)
+═══════════════════════════════════════════ */
+
+/* sm ≥ 480px — larger phones */
+@media (min-width: 480px) {
+  .topbar { padding: 0 var(--spacing-4); gap: var(--spacing-3); }
 }
 
-@media (max-width: 768px) {
-  .menuBtn {
-    display: flex;
-  }
-  
-  .searchContainer {
-    display: none; /* Hide search on mobile by default, maybe show a search icon instead */
-  }
-  
-  .topbar {
-    padding: 0 var(--spacing-2);
-  }
+/* md ≥ 768px — tablets → show desktop search, hide mobile search btn */
+@media (min-width: 768px) {
+  .searchContainer { display: flex; }
+  .mobileSearchBtn { display: none; }
+  .mobileSearch    { display: none !important; }
+}
+
+/* lg ≥ 1024px — laptops */
+@media (min-width: 1024px) {
+  .topbar { height: 68px; padding: 0 var(--spacing-6); gap: var(--spacing-4); }
+  .mobileSearch { top: 68px; }
+  .searchContainer { max-width: 420px; }
+}
+
+/* xl ≥ 1280px — desktop */
+@media (min-width: 1280px) {
+  .searchContainer { max-width: 480px; }
+}
+
+/* 2xl ≥ 1536px — large screens */
+@media (min-width: 1536px) {
+  .topbar { height: 72px; }
+  .mobileSearch { top: 72px; }
+  .searchContainer { max-width: 560px; }
 }

@@ -46,3 +46,18 @@ export const mockLineChartDataMonthly: ChartDataPoint[] = [
   { name: 'Week 3', clicks: 28000, traffic: 90000, readingTime: 10 },
   { name: 'Week 4', clicks: 35000, traffic: 110000, readingTime: 12 },
 ];
+
+export const mockLineChartDataYearly: ChartDataPoint[] = [
+  { name: 'Jan', clicks: 95000, traffic: 310000, readingTime: 10 },
+  { name: 'Feb', clicks: 88000, traffic: 280000, readingTime: 10 },
+  { name: 'Mar', clicks: 112000, traffic: 360000, readingTime: 11 },
+  { name: 'Apr', clicks: 98000, traffic: 325000, readingTime: 11 },
+  { name: 'May', clicks: 130000, traffic: 420000, readingTime: 12 },
+  { name: 'Jun', clicks: 145000, traffic: 480000, readingTime: 13 },
+  { name: 'Jul', clicks: 138000, traffic: 455000, readingTime: 12 },
+  { name: 'Aug', clicks: 152000, traffic: 500000, readingTime: 13 },
+  { name: 'Sep', clicks: 125000, traffic: 410000, readingTime: 12 },
+  { name: 'Oct', clicks: 140000, traffic: 460000, readingTime: 13 },
+  { name: 'Nov', clicks: 160000, traffic: 530000, readingTime: 14 },
+  { name: 'Dec', clicks: 178000, traffic: 590000, readingTime: 15 },
+];

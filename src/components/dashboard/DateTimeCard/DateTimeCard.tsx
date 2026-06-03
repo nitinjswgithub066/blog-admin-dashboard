@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCurrentTime } from '../../../hooks';
 import styles from './DateTimeCard.module.css';
@@ -9,23 +9,7 @@ const MONTHS = ['January','February','March','April','May','June',
 
 const DateTimeCard = () => {
   const now = useCurrentTime(1000);
-  const [focusMins, setFocusMins] = useState(30);
-  const [focusing, setFocusing] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(0);
   const [viewDate, setViewDate] = useState(new Date());
-
-  // Focus timer countdown
-  useEffect(() => {
-    if (!focusing) return;
-    if (secondsLeft <= 0) { setFocusing(false); return; }
-    const id = setTimeout(() => setSecondsLeft(s => s - 1), 1000);
-    return () => clearTimeout(id);
-  }, [focusing, secondsLeft]);
-
-  const handleFocus = () => {
-    setSecondsLeft(focusMins * 60);
-    setFocusing(true);
-  };
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -116,25 +100,6 @@ const DateTimeCard = () => {
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
-
-      {/* Focus Timer */}
-      <div className={styles.focusRow}>
-        {focusing ? (
-          <div className={styles.countdown}>
-            <span className={styles.countdownTime}>
-              {String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:{String(secondsLeft % 60).padStart(2, '0')}
-            </span>
-            <button className={styles.stopBtn} onClick={() => setFocusing(false)}>■ Stop</button>
-          </div>
-        ) : (
-          <>
-            <button className={styles.minusBtn} onClick={() => setFocusMins(m => Math.max(5, m - 5))}>−</button>
-            <span className={styles.focusLabel}>{focusMins} mins</span>
-            <button className={styles.plusBtn} onClick={() => setFocusMins(m => Math.min(120, m + 5))}>+</button>
-            <button className={styles.focusBtn} onClick={handleFocus}>▶ Focus</button>
-          </>
-        )}
       </div>
     </div>
   );

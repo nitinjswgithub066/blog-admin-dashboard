@@ -45,27 +45,38 @@
   width: 100%;
 }
 
+@media (min-width: 480px) {
+  /* sm phones — still single column, a little more breathing room */
+  .topRow { gap: var(--spacing-4); }
+}
+
 @media (min-width: 768px) {
+  /* Tablets — 2 cols, TopPosts spans full width */
   .topRow {
     grid-template-columns: 1fr 1fr;
   }
-  /* TopPosts spans full width on tablet */
-  .topPostsSlot {
-    grid-column: 1 / -1;
-  }
+  .topPostsSlot { grid-column: 1 / -1; }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1024px) {
+  /* Laptops — 3 equal cols */
   .topRow {
-    grid-template-columns: 300px 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
-  .topPostsSlot {
-    grid-column: auto; /* reset full-span override */
+  .topPostsSlot { grid-column: auto; }
+}
+
+@media (min-width: 1280px) {
+  /* Desktop — fixed-size DateTimeCard, fluid traffic, fixed TopPosts */
+  .topRow {
+    grid-template-columns: 300px 1fr 340px;
   }
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1536px) {
+  /* Large screens */
   .topRow {
     grid-template-columns: 320px 1fr 380px;
   }
 }
+
