@@ -72,7 +72,7 @@ const BlogTopicNotepad: React.FC = () => {
       </div>
 
       <form className={styles.addForm} onSubmit={handleAdd}>
-        <div className={styles.notepadForm}>
+        <div className={styles.inputRow}>
           <input
             type="text"
             className={styles.input}
@@ -82,6 +82,9 @@ const BlogTopicNotepad: React.FC = () => {
             disabled={topics.length >= 5}
             maxLength={100}
           />
+        </div>
+        
+        <div className={styles.actionsRow}>
           <select
             className={styles.select}
             value={newCategory}
@@ -93,9 +96,6 @@ const BlogTopicNotepad: React.FC = () => {
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
-        </div>
-        
-        <div className={styles.actionsRow}>
           <button 
             type="submit" 
             className={styles.addBtn}

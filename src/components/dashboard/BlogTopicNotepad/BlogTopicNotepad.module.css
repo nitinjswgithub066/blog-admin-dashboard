@@ -32,17 +32,13 @@
   min-width: 0;
 }
 
-.notepadForm {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 130px;
-  gap: 0.75rem;
-  margin-top: 1rem;
+.inputRow {
+  display: flex;
+  min-width: 0;
 }
 
-@media (max-width: 480px) {
-  .notepadForm {
-    grid-template-columns: 1fr;
-  }
+.inputRow .input {
+  width: 100%;
 }
 
 .input, .select {
