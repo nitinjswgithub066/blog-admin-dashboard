@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheckCircle, FiEdit3, FiUploadCloud } from 'react-icons/fi';
+import { FiCheckCircle, FiEdit3, FiUploadCloud, FiChevronRight } from 'react-icons/fi';
 import TravelEditor from '../../components/create-post/TravelEditor/TravelEditor';
 import DocumentUploadPanel from '../../components/create-post/DocumentUploadPanel/DocumentUploadPanel';
 import PostDetailsPanel from '../../components/create-post/PostDetailsPanel/PostDetailsPanel';
@@ -27,7 +27,8 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
-type ViewState = 'library' | 'select-method' | 'text-editor' | 'upload-document';
+type StepState = 'recent' | 'content' | 'publish';
+type ContentMethod = 'text' | 'document' | null;
 
 const initialCategories: AdminCategory[] = [
   { id: '1', name: 'Technology', slug: 'technology', icon: 'TE', postCount: 12 },
@@ -36,8 +37,10 @@ const initialCategories: AdminCategory[] = [
 ];
 
 const CreatePostPage: React.FC = () => {
-  const [viewState, setViewState] = useState<ViewState>('library');
+  const [currentStep, setCurrentStep] = useState<StepState>('recent');
+  const [contentMethod, setContentMethod] = useState<ContentMethod>(null);
   const [content, setContent] = useState('');
+  
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [toastMsg, setToastMsg] = useState('');
@@ -136,7 +139,8 @@ const CreatePostPage: React.FC = () => {
     const actionMap: Record<PostStatus, string> = { draft: 'saved as draft', published: 'published', scheduled: 'scheduled', archived: 'archived' };
     showToast(`Post ${actionMap[data.status as PostStatus]} successfully.`);
     handleReset();
-    setViewState('library');
+    setCurrentStep('recent');
+    setContentMethod(null);
   };
 
   const handleReset = () => {
@@ -151,103 +155,139 @@ const CreatePostPage: React.FC = () => {
     setContent('');
   };
 
-  const handleMethodSelect = (method: 'text-editor' | 'upload-document') => {
-    setViewState(method);
+  const handleMethodSelect = (method: ContentMethod) => {
+    setContentMethod(method);
   };
 
-  const isCreationView = viewState !== 'library';
+  const goToStep = (step: StepState) => {
+    setCurrentStep(step);
+    if (step === 'recent') {
+      setContentMethod(null); // reset method when going back to library
+    }
+  };
+
+  const renderStepper = () => (
+    <div className={styles.stepperContainer}>
+      <div className={styles.stepperSteps}>
+        <div className={`${styles.step} ${currentStep === 'recent' ? styles.stepActive : ''}`} onClick={() => goToStep('recent')}>
+          <span className={styles.stepNum}>1</span>
+          <span className={styles.stepLabel}>Recent</span>
+        </div>
+        <FiChevronRight className={styles.stepDivider} />
+        
+        <div className={`${styles.step} ${currentStep === 'content' ? styles.stepActive : ''} ${currentStep === 'publish' ? styles.stepCompleted : ''}`} 
+             onClick={() => currentStep === 'publish' && goToStep('content')}
+             style={{ cursor: currentStep === 'publish' ? 'pointer' : 'default' }}>
+          <span className={styles.stepNum}>2</span>
+          <span className={styles.stepLabel}>Content</span>
+        </div>
+        <FiChevronRight className={styles.stepDivider} />
+        
+        <div className={`${styles.step} ${currentStep === 'publish' ? styles.stepActive : ''}`}>
+          <span className={styles.stepNum}>3</span>
+          <span className={styles.stepLabel}>Publish</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.createPostPage}>
-      <div className={styles.createPostLayout}>
-        
-        {/* Panel 1: Library (Hidden on mobile if creating) */}
-        <div className={`${styles.panelWrapper} ${isCreationView ? styles.hideOnMobile : ''}`}>
-          <RecentPostsPanel posts={posts} onWritePost={() => setViewState('select-method')} />
-        </div>
+      {renderStepper()}
 
-        {/* Panel 2 & 3: Workspace & Details (Shown if creating, or always on desktop) */}
-        <div className={`${styles.workspaceWrapper} ${!isCreationView ? styles.hideOnMobile : ''}`}>
+      <div className={styles.createPostContainer}>
+        <AnimatePresence mode="wait">
           
-          {/* Panel 2: Central Creation Area */}
-          <div className={styles.centralPanel}>
-            <AnimatePresence mode="wait">
-              
-              {viewState === 'select-method' && (
-                <motion.div 
-                  key="method-select"
-                  className={styles.methodSelectContainer}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                >
-                  <div className={styles.methodCard} onClick={() => handleMethodSelect('text-editor')}>
+          {/* STEP 1: RECENT POSTS */}
+          {currentStep === 'recent' && (
+            <motion.div 
+              key="step-recent"
+              className={styles.stepWrapper}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25 }}
+            >
+              <RecentPostsPanel posts={posts} onWritePost={() => setCurrentStep('content')} />
+            </motion.div>
+          )}
+
+          {/* STEP 2: CONTENT CREATION */}
+          {currentStep === 'content' && (
+            <motion.div 
+              key="step-content"
+              className={styles.stepWrapper}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25 }}
+            >
+              {!contentMethod ? (
+                <div className={styles.methodSelectContainer}>
+                  <div className={styles.methodCard} onClick={() => handleMethodSelect('text')}>
                     <div className={styles.methodIcon}><FiEdit3 /></div>
                     <h3>Text Editor</h3>
-                    <p>Start with a blank canvas and write directly in the browser.</p>
+                    <p>Write manually using a Word / Google Docs style editor.</p>
                   </div>
-                  <div className={styles.methodCard} onClick={() => handleMethodSelect('upload-document')}>
+                  <div className={styles.methodCard} onClick={() => handleMethodSelect('document')}>
                     <div className={styles.methodIcon}><FiUploadCloud /></div>
                     <h3>Upload Document</h3>
-                    <p>Import from a Word document or Google Docs export.</p>
+                    <p>Upload Word / exported document and convert it into HTML.</p>
                   </div>
-                </motion.div>
+                </div>
+              ) : (
+                <div className={styles.editorContainer}>
+                  {contentMethod === 'text' && (
+                    <TravelEditor 
+                      value={content} 
+                      onChange={setContent}
+                      title={titleWatch}
+                      onTitleChange={(val) => setValue('title', val)}
+                      onContinue={() => setCurrentStep('publish')}
+                    />
+                  )}
+                  {contentMethod === 'document' && (
+                    <DocumentUploadPanel 
+                      onConverted={(html) => {
+                        setContent(prev => prev + html);
+                      }} 
+                      onContinue={() => setCurrentStep('publish')}
+                    />
+                  )}
+                </div>
               )}
-
-              {viewState === 'text-editor' && (
-                <motion.div 
-                  key="text-editor"
-                  className={styles.editorContainer}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                >
-                  <TravelEditor 
-                    value={content} 
-                    onChange={setContent}
-                    title={titleWatch}
-                    onTitleChange={(val) => setValue('title', val)}
-                  />
-                </motion.div>
-              )}
-
-              {viewState === 'upload-document' && (
-                <motion.div 
-                  key="upload-document"
-                  className={styles.editorContainer}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                >
-                  <DocumentUploadPanel 
-                    onConverted={(html) => {
-                      setContent(prev => prev + html);
-                    }} 
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Panel 3: Post Details */}
-          {(viewState === 'text-editor' || viewState === 'upload-document') && (
-            <div className={styles.detailsPanel}>
-              <form onSubmit={handleSubmit(handlePublish)} style={{ height: '100%' }}>
-                <PostDetailsPanel 
-                  register={register}
-                  errors={errors}
-                  watch={watch}
-                  setValue={setValue}
-                  categories={categories}
-                  onAddCategory={handleAddCategory}
-                  onSaveDraft={handleSaveDraft}
-                  onReset={handleReset}
-                />
-              </form>
-            </div>
+            </motion.div>
           )}
-          
-        </div>
+
+          {/* STEP 3: PUBLISH DETAILS */}
+          {currentStep === 'publish' && (
+            <motion.div 
+              key="step-publish"
+              className={styles.stepWrapper}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className={styles.detailsContainer}>
+                <form onSubmit={handleSubmit(handlePublish)} style={{ height: '100%' }}>
+                  <PostDetailsPanel 
+                    register={register}
+                    errors={errors}
+                    watch={watch}
+                    setValue={setValue}
+                    categories={categories}
+                    onAddCategory={handleAddCategory}
+                    onSaveDraft={handleSaveDraft}
+                    onReset={handleReset}
+                    onBack={() => setCurrentStep('content')}
+                  />
+                </form>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
       </div>
 
       <AnimatePresence>

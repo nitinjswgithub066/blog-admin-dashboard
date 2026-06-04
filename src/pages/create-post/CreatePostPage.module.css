@@ -2,73 +2,80 @@
   width: 100%;
   min-width: 0;
   overflow-x: hidden;
-  height: calc(100vh - var(--admin-topbar-height) - 3rem);
-}
-
-.createPostLayout {
-  display: grid;
-  gap: 1.25rem;
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-}
-
-@media (min-width: 1280px) {
-  .createPostLayout {
-    grid-template-columns: 320px minmax(0, 1fr);
-  }
-}
-
-.panelWrapper {
-  height: 100%;
-  min-width: 0;
-}
-
-.workspaceWrapper {
-  display: grid;
-  gap: 1.25rem;
-  height: 100%;
-  min-width: 0;
-}
-
-@media (min-width: 1024px) {
-  .workspaceWrapper {
-    grid-template-columns: minmax(0, 1fr) 360px;
-  }
-}
-
-@media (max-width: 1279px) {
-  .createPostLayout {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-  
-  .createPostPage {
-    height: auto;
-    min-height: calc(100vh - var(--admin-topbar-height) - 3rem);
-  }
-
-  .hideOnMobile {
-    display: none !important;
-  }
-}
-
-@media (max-width: 1023px) {
-  .workspaceWrapper {
-    grid-template-columns: 1fr;
-  }
-}
-
-.centralPanel {
-  height: 100%;
-  min-width: 0;
+  height: calc(100vh - var(--admin-topbar-height));
   display: flex;
   flex-direction: column;
 }
 
-.detailsPanel {
+.stepperContainer {
+  padding: 1rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}
+
+.stepperSteps {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  opacity: 0.6;
+  transition: all var(--transition-fast);
+}
+
+.stepActive {
+  opacity: 1;
+  color: var(--accent-primary);
+}
+
+.stepCompleted {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.stepNum {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--bg-secondary);
+  font-size: 0.75rem;
+}
+
+.stepLabel {
+  font-size: var(--font-size-sm);
+}
+
+.stepDivider {
+  color: var(--border-color);
+}
+
+.createPostContainer {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.stepWrapper {
+  width: 100%;
   height: 100%;
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .methodSelectContainer {
@@ -78,6 +85,7 @@
   align-items: center;
   height: 100%;
   padding: 2rem;
+  flex: 1;
 }
 
 @media (max-width: 768px) {
@@ -127,7 +135,18 @@
 
 .editorContainer {
   height: 100%;
-  min-height: 700px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.detailsContainer {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Toast */

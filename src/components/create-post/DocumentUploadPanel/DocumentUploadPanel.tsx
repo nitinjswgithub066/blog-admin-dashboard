@@ -5,9 +5,10 @@ import styles from './DocumentUploadPanel.module.css';
 
 interface DocumentUploadPanelProps {
   onConverted: (mockHtml: string) => void;
+  onContinue?: () => void;
 }
 
-const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted }) => {
+const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted, onContinue }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>('');
@@ -168,6 +169,11 @@ const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({ onConverted }
                     {mockHtmlPreview}
                   </pre>
                 </div>
+                {onContinue && (
+                  <button className={styles.continueBtn} onClick={onContinue}>
+                    Continue to Publish
+                  </button>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

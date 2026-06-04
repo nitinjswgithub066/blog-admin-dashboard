@@ -14,6 +14,7 @@ interface PostDetailsPanelProps {
   onAddCategory: (name: string) => void;
   onSaveDraft: () => void;
   onReset: () => void;
+  onBack?: () => void;
 }
 
 const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
@@ -24,7 +25,8 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
   categories,
   onAddCategory,
   onSaveDraft,
-  onReset
+  onReset,
+  onBack
 }) => {
   const [newCat, setNewCat] = useState('');
   const [tagInput, setTagInput] = useState('');
@@ -236,6 +238,9 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
       <div className={styles.panelFooter}>
         <div className={styles.actions}>
           <div className={styles.btnRow}>
+            {onBack && (
+              <button type="button" className={styles.backBtn} onClick={onBack}>Back</button>
+            )}
             {status !== 'draft' && (
               <button type="button" className={styles.draftBtn} onClick={onSaveDraft}>Save Draft</button>
             )}

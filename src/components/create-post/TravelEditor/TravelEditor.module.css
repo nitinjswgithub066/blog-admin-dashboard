@@ -135,5 +135,21 @@
 .footerStatus {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 1rem;
+}
+
+.continueBtn {
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.continueBtn:hover {
+  background: var(--accent-hover);
 }

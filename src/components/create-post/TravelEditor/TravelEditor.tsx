@@ -10,9 +10,10 @@ interface TravelEditorProps {
   onChange: (val: string) => void;
   title: string;
   onTitleChange: (val: string) => void;
+  onContinue?: () => void;
 }
 
-const TravelEditor: React.FC<TravelEditorProps> = ({ value, onChange, title, onTitleChange }) => {
+const TravelEditor: React.FC<TravelEditorProps> = ({ value, onChange, title, onTitleChange, onContinue }) => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [readTime, setReadTime] = useState('1 min');
@@ -86,6 +87,11 @@ const TravelEditor: React.FC<TravelEditorProps> = ({ value, onChange, title, onT
         </div>
         <div className={styles.footerStatus}>
           {saveStatus}
+          {onContinue && (
+            <button className={styles.continueBtn} onClick={onContinue}>
+              Continue to Publish
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

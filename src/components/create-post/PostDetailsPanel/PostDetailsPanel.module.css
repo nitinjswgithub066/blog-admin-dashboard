@@ -249,7 +249,18 @@
   transition: all 0.2s ease;
 }
 
-.draftBtn:hover {
+.backBtn {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.draftBtn:hover, .backBtn:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 

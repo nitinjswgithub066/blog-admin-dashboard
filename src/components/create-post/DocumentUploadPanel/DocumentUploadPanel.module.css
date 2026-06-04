@@ -199,6 +199,23 @@
   word-break: break-word;
 }
 
+.continueBtn {
+  margin: 1rem;
+  padding: 1rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.continueBtn:hover {
+  background: var(--accent-hover);
+}
+
 .errorAlert {
   margin-top: 1rem;
   padding: 1rem;
