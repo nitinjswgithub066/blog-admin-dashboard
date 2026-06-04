@@ -8,8 +8,8 @@ export const THEME = {
     info: '#38BDF8',
     text: '#F5F7FA',
     muted: '#9CA3AF',
-    bgDark: '#071120',
-    bgCard: 'rgba(255,255,255,0.04)',
-    border: 'rgba(255,255,255,0.08)',
+    bgDark: '#050505',
+    bgCard: 'rgba(255,255,255,0.045)',
+    border: 'rgba(255,255,255,0.10)',
   }
 };

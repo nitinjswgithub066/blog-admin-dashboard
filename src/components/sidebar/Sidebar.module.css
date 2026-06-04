@@ -1,6 +1,8 @@
 .sidebar {
   height: 100vh;
-  background: var(--bg-secondary);
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -81,8 +83,9 @@
 }
 
 .navLinkActive {
-  background: rgba(109, 93, 246, 0.1);
-  color: var(--accent-primary);
+  background: rgba(109, 93, 246, 0.16);
+  color: var(--text-primary);
+  border-color: rgba(109, 93, 246, 0.45);
 }
 
 /* Active indicator line */

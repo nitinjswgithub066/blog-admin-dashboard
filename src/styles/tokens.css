@@ -7,25 +7,29 @@
 
 :root, :root[data-theme="dark"] {
   /* Colors */
-  --bg-primary: #071120;
-  --bg-secondary: #0A1428;
-  --bg-tertiary: #0E1B31;
-  --topbar-bg: rgba(8, 16, 32, 0.88);
+  --bg-primary: #050505;
+  --bg-secondary: #0A0A0B;
+  --bg-tertiary: #101012;
+  --topbar-bg: rgba(5, 5, 5, 0.82);
 
-  --card-bg: rgba(255, 255, 255, 0.04);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.045);
+  --border-color: rgba(255, 255, 255, 0.10);
 
-  --accent-primary: #6D4C41;
-  --accent-secondary: #F59E0B;
-  --accent-hover: #EA580C;
+  --accent-primary: #6D5DF6;
+  --accent-secondary: #8B5CF6;
+  --accent-hover: #A78BFA;
 
-  --text-primary: #F5F7FA;
-  --text-muted: #9CA3AF;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
 
   --success: #10B981;
   --warning: #F59E0B;
   --danger: #EF4444;
   --info: #38BDF8;
+
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 28px rgba(109, 93, 246, 0.22);
 }
 
 :root[data-theme="light"] {

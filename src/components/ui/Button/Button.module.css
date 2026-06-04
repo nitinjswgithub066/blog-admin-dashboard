@@ -38,19 +38,21 @@
 
 /* Variants */
 .primary {
-  background: var(--primary-accent, #6D5DF6);
+  background: linear-gradient(135deg, var(--accent-primary, #6D5DF6), var(--accent-secondary, #8B5CF6));
   color: #FFFFFF;
+  box-shadow: 0 12px 30px rgba(109, 93, 246, 0.28);
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--secondary-accent, #8B5CF6);
+  background: linear-gradient(135deg, var(--accent-secondary, #8B5CF6), var(--accent-primary, #6D5DF6));
   transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(109, 93, 246, 0.35);
 }
 
 .secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary, #F5F7FA);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text-secondary, #CBD5E1);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .secondary:hover:not(:disabled) {
