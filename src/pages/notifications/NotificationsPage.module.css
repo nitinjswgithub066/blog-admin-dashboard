@@ -1,0 +1,207 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--spacing-4);
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  margin-bottom: var(--spacing-2);
+}
+
+.pageDescription {
+  font-size: var(--font-size-base);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.outlineBtn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.outlineBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.outlineBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dangerBtn {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dangerBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty {
+  padding: var(--spacing-8);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-base);
+}
+
+.item {
+  display: flex;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5);
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  position: relative;
+  align-items: flex-start;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.item.unread {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.item.unread:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.iconWrapper[data-type="comment"] { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.iconWrapper[data-type="traffic"] { background: rgba(56, 189, 248, 0.1); color: var(--info); }
+.iconWrapper[data-type="draft"] { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.iconWrapper[data-type="document"] { background: rgba(109, 93, 246, 0.1); color: var(--accent-primary); }
+.iconWrapper[data-type="legal"] { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+.iconWrapper[data-type="category"] { background: rgba(236, 72, 153, 0.1); color: var(--accent-secondary); }
+.iconWrapper[data-type="system"] { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.itemTitle {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.unread .itemTitle {
+  font-weight: 600;
+}
+
+.itemMessage {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.unreadDot {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-5);
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+@media (max-width: 640px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .headerActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .headerActions button {
+    flex: 1;
+    justify-content: center;
+  }
+}

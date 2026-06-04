@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiMessageSquare, FiTrendingUp, FiEdit3, FiFileText, FiShield, FiFolderPlus, FiInfo, FiCheck } from 'react-icons/fi';
 import { useNotificationsStore } from '../../../store/notificationsStore';
@@ -23,6 +24,12 @@ const getIcon = (type: AdminNotification['type']) => {
 
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
   const { notifications, markAllAsRead, markAsRead } = useNotificationsStore();
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    onClose();
+    navigate('/notifications');
+  };
 
   return (
     <motion.div
@@ -72,7 +79,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
       </div>
 
       <div className={styles.footer}>
-        <button className={styles.viewAllBtn}>View notification history</button>
+        <button className={styles.viewAllBtn} onClick={handleViewAll}>View notification history</button>
       </div>
     </motion.div>
   );
