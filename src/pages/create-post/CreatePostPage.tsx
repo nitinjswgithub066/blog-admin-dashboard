@@ -25,7 +25,7 @@ const postSchema = z.object({
   status: z.enum(['draft', 'published', 'scheduled']),
 });
 
-type PostFormData = z.infer<typeof postSchema>;
+export type PostFormData = z.infer<typeof postSchema>;
 
 type StepState = 'recent' | 'content' | 'publish';
 type ContentMethod = 'text' | 'document' | null;

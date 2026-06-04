@@ -138,7 +138,7 @@ const PerformanceChart = () => {
       </div>
 
       <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <AreaChart
             data={data}
             margin={{ top: 5, right: 10, left: -15, bottom: 0 }}

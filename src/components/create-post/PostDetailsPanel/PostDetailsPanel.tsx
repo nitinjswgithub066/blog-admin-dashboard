@@ -1,15 +1,16 @@
 import React, { useState, useRef } from 'react';
-import type { UseFormRegister, FieldErrors } from 'react-hook-form';
+import type { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import { FiImage, FiX, FiClock, FiCalendar } from 'react-icons/fi';
 import { slugify } from '../../../utils/slugify';
 import type { AdminCategory } from '../../../types/category.types';
+import type { PostFormData } from '../../../pages/create-post/CreatePostPage';
 import styles from './PostDetailsPanel.module.css';
 
 interface PostDetailsPanelProps {
-  register: UseFormRegister<any>;
-  errors: FieldErrors<any>;
-  watch: any;
-  setValue: any;
+  register: UseFormRegister<PostFormData>;
+  errors: FieldErrors<PostFormData>;
+  watch: UseFormWatch<PostFormData>;
+  setValue: UseFormSetValue<PostFormData>;
   categories: AdminCategory[];
   onAddCategory: (name: string) => void;
   onSaveDraft: () => void;
