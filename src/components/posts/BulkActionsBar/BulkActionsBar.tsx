@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCheck, FiEdit3, FiArchive, FiTrash2, FiDownload, FiX } from 'react-icons/fi';
 import styles from './BulkActionsBar.module.css';
@@ -14,7 +15,7 @@ const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   onClearSelection,
   onBulkAction
 }) => {
-  return (
+  return createPortal(
     <AnimatePresence>
       {selectedCount > 0 && (
         <motion.div
@@ -54,7 +55,8 @@ const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
