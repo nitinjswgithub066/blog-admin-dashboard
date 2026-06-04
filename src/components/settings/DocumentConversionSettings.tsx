@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SettingsSectionCard from './SettingsSectionCard/SettingsSectionCard';
 import { useSettingsStore } from '../../store/settingsStore';
 import styles from './SettingsPanels.module.css';
@@ -6,12 +6,7 @@ import styles from './SettingsPanels.module.css';
 const DocumentConversionSettings: React.FC = () => {
   const { settings, updateSettings } = useSettingsStore();
   const [localSettings, setLocalSettings] = useState(settings.documentConversion);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    const isChanged = JSON.stringify(localSettings) !== JSON.stringify(settings.documentConversion);
-    setHasChanges(isChanged);
-  }, [localSettings, settings.documentConversion]);
+  const hasChanges = JSON.stringify(localSettings) !== JSON.stringify(settings.documentConversion);
 
   const handleToggle = (name: keyof typeof localSettings) => {
     setLocalSettings((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -19,12 +14,10 @@ const DocumentConversionSettings: React.FC = () => {
 
   const handleSave = () => {
     updateSettings({ documentConversion: localSettings });
-    setHasChanges(false);
   };
 
   const handleReset = () => {
     setLocalSettings(settings.documentConversion);
-    setHasChanges(false);
   };
 
   const toggleOptions = [

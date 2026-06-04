@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FiMessageSquare, FiTrendingUp, FiEdit3, FiFileText, FiShield, FiFolderPlus, FiInfo, FiCheck } from 'react-icons/fi';
 import { useNotificationsStore } from '../../../store/notificationsStore';
-import { AdminNotification } from '../../../types/notification.types';
+import type { AdminNotification } from '../../../types/notification.types';
 import styles from './NotificationPanel.module.css';
 
 interface NotificationPanelProps {
@@ -54,7 +54,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
               className={`${styles.item} ${notif.isRead ? styles.read : styles.unread}`}
               onClick={() => {
                 markAsRead(notif.id);
-                // In a real app we might navigate here, so we could call onClose()
+                onClose();
               }}
             >
               <div className={styles.iconWrapper} data-type={notif.type}>

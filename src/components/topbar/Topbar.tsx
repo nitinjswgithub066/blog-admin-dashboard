@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { FiSearch, FiX } from 'react-icons/fi';
 import ProfileDropdown from '../dropdown/ProfileDropdown';
 import NotificationButton from '../notifications/NotificationButton/NotificationButton';

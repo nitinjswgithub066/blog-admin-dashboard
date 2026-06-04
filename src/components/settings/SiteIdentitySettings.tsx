@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SettingsSectionCard from './SettingsSectionCard/SettingsSectionCard';
 import { useSettingsStore } from '../../store/settingsStore';
 import styles from './SettingsPanels.module.css';
@@ -6,12 +6,7 @@ import styles from './SettingsPanels.module.css';
 const SiteIdentitySettings: React.FC = () => {
   const { settings, updateSettings } = useSettingsStore();
   const [localSettings, setLocalSettings] = useState(settings.siteIdentity);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    const isChanged = JSON.stringify(localSettings) !== JSON.stringify(settings.siteIdentity);
-    setHasChanges(isChanged);
-  }, [localSettings, settings.siteIdentity]);
+  const hasChanges = JSON.stringify(localSettings) !== JSON.stringify(settings.siteIdentity);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,12 +15,10 @@ const SiteIdentitySettings: React.FC = () => {
 
   const handleSave = () => {
     updateSettings({ siteIdentity: localSettings });
-    setHasChanges(false);
   };
 
   const handleReset = () => {
     setLocalSettings(settings.siteIdentity);
-    setHasChanges(false);
   };
 
   return (

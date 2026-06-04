@@ -1,7 +1,9 @@
-import { createContext, useContext, ReactNode } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
 import { STORAGE_KEYS } from '../constants';
 import { useLocalStorage } from '../hooks';
-import { AdminNotification } from '../types/notification.types';
+import type { AdminNotification } from '../types/notification.types';
 import { initialNotifications } from '../data/notificationsData';
 
 interface NotificationsContextType {

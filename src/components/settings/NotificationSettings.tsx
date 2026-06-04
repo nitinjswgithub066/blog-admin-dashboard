@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SettingsSectionCard from './SettingsSectionCard/SettingsSectionCard';
 import { useSettingsStore } from '../../store/settingsStore';
 import styles from './SettingsPanels.module.css';
@@ -6,12 +6,7 @@ import styles from './SettingsPanels.module.css';
 const NotificationSettings: React.FC = () => {
   const { settings, updateSettings } = useSettingsStore();
   const [localSettings, setLocalSettings] = useState(settings.notifications);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    const isChanged = JSON.stringify(localSettings) !== JSON.stringify(settings.notifications);
-    setHasChanges(isChanged);
-  }, [localSettings, settings.notifications]);
+  const hasChanges = JSON.stringify(localSettings) !== JSON.stringify(settings.notifications);
 
   const handleToggle = (name: keyof typeof localSettings) => {
     setLocalSettings((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -19,12 +14,10 @@ const NotificationSettings: React.FC = () => {
 
   const handleSave = () => {
     updateSettings({ notifications: localSettings });
-    setHasChanges(false);
   };
 
   const handleReset = () => {
     setLocalSettings(settings.notifications);
-    setHasChanges(false);
   };
 
   const toggleOptions = [

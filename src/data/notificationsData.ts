@@ -1,4 +1,4 @@
-import { AdminNotification } from "../types/notification.types";
+import type { AdminNotification } from "../types/notification.types";
 
 export const initialNotifications: AdminNotification[] = [
   {

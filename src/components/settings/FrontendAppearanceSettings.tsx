@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SettingsSectionCard from './SettingsSectionCard/SettingsSectionCard';
 import { useSettingsStore } from '../../store/settingsStore';
 import styles from './SettingsPanels.module.css';
@@ -6,12 +6,7 @@ import styles from './SettingsPanels.module.css';
 const FrontendAppearanceSettings: React.FC = () => {
   const { settings, updateSettings } = useSettingsStore();
   const [localSettings, setLocalSettings] = useState(settings.appearance);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    const isChanged = JSON.stringify(localSettings) !== JSON.stringify(settings.appearance);
-    setHasChanges(isChanged);
-  }, [localSettings, settings.appearance]);
+  const hasChanges = JSON.stringify(localSettings) !== JSON.stringify(settings.appearance);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -24,12 +19,10 @@ const FrontendAppearanceSettings: React.FC = () => {
 
   const handleSave = () => {
     updateSettings({ appearance: localSettings });
-    setHasChanges(false);
   };
 
   const handleReset = () => {
     setLocalSettings(settings.appearance);
-    setHasChanges(false);
   };
 
   return (

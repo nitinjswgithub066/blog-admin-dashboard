@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SettingsSectionCard from './SettingsSectionCard/SettingsSectionCard';
 import { useSettingsStore } from '../../store/settingsStore';
 import styles from './SettingsPanels.module.css';
@@ -6,15 +6,10 @@ import styles from './SettingsPanels.module.css';
 const SecuritySettings: React.FC = () => {
   const { settings, updateSettings } = useSettingsStore();
   const [localSettings, setLocalSettings] = useState(settings.security);
-  const [hasChanges, setHasChanges] = useState(false);
-  
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
-
-  useEffect(() => {
-    const isChanged = JSON.stringify(localSettings) !== JSON.stringify(settings.security) || 
+  
+  const hasChanges = JSON.stringify(localSettings) !== JSON.stringify(settings.security) || 
                       passwords.current !== '' || passwords.new !== '' || passwords.confirm !== '';
-    setHasChanges(isChanged);
-  }, [localSettings, settings.security, passwords]);
 
   const handleToggle = (name: keyof typeof localSettings) => {
     setLocalSettings((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -33,13 +28,11 @@ const SecuritySettings: React.FC = () => {
       alert("Passwords do not match.");
       return;
     }
-    setHasChanges(false);
   };
 
   const handleReset = () => {
     setLocalSettings(settings.security);
     setPasswords({ current: '', new: '', confirm: '' });
-    setHasChanges(false);
   };
 
   return (

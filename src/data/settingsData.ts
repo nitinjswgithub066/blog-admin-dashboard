@@ -1,4 +1,4 @@
-import { AdminSettings } from "../types/settings.types";
+import type { AdminSettings } from "../types/settings.types";
 
 export const initialSettings: AdminSettings = {
   siteIdentity: {

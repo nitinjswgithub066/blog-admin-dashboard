@@ -1,7 +1,9 @@
-import { createContext, useContext, ReactNode } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
 import { STORAGE_KEYS } from '../constants';
 import { useLocalStorage } from '../hooks';
-import { AdminSettings } from '../types/settings.types';
+import type { AdminSettings } from '../types/settings.types';
 import { initialSettings } from '../data/settingsData';
 
 interface SettingsContextType {
