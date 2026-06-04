@@ -17,6 +17,8 @@ import {
 type FilterPeriod = 'daily' | 'weekly' | 'monthly';
 type SortOrder = 'views' | 'shares';
 
+const CATEGORIES = ['Technology', 'Programming', 'AI', 'Career', 'Startups', 'Web Dev'];
+
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -86,12 +88,16 @@ const StatsPage: React.FC = () => {
         >
           Monthly
         </button>
-        <button 
+        <select 
           className={`${styles.filterTab} ${categoryFilter ? styles.active : ''}`}
-          onClick={() => setCategoryFilter(prev => prev ? null : 'AI')}
+          value={categoryFilter || ''}
+          onChange={(e) => setCategoryFilter(e.target.value || null)}
         >
-          {categoryFilter ? `Category: ${categoryFilter} ✕` : 'Category'}
-        </button>
+          <option value="">All Categories</option>
+          {CATEGORIES.map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
         <button 
           className={`${styles.filterTab} ${sortBy === 'views' ? styles.active : ''}`}
           onClick={() => setSortBy('views')}
@@ -138,9 +144,10 @@ const StatsPage: React.FC = () => {
 
       {/* Top Posts */}
       <motion.div 
+        key={sortBy + (categoryFilter || '')}
         initial={{ opacity: 0, y: 12 }} 
         animate={{ opacity: 1, y: 0 }} 
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.1 }}
       >
         <TopPostStatsList posts={processedPosts} />
       </motion.div>

@@ -41,6 +41,7 @@ const TopPostStatsList: React.FC<TopPostStatsListProps> = ({ posts }) => {
       <div className={styles.list}>
         {visiblePosts.map((post, index) => (
           <motion.div 
+            layout
             key={post.id}
             className={styles.postRow}
             initial={{ opacity: 0, y: 10 }}
