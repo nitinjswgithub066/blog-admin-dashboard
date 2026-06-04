@@ -1,26 +1,33 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { STORAGE_KEYS } from '../constants';
 import { useLocalStorage } from '../hooks';
-import { mockSiteSettings } from '../data/settingsData';
-import type { SiteSettings } from '../types';
+import { AdminSettings } from '../types/settings.types';
+import { initialSettings } from '../data/settingsData';
 
 interface SettingsContextType {
-  settings: SiteSettings;
-  updateSettings: (updates: Partial<SiteSettings>) => void;
+  settings: AdminSettings;
+  updateSettings: (newSettings: Partial<AdminSettings>) => void;
+  resetSettings: () => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useLocalStorage<SiteSettings>(STORAGE_KEYS.SETTINGS, mockSiteSettings);
+  const [settings, setSettings] = useLocalStorage<AdminSettings>(
+    STORAGE_KEYS.SETTINGS,
+    initialSettings
+  );
 
-  const updateSettings = (updates: Partial<SiteSettings>) => {
-    setSettings((prev: SiteSettings) => ({ ...prev, ...updates }));
+  const updateSettings = (newSettings: Partial<AdminSettings>) => {
+    setSettings((prev) => ({ ...prev, ...newSettings }));
+  };
+
+  const resetSettings = () => {
+    setSettings(initialSettings);
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings }}>
+    <SettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
       {children}
     </SettingsContext.Provider>
   );

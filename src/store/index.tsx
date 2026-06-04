@@ -7,6 +7,7 @@ import { PostProvider } from './postStore';
 import { CategoryProvider } from './categoryStore';
 import { ProfileProvider } from './profileStore';
 import { SettingsProvider } from './settingsStore';
+import { NotificationsProvider } from './notificationsStore';
 
 export * from './authStore';
 export * from './sidebarStore';
@@ -15,6 +16,7 @@ export * from './postStore';
 export * from './categoryStore';
 export * from './profileStore';
 export * from './settingsStore';
+export * from './notificationsStore';
 
 export function GlobalStoreProvider({ children }: { children: ReactNode }) {
   return (
@@ -25,7 +27,9 @@ export function GlobalStoreProvider({ children }: { children: ReactNode }) {
             <CategoryProvider>
               <PostProvider>
                 <SidebarProvider>
-                  {children}
+                  <NotificationsProvider>
+                    {children}
+                  </NotificationsProvider>
                 </SidebarProvider>
               </PostProvider>
             </CategoryProvider>

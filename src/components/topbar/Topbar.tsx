@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiBell, FiSearch, FiX } from 'react-icons/fi';
+import { FiSearch, FiX } from 'react-icons/fi';
 import ProfileDropdown from '../dropdown/ProfileDropdown';
+import NotificationButton from '../notifications/NotificationButton/NotificationButton';
 import styles from './Topbar.module.css';
 
 interface TopbarProps {
@@ -47,15 +48,7 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
         </button>
 
         {/* Notifications */}
-        <motion.button
-          className={styles.iconBtn}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
-          aria-label="Notifications"
-        >
-          <FiBell />
-          <span className={styles.badge} />
-        </motion.button>
+        <NotificationButton />
 
         {/* Profile */}
         <ProfileDropdown />

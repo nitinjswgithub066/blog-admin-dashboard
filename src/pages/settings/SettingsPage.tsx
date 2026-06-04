@@ -1,5 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import SiteIdentitySettings from '../../components/settings/SiteIdentitySettings';
+import FrontendAppearanceSettings from '../../components/settings/FrontendAppearanceSettings';
+import ContentPreferencesSettings from '../../components/settings/ContentPreferencesSettings';
+import LegalPagesSettings from '../../components/settings/LegalPagesSettings';
+import DocumentConversionSettings from '../../components/settings/DocumentConversionSettings';
+import NotificationSettings from '../../components/settings/NotificationSettings';
+import SecuritySettings from '../../components/settings/SecuritySettings';
+import DataBackupSettings from '../../components/settings/DataBackupSettings';
+import AdvancedSettings from '../../components/settings/AdvancedSettings';
 import styles from './SettingsPage.module.css';
 
 const SettingsPage: React.FC = () => {
@@ -18,8 +27,16 @@ const SettingsPage: React.FC = () => {
         </div>
       </header>
 
-      <div className={styles.contentShell}>
-        [Settings Form Placeholder]
+      <div className={styles.settingsGrid}>
+        <SiteIdentitySettings />
+        <FrontendAppearanceSettings />
+        <ContentPreferencesSettings />
+        <LegalPagesSettings />
+        <DocumentConversionSettings />
+        <NotificationSettings />
+        <SecuritySettings />
+        <DataBackupSettings />
+        <AdvancedSettings />
       </div>
     </motion.div>
   );

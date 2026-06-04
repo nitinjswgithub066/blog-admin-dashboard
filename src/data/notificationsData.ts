@@ -1,0 +1,58 @@
+import { AdminNotification } from "../types/notification.types";
+
+export const initialNotifications: AdminNotification[] = [
+  {
+    id: "notif_1",
+    type: "comment",
+    title: "New comment received",
+    message: 'New comment received on "How to Learn React in 2026"',
+    time: "2 mins ago",
+    isRead: false,
+    createdAt: new Date(Date.now() - 2 * 60000).toISOString(),
+  },
+  {
+    id: "notif_2",
+    type: "traffic",
+    title: "Traffic milestone",
+    message: 'Your post "AI Tools for Students" reached 1.2K views',
+    time: "1 hour ago",
+    isRead: false,
+    createdAt: new Date(Date.now() - 60 * 60000).toISOString(),
+  },
+  {
+    id: "notif_3",
+    type: "draft",
+    title: "Draft reminder",
+    message: '"Startup Ideas for Students" is still unpublished',
+    time: "5 hours ago",
+    isRead: true,
+    createdAt: new Date(Date.now() - 300 * 60000).toISOString(),
+  },
+  {
+    id: "notif_4",
+    type: "document",
+    title: "Document uploaded",
+    message: "Document upload converted successfully",
+    time: "1 day ago",
+    isRead: true,
+    createdAt: new Date(Date.now() - 1440 * 60000).toISOString(),
+  },
+  {
+    id: "notif_5",
+    type: "legal",
+    title: "Policy updated",
+    message: "Privacy Policy page updated",
+    time: "2 days ago",
+    isRead: true,
+    createdAt: new Date(Date.now() - 2880 * 60000).toISOString(),
+  },
+  {
+    id: "notif_6",
+    type: "category",
+    title: "New category",
+    message: 'New category "Cybersecurity" was added',
+    time: "3 days ago",
+    isRead: true,
+    createdAt: new Date(Date.now() - 4320 * 60000).toISOString(),
+  },
+];

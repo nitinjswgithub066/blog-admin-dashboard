@@ -8,4 +8,5 @@ export const STORAGE_KEYS = {
   CREATE_POST_DRAFTS: "blog_admin_create_post_drafts",
   ADMIN_POSTS: "blog_admin_posts",
   ADMIN_CATEGORIES: "blog_admin_categories",
+  NOTIFICATIONS: "blog_admin_notifications",
 };
