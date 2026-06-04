@@ -3,6 +3,7 @@
 :root {
   /* Layout */
   --admin-topbar-height: 72px;
+}
 
 :root, :root[data-theme="dark"] {
   /* Colors */
