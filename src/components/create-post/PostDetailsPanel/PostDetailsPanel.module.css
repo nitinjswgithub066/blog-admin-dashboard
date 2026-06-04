@@ -1,63 +1,43 @@
 .panel {
   display: flex;
   flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   height: 100%;
 }
 
 .panelScroll {
   flex: 1;
   overflow-y: auto;
+  padding: 1.5rem;
+  /* Scrollbar styling */
   scrollbar-width: thin;
-  padding-right: 0.5rem;
+  scrollbar-color: var(--border-color) transparent;
 }
 
 .panelScroll::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
-.panel::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: var(--radius-full);
-}
-
-.accordionCard {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 1rem;
+.panelScroll::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
 }
 
-.accordionSummary {
-  font-size: var(--font-size-md);
-  font-weight: 700;
-  color: var(--text-primary);
-  padding: 1.5rem;
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background var(--transition-fast);
-}
-
-.accordionSummary::-webkit-details-marker {
-  display: none;
-}
-
-.accordionSummary:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.accordionContent {
-  padding: 1rem 1.5rem 1.5rem 1.5rem;
+.section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  border-top: 1px solid transparent;
+  gap: 1.25rem;
 }
 
-.accordionCard[open] .accordionContent {
-  border-top-color: var(--border-color);
+.sectionTitle {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .formGroup {
@@ -66,58 +46,73 @@
   gap: 0.5rem;
 }
 
+.scheduleGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
 .label {
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.input, .textarea, .select {
+.input, .select, .textarea {
   width: 100%;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  color: var(--text-primary);
   padding: 0.75rem 1rem;
-  color: var(--text-primary);
-  font-size: var(--font-size-md);
-  transition: all var(--transition-fast);
-  outline: none;
-}
-
-.input:focus, .textarea:focus, .select:focus {
-  border-color: var(--accent-primary);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.select option {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
 }
 
 .textarea {
-  resize: none;
+  resize: vertical;
   min-height: 80px;
 }
 
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
 .errorText {
-  font-size: 0.8rem;
-  color: #ef4444;
+  color: #EF4444;
+  font-size: var(--font-size-xs);
   margin-top: 0.25rem;
 }
 
+.slugPreview {
+  font-size: 0.75rem;
+  color: var(--accent-primary);
+  padding: 0.5rem;
+  background: rgba(109, 93, 246, 0.1);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+}
+
 .imageUpload {
-  position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
+  border: 1px dashed var(--border-color);
   border-radius: var(--radius-md);
   overflow: hidden;
-  border: 2px dashed var(--border-color);
-  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.05) 100%);
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  background: var(--bg-primary);
   transition: all var(--transition-fast);
+  position: relative;
 }
 
 .imageUpload:hover {
@@ -131,54 +126,54 @@
 }
 
 .uploadImageText {
-  color: var(--text-muted);
-  font-size: var(--font-size-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .hiddenInput {
   display: none;
 }
 
-.categoryGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.removeImageBtn {
+  margin-top: -0.75rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: right;
+}
+
+.removeImageBtn:hover {
+  color: #EF4444;
 }
 
 .addCategoryRow {
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
 }
 
 .addCategoryBtn {
-  padding: 0 1rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  background: var(--bg-primary);
   color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
-  padding: 0.75rem 1rem;
 }
 
 .addCategoryBtn:hover {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
   color: white;
-}
-
-.slugPreview {
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.02);
-  padding: 0.75rem;
-  border-radius: var(--radius-md);
-  word-break: break-all;
 }
 
 .tagsContainer {
@@ -194,20 +189,21 @@
   gap: 0.25rem;
   background: rgba(109, 93, 246, 0.1);
   color: var(--accent-primary);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
+  padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
 }
 
 .removeTagBtn {
-  background: none;
+  background: transparent;
   border: none;
   color: currentColor;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  cursor: pointer;
+  padding: 0.1rem;
   opacity: 0.7;
 }
 
@@ -215,68 +211,60 @@
   opacity: 1;
 }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.resetBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.resetBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.panelFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 }
 
 .btnRow {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.publishBtn, .draftBtn, .resetBtn {
+.draftBtn {
   flex: 1;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.draftBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.publishBtn {
+  flex: 2;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
   padding: 0.75rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  text-align: center;
-}
-
-.publishBtn {
-  background: var(--accent-primary);
-  color: white;
-  border: none;
+  transition: all 0.2s ease;
 }
 
 .publishBtn:hover {
   background: var(--accent-hover);
-}
-
-.draftBtn {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-}
-
-.draftBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.resetBtn {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px dashed var(--border-color);
-}
-
-.resetBtn:hover {
-  color: #ef4444;
-  border-color: #ef4444;
-}
-
-.panelFooter {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-.chevronIcon {
-  color: var(--text-muted);
-  transition: transform var(--transition-fast);
-}
-
-.accordionCard[open] .chevronIcon {
-  transform: rotate(180deg);
 }

@@ -1,109 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { FiFileText } from 'react-icons/fi';
 import TravelToolbar from './TravelToolbar';
-import MoreToolsMenu from './MoreToolsMenu';
-import DestinationFactsBlock from './CustomBlocks/DestinationFactsBlock';
-import BudgetBoxBlock from './CustomBlocks/BudgetBoxBlock';
 import styles from './TravelEditor.module.css';
+import { calculateReadingTime } from '../../../utils/calculateReadingTime';
 
 interface TravelEditorProps {
   value: string;
   onChange: (val: string) => void;
-  onOpenImport?: () => void;
+  title: string;
+  onTitleChange: (val: string) => void;
 }
 
-export type TravelBlockType = 'destination' | 'budget';
+const TravelEditor: React.FC<TravelEditorProps> = ({ value, onChange, title, onTitleChange }) => {
+  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+  const [readTime, setReadTime] = useState('1 min');
+  const [saveStatus, setSaveStatus] = useState('Saved locally');
 
-const TravelEditor: React.FC<TravelEditorProps> = ({ value, onChange, onOpenImport }) => {
-  const [isMoreToolsOpen, setIsMoreToolsOpen] = useState(false);
-  const [blocks, setBlocks] = useState<TravelBlockType[]>([]);
-  const [activeFormattingTools, setActiveFormattingTools] = useState<string[]>([]);
-
-  const handleToggleTool = (toolId: string) => {
-    setActiveFormattingTools(prev => 
-      prev.includes(toolId) ? prev.filter(t => t !== toolId) : [...prev, toolId]
-    );
-  };
+  // Calculate metrics when content changes
+  useEffect(() => {
+    const text = value.trim();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCharCount(text.length);
+    setWordCount(text ? text.split(/\s+/).length : 0);
+    setReadTime(calculateReadingTime(text) + ' min');
+    
+    setSaveStatus('Unsaved changes');
+    const timer = setTimeout(() => {
+      setSaveStatus('Saved locally');
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, [value, title]);
 
   return (
     <motion.div 
       className={styles.container}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.25 }}
     >
-      <TravelToolbar 
-        onMoreClick={() => setIsMoreToolsOpen(!isMoreToolsOpen)} 
-        activeTools={activeFormattingTools}
-        onToggleTool={handleToggleTool}
-      />
-      
-      <MoreToolsMenu 
-        isOpen={isMoreToolsOpen} 
-        onClose={() => setIsMoreToolsOpen(false)} 
-        activeTools={activeFormattingTools}
-        onToggleTool={handleToggleTool}
-        onInsertBlock={(type) => {
-          setBlocks([...blocks, type]);
-          setIsMoreToolsOpen(false);
-        }}
-      />
-
-      <div className={styles.canvas}>
-        {!value && blocks.length === 0 ? (
-          <div className={styles.emptyStateHero}>
-            <h2 className={styles.emptyTitle}>Start writing your travel story...</h2>
-            <p className={styles.emptySubtitle}>Create content manually or import a Word document.</p>
-            <div className={styles.emptyActions}>
-              <button 
-                type="button" 
-                className={styles.startWritingBtn}
-                onClick={() => onChange(' ')}
-              >
-                Start Writing
-              </button>
-              <button 
-                type="button" 
-                className={styles.importBtn}
-                onClick={onOpenImport}
-              >
-                Import Word Document
-              </button>
-            </div>
+      {/* 1. Editor Top Header */}
+      <div className={styles.editorHeader}>
+        <div className={styles.headerLeft}>
+          <div className={styles.docIconWrapper}>
+            <FiFileText />
           </div>
-        ) : (
+          <div className={styles.docInfo}>
+            <input 
+              type="text" 
+              className={styles.docTitleInput}
+              placeholder="Untitled Blog Document"
+              value={title}
+              onChange={(e) => onTitleChange(e.target.value)}
+            />
+            <span className={styles.saveStatus}>
+              {saveStatus} · Last edited just now
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Formatting Toolbar */}
+      <TravelToolbar />
+
+      {/* 3. Document Canvas */}
+      <div className={styles.editorBody}>
+        <div className={styles.documentPage}>
           <textarea
-            className={styles.textarea}
-            style={{ flex: 'none' }}
-            placeholder="Start writing your travel story..."
+            className={styles.documentEditable}
+            placeholder="Start writing your blog post..."
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            autoFocus
           />
-        )}
-        
-        {/* Render dynamically inserted blocks */}
-        {blocks.length > 0 && (
-          <div className={styles.blocksWrapper}>
-            {blocks.map((block, i) => (
-              <React.Fragment key={i}>
-                {block === 'destination' && (
-                  <DestinationFactsBlock onRemove={() => setBlocks(blocks.filter((_, idx) => idx !== i))} />
-                )}
-                {block === 'budget' && (
-                  <BudgetBoxBlock onRemove={() => setBlocks(blocks.filter((_, idx) => idx !== i))} />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        )}
+        </div>
+      </div>
 
-        {blocks.length > 0 && (
-          <textarea
-            className={styles.textarea}
-            placeholder="Continue writing after the blocks..."
-          />
-        )}
+      {/* 4. Editor Footer / Stats */}
+      <div className={styles.editorFooter}>
+        <div className={styles.footerStats}>
+          <span>Words: {wordCount}</span>
+          <span>Characters: {charCount}</span>
+          <span>Estimated reading time: {readTime}</span>
+        </div>
+        <div className={styles.footerStatus}>
+          {saveStatus}
+        </div>
       </div>
     </motion.div>
   );

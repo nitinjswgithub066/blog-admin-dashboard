@@ -1,14 +1,13 @@
-/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheckCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiEdit3, FiUploadCloud } from 'react-icons/fi';
 import TravelEditor from '../../components/create-post/TravelEditor/TravelEditor';
 import DocumentUploadPanel from '../../components/create-post/DocumentUploadPanel/DocumentUploadPanel';
 import PostDetailsPanel from '../../components/create-post/PostDetailsPanel/PostDetailsPanel';
-import RecentPostGrid from '../../components/create-post/RecentPostGrid/RecentPostGrid';
+import RecentPostsPanel from '../../components/create-post/RecentPostsPanel/RecentPostsPanel';
 import { STORAGE_KEYS } from '../../constants/storageKeys';
 import type { AdminPost, PostStatus } from '../../types/post.types';
 import type { AdminCategory } from '../../types/category.types';
@@ -17,7 +16,6 @@ import { calculateReadingTime } from '../../utils/calculateReadingTime';
 import { generateCategoryIcon } from '../../utils/generateCategoryIcon';
 import styles from './CreatePostPage.module.css';
 
-// Form validation schema
 const postSchema = z.object({
   title: z.string().min(3, "Heading is required (min 3 chars)"),
   subtitle: z.string().min(10, "Subheading is required (min 10 chars)"),
@@ -29,6 +27,8 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
+type ViewState = 'library' | 'select-method' | 'text-editor' | 'upload-document';
+
 const initialCategories: AdminCategory[] = [
   { id: '1', name: 'Technology', slug: 'technology', icon: 'TE', postCount: 12 },
   { id: '2', name: 'Programming', slug: 'programming', icon: 'PR', postCount: 8 },
@@ -36,7 +36,7 @@ const initialCategories: AdminCategory[] = [
 ];
 
 const CreatePostPage: React.FC = () => {
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [viewState, setViewState] = useState<ViewState>('library');
   const [content, setContent] = useState('');
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [posts, setPosts] = useState<AdminPost[]>([]);
@@ -47,11 +47,13 @@ const CreatePostPage: React.FC = () => {
     defaultValues: {
       tags: [],
       status: 'draft',
+      title: '',
     }
   });
 
+  const titleWatch = watch('title');
+
   useEffect(() => {
-    // Load categories
     const storedCats = localStorage.getItem(STORAGE_KEYS.ADMIN_CATEGORIES);
     if (storedCats) {
       setCategories(JSON.parse(storedCats));
@@ -60,7 +62,6 @@ const CreatePostPage: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.ADMIN_CATEGORIES, JSON.stringify(initialCategories));
     }
 
-    // Load posts
     const storedPosts = localStorage.getItem(STORAGE_KEYS.ADMIN_POSTS);
     if (storedPosts) {
       setPosts(JSON.parse(storedPosts));
@@ -98,10 +99,10 @@ const CreatePostPage: React.FC = () => {
 
   const handlePublish = (data: PostFormData) => {
     if (!content.trim()) {
-      alert("Content is required before publishing.");
+      alert("Content is required before publishing/scheduling.");
       return;
     }
-    savePost({ ...data, status: 'published' });
+    savePost({ ...data });
   };
 
   const savePost = (data: PostFormData) => {
@@ -132,8 +133,10 @@ const CreatePostPage: React.FC = () => {
     setPosts(updatedPosts);
     localStorage.setItem(STORAGE_KEYS.ADMIN_POSTS, JSON.stringify(updatedPosts));
     
-    showToast(`Post ${data.status === 'published' ? 'published' : 'saved as draft'} successfully.`);
+    const actionMap: Record<PostStatus, string> = { draft: 'saved as draft', published: 'published', scheduled: 'scheduled', archived: 'archived' };
+    showToast(`Post ${actionMap[data.status as PostStatus]} successfully.`);
     handleReset();
+    setViewState('library');
   };
 
   const handleReset = () => {
@@ -148,78 +151,103 @@ const CreatePostPage: React.FC = () => {
     setContent('');
   };
 
+  const handleMethodSelect = (method: 'text-editor' | 'upload-document') => {
+    setViewState(method);
+  };
+
+  const isCreationView = viewState !== 'library';
+
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.pageHeader}>
-        <h1 className={styles.title}>Create New Post</h1>
-        <div className={styles.topActionBar}>
-          <button type="button" className={styles.actionBtnSecondary} onClick={() => setIsImportModalOpen(true)}>
-            Import Word
-          </button>
-          <button type="button" className={styles.actionBtnSecondary}>
-            Preview
-          </button>
-          <button type="button" className={styles.actionBtnDanger} onClick={handleReset}>
-            Discard Post
-          </button>
-        </div>
-      </div>
-
-      <motion.div 
-        key="editorLayout"
-        className={styles.editorLayout}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className={styles.mainContent}>
-          <TravelEditor value={content} onChange={setContent} onOpenImport={() => setIsImportModalOpen(true)} />
+    <div className={styles.createPostPage}>
+      <div className={styles.createPostLayout}>
+        
+        {/* Panel 1: Library (Hidden on mobile if creating) */}
+        <div className={`${styles.panelWrapper} ${isCreationView ? styles.hideOnMobile : ''}`}>
+          <RecentPostsPanel posts={posts} onWritePost={() => setViewState('select-method')} />
         </div>
 
-        <form onSubmit={handleSubmit(handlePublish)} className={styles.sidebarForm}>
-          <PostDetailsPanel 
-            register={register}
-            errors={errors}
-            watch={watch}
-            setValue={setValue}
-            categories={categories}
-            onAddCategory={handleAddCategory}
-            onSaveDraft={handleSaveDraft}
-            onReset={handleReset}
-          />
-        </form>
-      </motion.div>
+        {/* Panel 2 & 3: Workspace & Details (Shown if creating, or always on desktop) */}
+        <div className={`${styles.workspaceWrapper} ${!isCreationView ? styles.hideOnMobile : ''}`}>
+          
+          {/* Panel 2: Central Creation Area */}
+          <div className={styles.centralPanel}>
+            <AnimatePresence mode="wait">
+              
+              {viewState === 'select-method' && (
+                <motion.div 
+                  key="method-select"
+                  className={styles.methodSelectContainer}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                >
+                  <div className={styles.methodCard} onClick={() => handleMethodSelect('text-editor')}>
+                    <div className={styles.methodIcon}><FiEdit3 /></div>
+                    <h3>Text Editor</h3>
+                    <p>Start with a blank canvas and write directly in the browser.</p>
+                  </div>
+                  <div className={styles.methodCard} onClick={() => handleMethodSelect('upload-document')}>
+                    <div className={styles.methodIcon}><FiUploadCloud /></div>
+                    <h3>Upload Document</h3>
+                    <p>Import from a Word document or Google Docs export.</p>
+                  </div>
+                </motion.div>
+              )}
 
-      {/* Import Modal */}
-      <AnimatePresence>
-        {isImportModalOpen && (
-          <motion.div 
-            className={styles.modalOverlay}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsImportModalOpen(false)}
-          >
-            <motion.div 
-              className={styles.modalContent}
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <DocumentUploadPanel 
-                onConverted={(html) => {
-                  setContent(prev => prev + html);
-                  setIsImportModalOpen(false);
-                }} 
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {viewState === 'text-editor' && (
+                <motion.div 
+                  key="text-editor"
+                  className={styles.editorContainer}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                >
+                  <TravelEditor 
+                    value={content} 
+                    onChange={setContent}
+                    title={titleWatch}
+                    onTitleChange={(val) => setValue('title', val)}
+                  />
+                </motion.div>
+              )}
 
-      <div className={styles.recentPostsWrapper}>
-        <RecentPostGrid posts={posts} />
+              {viewState === 'upload-document' && (
+                <motion.div 
+                  key="upload-document"
+                  className={styles.editorContainer}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                >
+                  <DocumentUploadPanel 
+                    onConverted={(html) => {
+                      setContent(prev => prev + html);
+                    }} 
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Panel 3: Post Details */}
+          {(viewState === 'text-editor' || viewState === 'upload-document') && (
+            <div className={styles.detailsPanel}>
+              <form onSubmit={handleSubmit(handlePublish)} style={{ height: '100%' }}>
+                <PostDetailsPanel 
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  setValue={setValue}
+                  categories={categories}
+                  onAddCategory={handleAddCategory}
+                  onSaveDraft={handleSaveDraft}
+                  onReset={handleReset}
+                />
+              </form>
+            </div>
+          )}
+          
+        </div>
       </div>
 
       <AnimatePresence>

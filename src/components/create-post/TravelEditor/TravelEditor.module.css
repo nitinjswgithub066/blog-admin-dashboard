@@ -1,117 +1,139 @@
 .container {
   display: flex;
   flex-direction: column;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  position: relative;
-  min-width: 0;
-  width: 100%;
+  overflow: hidden;
+  height: 100%;
 }
 
-.canvas {
-  position: relative;
-  min-height: 500px;
+/* 1. Editor Top Header */
+.editorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.docIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(109, 93, 246, 0.1);
+  color: var(--accent-primary);
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+}
+
+.docInfo {
   display: flex;
   flex-direction: column;
-}
-
-.textarea {
-  width: 100%;
   flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: var(--font-size-lg);
-  line-height: 1.8;
-  padding: 2rem 3rem;
-  resize: none;
-  outline: none;
-  font-family: inherit;
-  min-height: 420px;
 }
 
-.emptyStateHero {
+.docTitleInput {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  margin-left: -0.5rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  max-width: 400px;
+  transition: all var(--transition-fast);
+}
+
+.docTitleInput:hover, .docTitleInput:focus {
+  border-color: var(--border-color);
+  background: var(--bg-primary);
+  outline: none;
+}
+
+.saveStatus {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+/* 3. Document Canvas */
+.editorBody {
+  background: var(--bg-primary);
+  padding: clamp(1rem, 3vw, 2rem);
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 4rem 2rem;
-  flex: 1;
+  min-height: 500px;
+  /* subtle pattern for desktop background */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-.emptyTitle {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.emptySubtitle {
-  font-size: var(--font-size-md);
-  color: var(--text-muted);
-  margin-bottom: 2rem;
-}
-
-.emptyActions {
+.documentPage {
+  width: min(100%, 820px);
+  min-height: 720px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 5vw, 4rem);
   display: flex;
+  flex-direction: column;
+}
+
+.documentEditable {
+  width: 100%;
+  flex: 1;
+  border: none;
+  background: transparent;
+  resize: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.8;
+  font-family: inherit;
+}
+
+.documentEditable::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* 4. Editor Footer */
+.editorFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footerStats {
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
-.startWritingBtn {
-  background: var(--accent-primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.startWritingBtn:hover {
-  background: var(--accent-hover);
-}
-
-.importBtn {
-  background: transparent;
-  color: var(--text-primary);
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.importBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.blocksWrapper {
-  padding: 0 3rem;
-}
-
-.textarea::placeholder {
-  color: var(--text-muted);
-  font-weight: 300;
-}
-
-@media (max-width: 768px) {
-  .textarea {
-    padding: 1.5rem;
-    font-size: var(--font-size-md);
-    min-height: 320px;
-  }
-  
-  .emptyStateHelper {
-    top: 4.5rem;
-    left: 1.5rem;
-    right: 1.5rem;
-  }
-  
-  .blocksWrapper {
-    padding: 0 1.5rem;
-  }
+.footerStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }

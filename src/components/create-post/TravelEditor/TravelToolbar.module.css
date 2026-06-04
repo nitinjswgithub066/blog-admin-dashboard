@@ -1,136 +1,38 @@
-.toolbarContainer {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--bg-secondary);
+.toolbarWrapper {
   border-bottom: 1px solid var(--border-color);
-  gap: 0.5rem;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.8);
-}
-
-:global(.dark) .toolbarContainer {
-  background: var(--bg-primary, rgba(22, 23, 29, 0.8));
-}
-
-.scrollWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  min-width: 0; /* Important to allow flex child to shrink and trigger overflow */
-  overflow: hidden;
-}
-
-/* Scroll Fade Indicators */
-.scrollWrapper::before,
-.scrollWrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 32px;
-  z-index: 5;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.scrollWrapper::before {
-  left: 0;
-  background: linear-gradient(to right, var(--bg-secondary) 0%, transparent 100%);
-}
-:global(.dark) .scrollWrapper::before {
-  background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
-}
-
-.scrollWrapper::after {
-  right: 0;
-  background: linear-gradient(to left, var(--bg-secondary) 0%, transparent 100%);
-}
-:global(.dark) .scrollWrapper::after {
-  background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
-}
-
-.showLeftShadow::before { opacity: 1; }
-.showRightShadow::after { opacity: 1; }
-
-/* Navigation Arrows */
-.navArrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-full);
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+}
+
+.editorToolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-  opacity: 0;
-  transition: all var(--transition-fast);
-}
-
-.scrollWrapper:hover .navArrow {
-  opacity: 1;
-}
-
-.navArrow:hover {
-  background: var(--bg-tertiary);
-  color: var(--accent-primary);
-  border-color: var(--accent-primary);
-}
-
-.navLeft { left: 4px; }
-.navRight { right: 4px; }
-
-.primaryActions {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  overflow-x: auto;
   gap: 0.5rem;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  cursor: grab;
-  scroll-behavior: smooth;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  padding-bottom: 4px;
 }
 
-.primaryActions::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+.editorToolbar::-webkit-scrollbar {
+  height: 4px;
 }
-
-.isDragging {
-  cursor: grabbing;
-  scroll-behavior: auto; /* disable smooth scrolling while dragging */
-  user-select: none;
+.editorToolbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
 }
 
 .toolbarGroup {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding-right: 0.5rem;
-  margin-right: 0.5rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme='light'] .toolbarGroup {
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--border-color);
 }
 
 .toolbarGroup:last-child {
   border-right: none;
-  margin-right: 0;
   padding-right: 0;
 }
 
@@ -138,122 +40,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  min-width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  background: transparent;
   border: none;
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--transition-fast);
+  font-size: 1rem;
 }
 
 .toolbarBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-}
-
-[data-theme='light'] .toolbarBtn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .toolbarBtn.active {
-  background: rgba(109, 93, 246, 0.2);
+  background: rgba(109, 93, 246, 0.15);
   color: var(--accent-primary);
 }
 
-.headingSelect {
+.toolbarSelect {
   background: transparent;
+  border: 1px solid transparent;
   color: var(--text-primary);
-  border: none;
   font-size: var(--font-size-sm);
-  font-weight: 500;
-  padding: 0 0.5rem;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-}
-
-.headingSelectWrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0 0.25rem;
+  padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  outline: none;
 }
 
-.headingSelectWrapper:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme='light'] .headingSelectWrapper:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.headingSelectIcon {
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.moreToolsBtn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.moreToolsBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme='light'] .moreToolsBtn:hover {
-  background: rgba(0, 0, 0, 0.02);
-}
-
-/* Responsive Behavior */
-
-/* Tablet (< 1024px) */
-@media (max-width: 1023px) {
-  .groupHistory, .groupLists, .groupAlign {
-    display: none;
-  }
-  
-  .hideOnTablet {
-    display: none;
-  }
-}
-
-/* Mobile (< 640px) */
-@media (max-width: 639px) {
-  .groupHeading {
-    display: none;
-  }
-  
-  .hideOnMobile {
-    display: none;
-  }
-
-  .groupFormat {
-    border-right: none;
-  }
-
-  .moreToolsBtn {
-    padding: 0.25rem 0.5rem;
-  }
-  
-  .moreToolsBtn span {
-    display: none; /* Hide "More Tools" text, just show icon */
-  }
+.toolbarSelect:hover, .toolbarSelect:focus {
+  border-color: var(--border-color);
+  background: var(--bg-primary);
 }
