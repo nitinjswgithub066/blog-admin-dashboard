@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiMapPin, FiLink, FiCheckCircle } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiLink, FiCheckCircle, FiChevronDown } from 'react-icons/fi';
 import { useProfileStore } from '../../../store/profileStore';
 import styles from './ProfileForm.module.css';
 
@@ -117,12 +117,15 @@ const ProfileForm: React.FC = () => {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Role</label>
-            <select {...register('role')} className={styles.select}>
-              <option value="owner">Owner</option>
-              <option value="admin">Admin</option>
-              <option value="publisher">Publisher</option>
-              <option value="author">Author</option>
-            </select>
+            <div className={styles.selectWrapper}>
+              <select {...register('role')} className={styles.select}>
+                <option value="owner">Owner</option>
+                <option value="admin">Admin</option>
+                <option value="publisher">Publisher</option>
+                <option value="author">Author</option>
+              </select>
+              <FiChevronDown className={styles.selectIcon} />
+            </div>
             {errors.role && <span className={styles.errorText}>{errors.role.message}</span>}
           </div>
 

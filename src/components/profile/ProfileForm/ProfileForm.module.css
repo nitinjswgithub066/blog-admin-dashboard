@@ -61,6 +61,31 @@
   transition: border-color 0.2s ease;
 }
 
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.selectWrapper .select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 1rem;
+  pointer-events: none;
+  color: var(--text-muted);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.selectWrapper:focus-within .selectIcon {
+  transform: rotate(180deg);
+  color: var(--accent-primary);
+}
+
 .textarea {
   resize: vertical;
   min-height: 100px;
