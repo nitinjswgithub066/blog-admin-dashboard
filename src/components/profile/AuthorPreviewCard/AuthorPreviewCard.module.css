@@ -69,18 +69,28 @@
   gap: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
 }
 
 .statItem {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .statValue {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 700;
   color: var(--text-primary);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .statLabel {
