@@ -39,7 +39,7 @@ const CategoryPerformanceChart: React.FC<CategoryPerformanceChartProps> = ({ dat
       </div>
       
       <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <BarChart
             layout="vertical"
             data={data}
