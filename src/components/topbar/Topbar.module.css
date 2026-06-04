@@ -54,7 +54,8 @@
 .searchContainer {
   flex: 1;
   position: relative;
-  max-width: 420px;
+  width: min(100%, 520px);
+  max-width: 520px;
   display: none;    /* hidden on mobile */
   height: 44px;
   align-items: center;
@@ -78,12 +79,13 @@
 
 .searchIcon {
   position: absolute;
-  left: 14px;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
   font-size: 15px;
   pointer-events: none;
+  z-index: 2;
 }
 
 .searchOpen .searchIcon {
@@ -94,21 +96,23 @@
 
 .searchInput {
   width: 100%;
-  padding: 9px 14px 9px 38px;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: 100px;
+  height: 44px;
+  border-radius: 999px;
+  padding: 0 1rem 0 2.75rem;
+  background: var(--card-bg, rgba(255, 255, 255, 0.045));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.10));
   color: var(--text-primary);
   font-size: 14px;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   box-sizing: border-box;
 }
+
 .searchInput::placeholder { color: var(--text-muted); }
 .searchInput:focus {
-  outline: none;
-  background: transparent;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(109,93,246,0.18);
+  border-color: rgba(109, 93, 246, 0.75);
+  box-shadow: 0 0 0 4px rgba(109, 93, 246, 0.14);
+  background: rgba(255, 255, 255, 0.075);
 }
 
 .searchOpen .searchInput {
@@ -129,6 +133,66 @@
   color: var(--text-muted);
   font-size: 18px;
   cursor: pointer;
+}
+
+/* ── Search Dropdown ── */
+.searchDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-card, 0 20px 60px rgba(0, 0, 0, 0.45));
+  backdrop-filter: blur(20px);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.suggestionGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestionHeader {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem 0.25rem;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm, 6px);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suggestionItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.noResults {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
 }
 
 /* ── Right section ── */
@@ -175,6 +239,32 @@
   border: 2px solid var(--bg-secondary, #050505);
 }
 
+/* Responsive Placeholder Trick using CSS content */
+@media (max-width: 1023px) {
+  .searchInput::placeholder {
+    color: transparent;
+  }
+  .searchContainer::after {
+    content: "Search...";
+    position: absolute;
+    left: 2.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1;
+    display: none;
+  }
+  .searchContainer input:placeholder-shown ~ .searchIcon + input:not(:focus) {
+    /* We can just rely on the placeholder itself if we want, but doing it via CSS requires careful pseudo element */
+  }
+}
+
+/* Alternative responsive placeholder approach */
+/* Since it's an input, we can't easily change the placeholder text via CSS.
+   We can let React handle it if needed, or just let it truncate */
+
 /* ══════════════════════════════════════
    BREAKPOINTS
 ══════════════════════════════════════ */
@@ -185,7 +275,7 @@
   .mobileSearchTrigger { display: none; }
   .searchOpen { display: flex; position: static; height: auto; padding: 0; background: transparent; max-width: 420px; flex: 1; }
   .searchOpen .searchInput { padding: 9px 14px 9px 38px; border-radius: 100px; }
-  .searchOpen .searchIcon { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); }
+  .searchOpen .searchIcon { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); z-index: 2; }
   .searchClose { display: none; }
 }
 
@@ -198,5 +288,5 @@
 
 /* Large ≥ 1280px */
 @media (min-width: 1280px) {
-  .searchContainer { max-width: 500px; }
+  .searchContainer { max-width: 520px; }
 }
