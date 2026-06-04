@@ -7,20 +7,9 @@
 .editorToolbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  overflow-x: auto;
-  max-width: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
   padding-bottom: 4px;
-}
-
-.editorToolbar::-webkit-scrollbar {
-  height: 4px;
-}
-.editorToolbar::-webkit-scrollbar-thumb {
-  background-color: var(--border-color);
-  border-radius: 4px;
 }
 
 .toolbarGroup {
