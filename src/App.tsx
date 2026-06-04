@@ -7,6 +7,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import CreatePostPage from './pages/create-post/CreatePostPage';
 import PostsPage from './pages/posts/PostsPage';
 import StatsPage from './pages/stats/StatsPage';
+import ProfilePage from './pages/profile/Profile';
 import SettingsPage from './pages/settings/SettingsPage';
 import './App.css';
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/posts/create" element={<CreatePostPage />} />
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
     </Routes>

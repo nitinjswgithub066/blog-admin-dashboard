@@ -1,0 +1,191 @@
+.formCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .formGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.input, .select, .textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  transition: border-color 0.2s ease;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.errorText {
+  color: #EF4444;
+  font-size: var(--font-size-xs);
+  margin-top: 0.25rem;
+}
+
+.charCount {
+  align-self: flex-end;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 480px) {
+  .buttonRow {
+    flex-direction: column;
+  }
+  
+  .buttonRow button {
+    width: 100%;
+  }
+}
+
+.saveBtn {
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resetBtn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.resetBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.resetBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Social Links specific */
+.socialInputContainer {
+  display: flex;
+  align-items: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.socialInputContainer:focus-within {
+  border-color: var(--accent-primary);
+}
+
+.socialIconWrapper {
+  padding: 0 1rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-right: 1px solid var(--border-color);
+  height: 100%;
+}
+
+.socialInputContainer .input {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+.socialInputContainer .input:focus {
+  border-color: transparent;
+}

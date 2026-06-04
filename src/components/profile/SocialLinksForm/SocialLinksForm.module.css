@@ -1,0 +1,150 @@
+.formCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionSubtitle {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: -1rem;
+  margin-bottom: 0.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .formGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.inputGroup:focus-within {
+  border-color: var(--accent-primary);
+}
+
+.iconWrapper {
+  padding: 0 1rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-right: 1px solid var(--border-color);
+  align-self: stretch;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.errorText {
+  color: #EF4444;
+  font-size: var(--font-size-xs);
+  margin-top: 0.25rem;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 480px) {
+  .buttonRow {
+    flex-direction: column;
+  }
+  
+  .buttonRow button {
+    width: 100%;
+  }
+}
+
+.saveBtn {
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
