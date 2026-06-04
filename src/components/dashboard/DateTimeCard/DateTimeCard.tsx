@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useCurrentTime } from '../../../hooks';
 import styles from './DateTimeCard.module.css';
 
@@ -18,15 +19,16 @@ const DateTimeCard = () => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrevMonth = new Date(year, month, 0).getDate();
 
-  const cells: { day: number; type: 'prev' | 'curr' | 'next' }[] = [];
+  const cells: { day: number; type: 'prev' | 'curr' | 'next'; dateObj: Date }[] = [];
   for (let i = firstDay - 1; i >= 0; i--) {
-    cells.push({ day: daysInPrevMonth - i, type: 'prev' });
+    cells.push({ day: daysInPrevMonth - i, type: 'prev', dateObj: new Date(year, month - 1, daysInPrevMonth - i) });
   }
   for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ day: d, type: 'curr' });
+    cells.push({ day: d, type: 'curr', dateObj: new Date(year, month, d) });
   }
   while (cells.length % 7 !== 0) {
-    cells.push({ day: cells.length - firstDay - daysInMonth + 1, type: 'next' });
+    const d = cells.length - firstDay - daysInMonth + 1;
+    cells.push({ day: d, type: 'next', dateObj: new Date(year, month + 1, d) });
   }
 
   const todayDate = now.getDate();
@@ -43,63 +45,73 @@ const DateTimeCard = () => {
 
   const prevMonth = () => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));
   const nextMonth = () => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1));
+  const goToToday = () => setViewDate(new Date());
+
+  const isCurrentMonth = month === todayMonth && year === todayYear;
 
   return (
-    <div className={styles.card}>
-      {/* Clock */}
-      <div className={styles.clockRow}>
-        <div className={styles.timeGroup}>
-          <span className={styles.timeDigits}>{h12}:{minutes}:{seconds}</span>
-          <span className={styles.ampm}>{ampm}</span>
-        </div>
-        <div className={styles.dateLabel}>{dayName}, {dateStr}</div>
+    <div className={styles.calendarCard}>
+      {/* 1. Time Header */}
+      <div className={styles.clockHeader}>
+        <span className={styles.timeValue}>{h12}:{minutes}:{seconds}</span>
+        <span className={styles.period}>{ampm}</span>
       </div>
 
-      {/* Calendar */}
-      <div className={styles.calendar}>
-        <div className={styles.calHeader}>
-          <span className={styles.monthYear}>{MONTHS[month]} {year}</span>
-          <div className={styles.navBtns}>
-            <button onClick={prevMonth} className={styles.navBtn} aria-label="Previous month">▲</button>
-            <button onClick={nextMonth} className={styles.navBtn} aria-label="Next month">▼</button>
-          </div>
-        </div>
+      {/* 2. Date Line */}
+      <div className={styles.dateLine}>
+        {dayName}, {dateStr}
+      </div>
 
-        <div className={styles.dayNames}>
-          {DAYS.map(d => <span key={d} className={styles.dayName}>{d}</span>)}
-        </div>
+      <hr className={styles.divider} />
 
-        <div className={styles.grid}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${year}-${month}`}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className={styles.cells}
-            >
-              {cells.map((cell, i) => {
-                const isToday = cell.type === 'curr'
-                  && cell.day === todayDate
-                  && month === todayMonth
-                  && year === todayYear;
-                return (
-                  <span
-                    key={i}
-                    className={[
-                      styles.cell,
-                      cell.type !== 'curr' ? styles.dimCell : '',
-                      isToday ? styles.today : ''
-                    ].join(' ')}
-                  >
-                    {cell.day}
-                  </span>
-                );
-              })}
-            </motion.div>
-          </AnimatePresence>
+      {/* 3. Month Navigation */}
+      <div className={styles.monthHeader}>
+        <span className={styles.monthYearLabel}>{MONTHS[month]} {year}</span>
+        <div className={styles.navBtns}>
+          <button onClick={prevMonth} className={styles.navBtn} aria-label="Previous month">
+            <FiChevronLeft />
+          </button>
+          <button onClick={nextMonth} className={styles.navBtn} aria-label="Next month">
+            <FiChevronRight />
+          </button>
         </div>
+      </div>
+
+      {/* 4. Calendar Grid */}
+      <div className={styles.weekdays}>
+        {DAYS.map(d => <span key={d} className={styles.dayName}>{d}</span>)}
+      </div>
+
+      <div className={styles.gridWrapper}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${year}-${month}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className={styles.daysGrid}
+          >
+            {cells.map((cell, i) => {
+              const isToday = cell.type === 'curr'
+                && cell.day === todayDate
+                && month === todayMonth
+                && year === todayYear;
+              return (
+                <div
+                  key={i}
+                  className={[
+                    styles.dayCell,
+                    cell.type !== 'curr' ? styles.mutedDay : '',
+                    isToday ? styles.today : ''
+                  ].join(' ')}
+                >
+                  {cell.day}
+                </div>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
