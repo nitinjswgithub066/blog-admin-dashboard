@@ -16,4 +16,5 @@ export const mockAdminProfile: AdminProfile = {
     youtube: '',
     portfolio: '',
   },
+  updatedAt: new Date().toISOString(),
 };
