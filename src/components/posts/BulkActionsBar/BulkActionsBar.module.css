@@ -55,6 +55,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  margin-left: 0.5rem;
 }
 
 .clearBtn:hover {
