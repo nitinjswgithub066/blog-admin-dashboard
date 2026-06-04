@@ -10,6 +10,7 @@
   --bg-primary: #071120;
   --bg-secondary: #0A1428;
   --bg-tertiary: #0E1B31;
+  --topbar-bg: rgba(8, 16, 32, 0.88);
 
   --card-bg: rgba(255, 255, 255, 0.04);
   --border-color: rgba(255, 255, 255, 0.08);
@@ -31,6 +32,7 @@
   --bg-primary: #F8FAFC;
   --bg-secondary: #EEF2FF;
   --bg-tertiary: #FFF7ED;
+  --topbar-bg: rgba(255, 255, 255, 0.75);
 
   --card-bg: rgba(255, 255, 255, 0.78);
   --border-color: rgba(15, 23, 42, 0.10);

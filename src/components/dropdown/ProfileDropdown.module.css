@@ -17,8 +17,8 @@
 }
 
 .profileTrigger:hover, .profileTrigger.active {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--border-color);
+  border-color: var(--accent-primary);
 }
 
 .avatar {
@@ -113,7 +113,7 @@
 }
 
 .menuItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-color);
 }
 
 .menuIcon {
@@ -208,7 +208,7 @@
 }
 
 .themeOption:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-color);
 }
 
 .themeOption.active {
