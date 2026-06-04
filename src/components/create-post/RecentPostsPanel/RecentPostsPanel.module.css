@@ -294,6 +294,18 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.actionBtnDanger {
+  flex: 0 0 auto !important;
+  color: var(--danger, #ef4444);
+  padding: 0.4rem 0.6rem;
+}
+
+.actionBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: var(--danger, #ef4444);
+}
+
 @media (max-width: 360px) {
   .cardActions {
     flex-direction: column;
