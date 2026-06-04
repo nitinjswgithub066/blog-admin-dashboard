@@ -66,9 +66,11 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({ posts, onWritePost 
       <div className={styles.list}>
         {filteredPosts.length === 0 ? (
           <div className={styles.emptyState}>
-            <FiBookOpen className={styles.emptyIcon} />
-            <p>No posts added in the last 30 days.</p>
-            <p>Click "Write Post" to create a new blog post.</p>
+            <div className={styles.emptyStateContent}>
+              <FiBookOpen className={styles.emptyIcon} />
+              <p>No posts added in the last 30 days.</p>
+              <p>Click "Write Post" to create a new blog post.</p>
+            </div>
           </div>
         ) : (
           filteredPosts.map((post, i) => (
@@ -80,7 +82,13 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({ posts, onWritePost 
               transition={{ duration: 0.2, delay: i * 0.05 }}
             >
               <div className={styles.cardImage}>
-                {post.coverImage && <img src={post.coverImage} alt={post.title} />}
+                {post.coverImage ? (
+                  <img src={post.coverImage} alt={post.title} />
+                ) : (
+                  <div className={styles.imagePlaceholder}>
+                    {post.category ? post.category.substring(0, 2).toUpperCase() : 'PO'}
+                  </div>
+                )}
                 <span className={`${styles.cardBadge} ${
                   post.status === 'published' ? styles.badgePublished : 
                   post.status === 'scheduled' ? styles.badgeScheduled : 
