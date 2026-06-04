@@ -66,10 +66,9 @@
 
 .statsRow {
   display: flex;
-  gap: 1.5rem;
+  justify-content: space-between;
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
-  justify-content: flex-end;
 }
 
 .statItem {
