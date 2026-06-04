@@ -40,6 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-width: 32px;
   height: 32px;
   border: none;
@@ -74,4 +75,33 @@
 .toolbarSelect:hover, .toolbarSelect:focus {
   border-color: var(--border-color);
   background: var(--bg-primary);
+}
+
+.moreToolsMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  z-index: 100;
+}
+
+.moreToolsMenu .toolbarBtn {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.menuDivider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.25rem 0;
 }
