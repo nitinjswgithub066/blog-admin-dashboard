@@ -156,6 +156,8 @@
 
 .addCategoryRow {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.5rem;
 }
 
@@ -163,7 +165,7 @@
   background: var(--bg-primary);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   font-weight: 500;
   cursor: pointer;
