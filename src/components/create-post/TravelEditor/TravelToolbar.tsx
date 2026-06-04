@@ -55,13 +55,22 @@ const TravelToolbar: React.FC = () => {
 
         {/* Formats Dropdowns */}
         <div className={styles.toolbarGroup}>
-          <select className={styles.toolbarSelect}>
+          <select className={styles.toolbarSelect} title="Font Family">
+            <option>Inter</option>
+            <option>Roboto</option>
+            <option>Open Sans</option>
+            <option>System Default</option>
+          </select>
+          <select className={styles.toolbarSelect} title="Text Format">
             <option>Paragraph</option>
             <option>Heading 1</option>
             <option>Heading 2</option>
             <option>Heading 3</option>
+            <option>Heading 4</option>
+            <option>Heading 5</option>
+            <option>Heading 6</option>
           </select>
-          <select className={styles.toolbarSelect}>
+          <select className={styles.toolbarSelect} title="Font Size">
             <option>16</option>
             <option>14</option>
             <option>18</option>
