@@ -45,9 +45,6 @@ const DateTimeCard = () => {
 
   const prevMonth = () => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));
   const nextMonth = () => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1));
-  const goToToday = () => setViewDate(new Date());
-
-  const isCurrentMonth = month === todayMonth && year === todayYear;
 
   return (
     <div className={styles.calendarCard}>
