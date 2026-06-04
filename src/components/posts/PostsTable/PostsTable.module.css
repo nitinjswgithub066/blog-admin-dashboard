@@ -1,6 +1,6 @@
 .tableWrapper {
   width: 100%;
-  overflow-x: auto;
+  overflow: visible;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
