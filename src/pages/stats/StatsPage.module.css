@@ -53,15 +53,14 @@
 .filterBar {
   display: flex;
   gap: 0.75rem;
-  overflow-x: auto;
+  flex-wrap: wrap;
   max-width: 100%;
   padding-bottom: 0.5rem;
-  scrollbar-width: none; /* Firefox */
+  position: relative;
+  z-index: 50;
 }
 
-.filterBar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
+
 
 .filterTab {
   background: var(--bg-secondary);
@@ -85,6 +84,36 @@
   background: var(--accent-primary);
   color: white;
   border-color: var(--accent-primary);
+}
+
+/* Category Dropdown Overrides */
+.categoryDropdown {
+  min-width: 150px;
+}
+
+.categoryTrigger {
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--radius-full) !important;
+  background: var(--bg-secondary) !important;
+  color: var(--text-muted) !important;
+  gap: 0.5rem !important;
+  border: 1px solid var(--border-color) !important;
+  white-space: nowrap;
+}
+
+.categoryTrigger:hover {
+  color: var(--text-primary) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.categoryTrigger.active {
+  background: var(--accent-primary) !important;
+  color: white !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.categoryTrigger.active div {
+  color: white !important;
 }
 
 .chartsGrid {

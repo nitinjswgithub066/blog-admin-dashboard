@@ -6,6 +6,7 @@ import MetricCircleCard from '../../components/statistics/MetricCircleCard/Metri
 import CategoryPerformanceChart from '../../components/statistics/CategoryPerformanceChart/CategoryPerformanceChart';
 import TrafficTrendChart from '../../components/statistics/TrafficTrendChart/TrafficTrendChart';
 import TopPostStatsList from '../../components/statistics/TopPostStatsList/TopPostStatsList';
+import DropdownSelect from '../../components/ui/DropdownSelect/DropdownSelect';
 
 import { 
   mockMetrics, 
@@ -17,7 +18,15 @@ import {
 type FilterPeriod = 'daily' | 'weekly' | 'monthly';
 type SortOrder = 'views' | 'shares';
 
-const CATEGORIES = ['Technology', 'Programming', 'AI', 'Career', 'Startups', 'Web Dev'];
+const CATEGORY_OPTIONS = [
+  { label: 'All Categories', value: 'all' },
+  { label: 'Technology', value: 'Technology' },
+  { label: 'Programming', value: 'Programming' },
+  { label: 'AI', value: 'AI' },
+  { label: 'Career', value: 'Career' },
+  { label: 'Startups', value: 'Startups' },
+  { label: 'Web Dev', value: 'Web Dev' }
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,7 +53,7 @@ const StatsPage: React.FC = () => {
   // Filter and sort posts
   const processedPosts = useMemo(() => {
     let result = [...mockTopPosts];
-    if (categoryFilter) {
+    if (categoryFilter && categoryFilter !== 'all') {
       result = result.filter(p => p.category === categoryFilter);
     }
     result.sort((a, b) => b[sortBy] - a[sortBy]);
@@ -88,16 +97,13 @@ const StatsPage: React.FC = () => {
         >
           Monthly
         </button>
-        <select 
-          className={`${styles.filterTab} ${categoryFilter ? styles.active : ''}`}
-          value={categoryFilter || ''}
-          onChange={(e) => setCategoryFilter(e.target.value || null)}
-        >
-          <option value="">All Categories</option>
-          {CATEGORIES.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <DropdownSelect 
+          className={styles.categoryDropdown}
+          triggerClassName={`${styles.categoryTrigger} ${categoryFilter && categoryFilter !== 'all' ? styles.active : ''}`}
+          options={CATEGORY_OPTIONS}
+          value={categoryFilter || 'all'}
+          onChange={(val) => setCategoryFilter(val)}
+        />
         <button 
           className={`${styles.filterTab} ${sortBy === 'views' ? styles.active : ''}`}
           onClick={() => setSortBy('views')}

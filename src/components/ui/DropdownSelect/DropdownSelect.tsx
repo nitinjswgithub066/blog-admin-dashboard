@@ -14,9 +14,10 @@ interface DropdownSelectProps {
   options: Option[];
   icon?: React.ReactNode;
   className?: string;
+  triggerClassName?: string;
 }
 
-const DropdownSelect: React.FC<DropdownSelectProps> = ({ value, onChange, options, icon, className }) => {
+const DropdownSelect: React.FC<DropdownSelectProps> = ({ value, onChange, options, icon, className, triggerClassName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +40,7 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ value, onChange, option
     >
       <button 
         type="button"
-        className={`${styles.trigger} ${isOpen ? styles.isOpen : ''}`}
+        className={`${styles.trigger} ${isOpen ? styles.isOpen : ''} ${triggerClassName || ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className={styles.triggerContent}>
