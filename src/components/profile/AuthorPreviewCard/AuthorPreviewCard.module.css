@@ -67,7 +67,7 @@
 .statsRow {
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
+  padding: 1rem 0.5rem 0 0.5rem;
   border-top: 1px solid var(--border-color);
 }
 
@@ -82,8 +82,8 @@
   font-size: var(--font-size-md);
   font-weight: 700;
   color: var(--text-primary);
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);

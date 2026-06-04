@@ -4,6 +4,7 @@
   /* Layout */
   --admin-topbar-height: 72px;
 
+:root, :root[data-theme="dark"] {
   /* Colors */
   --bg-primary: #071120;
   --bg-secondary: #0A1428;
@@ -23,6 +24,30 @@
   --warning: #F59E0B;
   --danger: #EF4444;
   --info: #38BDF8;
+}
+
+:root[data-theme="light"] {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #EEF2FF;
+  --bg-tertiary: #FFF7ED;
+
+  --card-bg: rgba(255, 255, 255, 0.78);
+  --border-color: rgba(15, 23, 42, 0.10);
+
+  --accent-primary: #6D5DF6;
+  --accent-secondary: #EC4899;
+  --accent-hover: #4F46E5;
+
+  --text-primary: #0F172A;
+  --text-muted: #64748B;
+
+  --success: #059669;
+  --warning: #D97706;
+  --danger: #DC2626;
+  --info: #06B6D4;
+}
+
+:root {
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
