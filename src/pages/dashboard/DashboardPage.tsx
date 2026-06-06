@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { PageTransition } from '../../components/animations';
 import MotionCard from '../../components/animations/MotionCard';
 import DateTimeCard from '../../components/dashboard/DateTimeCard';
@@ -6,10 +7,21 @@ import SearchTrafficCard from '../../components/dashboard/SearchTrafficCard';
 import TopPostsList from '../../components/dashboard/TopPostsList';
 import BlogTopicNotepad from '../../components/dashboard/BlogTopicNotepad/BlogTopicNotepad';
 import { useProfileStore } from '../../store';
+import { useDashboardStore } from '../../store/dashboardStore';
 import styles from './DashboardPage.module.css';
 
 const DashboardPage = () => {
   const { profile } = useProfileStore();
+  const { fetchData } = useDashboardStore();
+
+  useEffect(() => {
+    fetchData();
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(intervalId);
+  }, [fetchData]);
 
   return (
     <PageTransition className={styles.page}>
