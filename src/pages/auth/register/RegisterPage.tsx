@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiUser, FiUserPlus, FiKey, FiAtSign } from 'react-icons/fi';
+import { FiMail, FiLock, FiUser, FiUserPlus, FiAtSign } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 const registerSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters' }),
   email: z.string().email({ message: 'Invalid email address' }),
   username: z.string().min(3, { message: 'Username must be at least 3 characters' }),
-  password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+  password: z.string()
+    .min(6, { message: 'Password must be at least 6 characters' })
+    .max(12, { message: 'Password must be at most 12 characters' })
+    .regex(/^[A-Za-z0-9@_#!]+$/, { message: 'Use only letters, numbers, @, _, #, or !' }),
   confirmPassword: z.string(),
-  adminCode: z.string().min(1, { message: 'Admin registration code is required' })
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -23,6 +27,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -32,11 +38,35 @@ const RegisterPage: React.FC = () => {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Register data:', data);
-    // Navigate to dashboard after registration
-    navigate('/dashboard');
+    setServerError(null);
+    setSuccessMsg(null);
+    try {
+      const response = await fetch(API_BASE_URL + '/auth/register-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: data.fullName,
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+        }),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setServerError(json.message || 'Registration failed. Please try again.');
+        return;
+      }
+
+      // Simple success redirect
+      setSuccessMsg('Account created! Redirecting to login...');
+      setTimeout(() => navigate('/auth/login'), 2000);
+    } catch (err: any) {
+      setServerError('Unable to reach the server. Please make sure the backend is running.');
+    }
   };
 
   return (
@@ -68,7 +98,7 @@ const RegisterPage: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Enter details and admin code to register
+            Create a secure admin profile for your dashboard
           </motion.p>
         </div>
 
@@ -183,32 +213,46 @@ const RegisterPage: React.FC = () => {
             {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword.message}</span>}
           </motion.div>
 
-          <motion.div 
-            className={styles.inputGroup}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.55 }}
-          >
-            <label htmlFor="adminCode" className={styles.label}>
-              Admin Registration Code
-            </label>
-            <div className={styles.inputWrapper}>
-              <FiKey className={styles.inputIcon} />
-              <input
-                id="adminCode"
-                type="text"
-                placeholder="SECRET-CODE"
-                className={styles.input}
-                {...register('adminCode')}
-              />
-            </div>
-            {errors.adminCode && <span className={styles.errorText}>{errors.adminCode.message}</span>}
-          </motion.div>
+          {serverError && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'rgba(239,68,68,0.12)',
+                border: '1px solid rgba(239,68,68,0.4)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                color: '#FCA5A5',
+                fontSize: '13px',
+                marginBottom: '4px',
+              }}
+            >
+              {serverError}
+            </motion.div>
+          )}
+
+          {successMsg && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'rgba(16,185,129,0.12)',
+                border: '1px solid rgba(16,185,129,0.4)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                color: '#6EE7B7',
+                fontSize: '13px',
+                marginBottom: '4px',
+              }}
+            >
+              {successMsg}
+            </motion.div>
+          )}
 
           <motion.button
             type="submit"
             className={styles.submitBtn}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!successMsg}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             initial={{ opacity: 0, y: 20 }}

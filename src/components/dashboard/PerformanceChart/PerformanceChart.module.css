@@ -99,15 +99,22 @@
 
 :global(.recharts-tooltip-wrapper) { outline: none; }
 
+.performanceCard :global(.recharts-legend-wrapper) {
+  color: #9CA3AF;
+  font-size: 11px;
+  padding-bottom: 8px;
+}
+
 .customTooltip {
-  background: rgba(22, 23, 29, 0.85); /* dark glassmorphism */
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.9));
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 12px;
   color: var(--text-primary);
   min-width: 140px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .tooltipLabel {
@@ -137,6 +144,14 @@
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.clicksDot {
+  background: #10B981;
+}
+
+.trafficDot {
+  background: #6D5DF6;
 }
 
 .tooltipName {

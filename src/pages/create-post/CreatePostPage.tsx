@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,8 +12,8 @@ import RecentPostsPanel from '../../components/create-post/RecentPostsPanel/Rece
 import { STORAGE_KEYS } from '../../constants/storageKeys';
 import type { AdminPost, PostStatus } from '../../types/post.types';
 import type { AdminCategory } from '../../types/category.types';
+import { postService, type RecentPostFilter } from '../../services/post.service';
 import { slugify } from '../../utils/slugify';
-import { calculateReadingTime } from '../../utils/calculateReadingTime';
 import { generateCategoryIcon } from '../../utils/generateCategoryIcon';
 import styles from './CreatePostPage.module.css';
 
@@ -37,12 +38,16 @@ const initialCategories: AdminCategory[] = [
 ];
 
 const CreatePostPage: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<StepState>('recent');
   const [contentMethod, setContentMethod] = useState<ContentMethod>(null);
   const [content, setContent] = useState('');
   
   const [categories, setCategories] = useState<AdminCategory[]>([]);
-  const [posts, setPosts] = useState<AdminPost[]>([]);
+  const [recentPosts, setRecentPosts] = useState<AdminPost[]>([]);
+  const [recentFilter, setRecentFilter] = useState<RecentPostFilter>('all');
+  const [isRecentLoading, setIsRecentLoading] = useState(false);
+  const [recentError, setRecentError] = useState('');
   const [toastMsg, setToastMsg] = useState('');
 
   const { register, handleSubmit, formState: { errors }, watch, setValue, getValues, reset } = useForm<PostFormData>({
@@ -64,12 +69,25 @@ const CreatePostPage: React.FC = () => {
       setCategories(initialCategories);
       localStorage.setItem(STORAGE_KEYS.ADMIN_CATEGORIES, JSON.stringify(initialCategories));
     }
-
-    const storedPosts = localStorage.getItem(STORAGE_KEYS.ADMIN_POSTS);
-    if (storedPosts) {
-      setPosts(JSON.parse(storedPosts));
-    }
   }, []);
+
+  const loadRecentPosts = useCallback(async () => {
+    setIsRecentLoading(true);
+    setRecentError('');
+
+    try {
+      const data = await postService.getRecentPosts(recentFilter);
+      setRecentPosts(data);
+    } catch (error) {
+      setRecentError(error instanceof Error ? error.message : 'Failed to load recent posts.');
+    } finally {
+      setIsRecentLoading(false);
+    }
+  }, [recentFilter]);
+
+  useEffect(() => {
+    loadRecentPosts();
+  }, [loadRecentPosts]);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -109,34 +127,12 @@ const CreatePostPage: React.FC = () => {
   };
 
   const savePost = (data: PostFormData) => {
-    const selectedCategory = categories.find(c => c.name === data.category);
-    
-    const newPost: AdminPost = {
-      id: Date.now().toString(),
-      title: data.title,
-      subtitle: data.subtitle || '',
-      slug: slugify(data.title),
-      category: data.category || 'Uncategorized',
-      categorySlug: selectedCategory?.slug || 'uncategorized',
-      tags: data.tags || [],
-      contentType: 'text',
-      contentPreview: content.substring(0, 150) + '...',
-      coverImage: data.coverImage,
-      author: 'Current User',
-      status: data.status as PostStatus,
-      readingTime: calculateReadingTime(content),
-      views: 0,
-      clicks: 0,
-      shares: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    const actionMap: Partial<Record<PostStatus, string>> = {
+      draft: 'saved as draft',
+      published: 'published',
+      scheduled: 'scheduled',
+      archived: 'archived'
     };
-
-    const updatedPosts = [newPost, ...posts];
-    setPosts(updatedPosts);
-    localStorage.setItem(STORAGE_KEYS.ADMIN_POSTS, JSON.stringify(updatedPosts));
-    
-    const actionMap: Record<PostStatus, string> = { draft: 'saved as draft', published: 'published', scheduled: 'scheduled', archived: 'archived' };
     showToast(`Post ${actionMap[data.status as PostStatus]} successfully.`);
     handleReset();
     setCurrentStep('recent');
@@ -157,6 +153,55 @@ const CreatePostPage: React.FC = () => {
 
   const handleMethodSelect = (method: ContentMethod) => {
     setContentMethod(method);
+  };
+
+  const handleWritePost = () => {
+    handleReset();
+    setContentMethod(null);
+    setCurrentStep('content');
+  };
+
+  const handleFilterChange = (filter: RecentPostFilter) => {
+    setRecentFilter(filter);
+  };
+
+  const handleEditPost = async (id: string) => {
+    try {
+      const post = await postService.getPostById(id);
+      const editableStatus = ['draft', 'published', 'scheduled'].includes(post.status) ? post.status : 'draft';
+
+      reset({
+        title: post.title,
+        subtitle: post.subtitle || '',
+        category: post.category,
+        tags: post.tags || [],
+        coverImage: post.coverImageUrl || post.optimizedCoverUrl || '',
+        status: editableStatus as PostFormData['status'],
+      });
+      setContent(post.contentHtml || post.contentPreview || '');
+      setContentMethod('text');
+      setCurrentStep('content');
+      showToast('Post loaded in editor.');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Failed to load post.');
+    }
+  };
+
+  const handlePreviewPost = (id: string) => {
+    navigate(`/create-post/preview/${id}`);
+  };
+
+  const handleDeletePost = async (id: string) => {
+    const shouldDelete = window.confirm('Delete this post? It will be hidden now and permanently cleaned up later.');
+    if (!shouldDelete) return;
+
+    try {
+      await postService.deletePost(id);
+      setRecentPosts((current) => current.filter((post) => post.id !== id));
+      showToast('Post deleted successfully.');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Failed to delete post.');
+    }
   };
 
   const goToStep = (step: StepState) => {
@@ -208,7 +253,17 @@ const CreatePostPage: React.FC = () => {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25 }}
             >
-              <RecentPostsPanel posts={posts} onWritePost={() => setCurrentStep('content')} />
+              <RecentPostsPanel
+                posts={recentPosts}
+                activeFilter={recentFilter}
+                isLoading={isRecentLoading}
+                error={recentError}
+                onWritePost={handleWritePost}
+                onFilterChange={handleFilterChange}
+                onEditPost={handleEditPost}
+                onPreviewPost={handlePreviewPost}
+                onDeletePost={handleDeletePost}
+              />
             </motion.div>
           )}
 
