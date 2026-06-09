@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiClock, FiEye, FiEdit2, FiExternalLink, FiPlus, FiBookOpen, FiTrash2, FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
+import { FiArchive, FiClock, FiEye, FiEdit2, FiExternalLink, FiPlus, FiBookOpen, FiTrash2, FiRefreshCw, FiAlertCircle, FiRotateCcw } from 'react-icons/fi';
 import type { AdminPost } from '../../../types/post.types';
 import type { RecentPostFilter } from '../../../services/post.service';
 import { formatDate } from '../../../utils/formatDate';
@@ -16,6 +16,8 @@ interface RecentPostsPanelProps {
   onEditPost: (id: string) => void;
   onPreviewPost: (id: string) => void;
   onDeletePost: (id: string) => void;
+  onArchivePost: (id: string) => void;
+  onRestorePost: (id: string) => void;
 }
 
 const categoryInitials: Record<string, string> = {
@@ -41,6 +43,7 @@ const filters: { label: string; value: RecentPostFilter }[] = [
   { label: 'Published', value: 'published' },
   { label: 'Draft', value: 'draft' },
   { label: 'Scheduled', value: 'scheduled' },
+  { label: 'Archive', value: 'archive' },
 ];
 
 const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
@@ -53,6 +56,8 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
   onEditPost,
   onPreviewPost,
   onDeletePost,
+  onArchivePost,
+  onRestorePost,
 }) => {
   const renderState = () => {
     if (isLoading) {
@@ -82,8 +87,8 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
         <div className={styles.emptyState}>
           <div className={styles.emptyStateContent}>
             <FiBookOpen className={styles.emptyIcon} />
-            <p>No posts added in the last 30 days.</p>
-            <p>Click "Write Post" to create a new blog post.</p>
+            <p>{activeFilter === 'archive' ? 'No archived or deleted posts.' : 'No posts added in the last 30 days.'}</p>
+            <p>{activeFilter === 'archive' ? 'Deleted posts will appear here until cleanup.' : 'Click "Write Post" to create a new blog post.'}</p>
           </div>
         </div>
       );
@@ -112,6 +117,17 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
           }`}>
             {post.status}
           </span>
+          {activeFilter !== 'archive' && (
+            <button
+              type="button"
+              className={styles.cardDeleteBtn}
+              title="Delete post"
+              aria-label={`Delete ${post.title}`}
+              onClick={() => onDeletePost(post.id)}
+            >
+              <FiTrash2 />
+            </button>
+          )}
         </div>
 
         <div className={styles.cardBody}>
@@ -134,15 +150,29 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
             <button type="button" className={styles.actionBtnSecondary} onClick={() => onPreviewPost(post.id)}>
               <FiExternalLink /> Preview
             </button>
-            <button
-              type="button"
-              className={`${styles.actionBtnSecondary} ${styles.actionBtnDanger}`}
-              title="Delete post"
-              aria-label={`Delete ${post.title}`}
-              onClick={() => onDeletePost(post.id)}
-            >
-              <FiTrash2 />
-            </button>
+            {activeFilter === 'archive' ? (
+              <button
+                type="button"
+                className={styles.actionBtnSecondary}
+                title="Restore post"
+                aria-label={`Restore ${post.title}`}
+                onClick={() => onRestorePost(post.id)}
+              >
+                <FiRotateCcw />
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={styles.actionBtnSecondary}
+                  title="Archive post"
+                  aria-label={`Archive ${post.title}`}
+                  onClick={() => onArchivePost(post.id)}
+                >
+                  <FiArchive />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </motion.div>

@@ -32,6 +32,12 @@ const PostStatusBadge: React.FC<PostStatusBadgeProps> = ({ status }) => {
           color: '#9CA3AF',
           border: '1px solid rgba(156, 163, 175, 0.3)'
         };
+      case 'deleted':
+        return {
+          background: 'rgba(239, 68, 68, 0.12)',
+          color: '#EF4444',
+          border: '1px solid rgba(239, 68, 68, 0.28)'
+        };
       default:
         return {};
     }

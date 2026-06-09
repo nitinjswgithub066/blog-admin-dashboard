@@ -1,17 +1,19 @@
 import React from 'react';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import DropdownSelect from '../../ui/DropdownSelect/DropdownSelect';
+import type { ApiCategory, PostsSort, PostsStatusFilter } from '../../../services/post.service';
 import styles from './PostsFilters.module.css';
 
 interface PostsFiltersProps {
   searchQuery: string;
   onSearchChange: (val: string) => void;
-  statusFilter: string;
-  onStatusChange: (val: string) => void;
+  statusFilter: PostsStatusFilter;
+  onStatusChange: (val: PostsStatusFilter) => void;
   categoryFilter: string;
   onCategoryChange: (val: string) => void;
-  sortOrder: string;
-  onSortChange: (val: string) => void;
+  sortOrder: PostsSort;
+  onSortChange: (val: PostsSort) => void;
+  categories: ApiCategory[];
 }
 
 const PostsFilters: React.FC<PostsFiltersProps> = ({
@@ -22,9 +24,16 @@ const PostsFilters: React.FC<PostsFiltersProps> = ({
   categoryFilter,
   onCategoryChange,
   sortOrder,
-  onSortChange
+  onSortChange,
+  categories
 }) => {
-  const tabs = ['All', 'Published', 'Drafts', 'Scheduled', 'Archived'];
+  const tabs: { label: string; value: PostsStatusFilter }[] = [
+    { label: 'All', value: 'all' },
+    { label: 'Published', value: 'published' },
+    { label: 'Drafts', value: 'draft' },
+    { label: 'Scheduled', value: 'scheduled' },
+    { label: 'Archived', value: 'archived' },
+  ];
 
   return (
     <div className={styles.filtersWrapper}>
@@ -32,11 +41,11 @@ const PostsFilters: React.FC<PostsFiltersProps> = ({
       <div className={styles.tabsContainer}>
         {tabs.map(tab => (
           <button
-            key={tab}
-            className={`${styles.tabBtn} ${statusFilter.toLowerCase() === tab.toLowerCase() ? styles.activeTab : ''}`}
-            onClick={() => onStatusChange(tab)}
+            key={tab.value}
+            className={`${styles.tabBtn} ${statusFilter === tab.value ? styles.activeTab : ''}`}
+            onClick={() => onStatusChange(tab.value)}
           >
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -60,22 +69,23 @@ const PostsFilters: React.FC<PostsFiltersProps> = ({
             onChange={onCategoryChange}
             icon={<FiFilter />}
             options={[
-              { label: 'All Categories', value: 'All' },
-              { label: 'Asia', value: 'Asia' },
-              { label: 'Europe', value: 'Europe' },
-              { label: 'Luxury', value: 'Luxury' },
-              { label: 'Food', value: 'Food' },
-              { label: 'Africa', value: 'Africa' },
+              { label: 'All Categories', value: 'all' },
+              ...categories.map((category) => ({ label: category.name, value: category.id })),
             ]}
           />
 
           <DropdownSelect 
             value={sortOrder}
-            onChange={onSortChange}
+            onChange={(value) => onSortChange(value as PostsSort)}
             options={[
               { label: 'Newest First', value: 'newest' },
               { label: 'Oldest First', value: 'oldest' },
-              { label: 'Most Viewed', value: 'views' },
+              { label: 'Most Views', value: 'most_views' },
+              { label: 'Least Views', value: 'least_views' },
+              { label: 'Title A-Z', value: 'title_az' },
+              { label: 'Title Z-A', value: 'title_za' },
+              { label: 'Recently Updated', value: 'updated_desc' },
+              { label: 'Oldest Updated', value: 'updated_asc' },
             ]}
           />
         </div>

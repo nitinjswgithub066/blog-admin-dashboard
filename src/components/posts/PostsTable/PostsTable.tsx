@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiImage } from 'react-icons/fi';
 import type { AdminPost } from '../../../types/post.types';
 import PostStatusBadge from '../PostStatusBadge/PostStatusBadge';
 import PostRowActions from '../PostRowActions/PostRowActions';
@@ -23,6 +22,15 @@ const PostsTable: React.FC<PostsTableProps> = ({
 }) => {
   const allSelected = posts.length > 0 && selectedPosts.length === posts.length;
   const someSelected = selectedPosts.length > 0 && !allSelected;
+  const isRecoverableStatus = (status: AdminPost['status']) => status === 'archived' || status === 'deleted';
+
+  const getCategoryInitials = (category: string) =>
+    category
+      .split(/\s+/)
+      .map((word) => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'PO';
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -81,7 +89,7 @@ const PostsTable: React.FC<PostsTableProps> = ({
                     {post.coverImage ? (
                       <img src={post.coverImage} alt={post.title} />
                     ) : (
-                      <FiImage className={styles.placeholderIcon} />
+                      <span className={styles.placeholderText}>{getCategoryInitials(post.category)}</span>
                     )}
                   </div>
                   <div className={styles.postTitleBlock}>
@@ -106,6 +114,8 @@ const PostsTable: React.FC<PostsTableProps> = ({
                   onDuplicate={() => onAction('duplicate', post.id)}
                   onArchive={() => onAction('archive', post.id)}
                   onDelete={() => onAction('delete', post.id)}
+                  onRestore={() => onAction('restore', post.id)}
+                  isArchived={isRecoverableStatus(post.status)}
                 />
               </td>
             </motion.tr>
@@ -133,6 +143,8 @@ const PostsTable: React.FC<PostsTableProps> = ({
                 onDuplicate={() => onAction('duplicate', post.id)}
                 onArchive={() => onAction('archive', post.id)}
                 onDelete={() => onAction('delete', post.id)}
+                onRestore={() => onAction('restore', post.id)}
+                isArchived={isRecoverableStatus(post.status)}
               />
             </div>
             

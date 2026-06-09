@@ -33,6 +33,18 @@
   transition: all var(--transition-fast);
 }
 
+.stepButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: default;
+}
+
+.stepButtonInteractive {
+  cursor: pointer;
+}
+
 .stepActive {
   opacity: 1;
   color: var(--accent-primary);
@@ -149,6 +161,10 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.publishForm {
+  height: 100%;
 }
 
 /* Toast */

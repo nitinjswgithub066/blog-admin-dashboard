@@ -114,6 +114,12 @@
   font-family: inherit;
 }
 
+.documentEditable.htmlMode {
+  font-family: "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
 .documentEditable::placeholder {
   color: var(--text-muted);
   opacity: 0.5;
@@ -157,4 +163,106 @@
 
 .continueBtn:hover {
   background: var(--accent-hover);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.editorAlert {
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger, #ef4444);
+  border-top: 1px solid rgba(239, 68, 68, 0.25);
+  font-size: var(--font-size-sm);
+}
+
+.dialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.linkDialog {
+  width: min(100%, 420px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialogHeader h3 {
+  margin: 0;
+  font-size: var(--font-size-md);
+}
+
+.dialogHeader button,
+.dialogActions button {
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  min-height: 36px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.linkDialog label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.linkDialog input[type="text"],
+.linkDialog label:not(.checkboxLabel) input {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+}
+
+.checkboxLabel {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.dialogActions button:last-child {
+  background: var(--accent-primary);
+  color: #fff;
+  border-color: var(--accent-primary);
+}
+
+@media (max-width: 720px) {
+  .editorFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .footerStats {
+    flex-wrap: wrap;
+  }
 }

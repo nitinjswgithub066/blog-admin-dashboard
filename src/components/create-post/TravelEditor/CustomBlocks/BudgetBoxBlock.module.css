@@ -112,6 +112,22 @@
   border-radius: var(--radius-full);
 }
 
+.progressAccommodation {
+  width: 40%;
+}
+
+.progressFood {
+  width: 28%;
+}
+
+.progressActivities {
+  width: 20%;
+}
+
+.progressTransport {
+  width: 12%;
+}
+
 .actions {
   position: absolute;
   top: 1rem;

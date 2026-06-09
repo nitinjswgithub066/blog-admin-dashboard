@@ -64,7 +64,7 @@ const RegisterPage: React.FC = () => {
       // Simple success redirect
       setSuccessMsg('Account created! Redirecting to login...');
       setTimeout(() => navigate('/auth/login'), 2000);
-    } catch (err: any) {
+    } catch {
       setServerError('Unable to reach the server. Please make sure the backend is running.');
     }
   };

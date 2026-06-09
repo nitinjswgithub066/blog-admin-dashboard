@@ -206,6 +206,30 @@
   text-transform: uppercase;
 }
 
+.cardDeleteBtn {
+  position: absolute;
+  top: 2.35rem;
+  right: 0.65rem;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--danger, #ef4444);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+.cardDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.55);
+  transform: translateY(-1px);
+}
+
 .badgeDraft {
   background: rgba(255, 255, 255, 0.9);
   color: #333;
@@ -311,18 +335,6 @@
 .actionBtnSecondary:hover {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
-}
-
-.actionBtnDanger {
-  flex: 0 0 auto !important;
-  color: var(--danger, #ef4444);
-  padding: 0.4rem 0.6rem;
-}
-
-.actionBtnDanger:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: var(--danger, #ef4444);
 }
 
 @media (max-width: 360px) {

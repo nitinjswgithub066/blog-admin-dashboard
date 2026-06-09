@@ -152,6 +152,22 @@
   transition: width 0.3s ease;
 }
 
+.progress25 {
+  width: 25%;
+}
+
+.progress62 {
+  width: 62%;
+}
+
+.progress88 {
+  width: 88%;
+}
+
+.progress100 {
+  width: 100%;
+}
+
 /* Converted Preview Pane */
 .previewPane {
   background: var(--bg-primary);

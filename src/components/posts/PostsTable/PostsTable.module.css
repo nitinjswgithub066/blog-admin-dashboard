@@ -80,8 +80,15 @@
   object-fit: cover;
 }
 
-.placeholderIcon {
+.placeholderIcon,
+.placeholderText {
   color: var(--text-muted);
+}
+
+.placeholderText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .postTitleBlock {

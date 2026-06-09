@@ -5,23 +5,10 @@ import { postService, type PostPreviewResponse } from '../../services/post.servi
 import { formatDate } from '../../utils/formatDate';
 import styles from './CreatePostPreviewPage.module.css';
 
-const categoryInitials: Record<string, string> = {
-  technology: 'TE',
-  ai: 'AI',
-  'web development': 'WD',
-  thoughts: 'TH',
-};
-
-const getCategoryInitials = (category?: string) => {
-  if (!category) return 'PO';
-  const normalized = category.trim().toLowerCase();
-  if (categoryInitials[normalized]) return categoryInitials[normalized];
-  return category
-    .split(/\s+/)
-    .map((word) => word[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() || 'PO';
+const formatViews = (views: number) => {
+  if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M`;
+  if (views >= 1_000) return `${(views / 1_000).toFixed(1)}K`;
+  return views.toLocaleString();
 };
 
 const CreatePostPreviewPage: React.FC = () => {
@@ -66,6 +53,9 @@ const CreatePostPreviewPage: React.FC = () => {
   }, [id]);
 
   const categoryName = post?.category?.name || 'Uncategorized';
+  const coverImage = post?.optimizedCoverUrl || post?.coverImageUrl || '';
+  const authorName = 'VEXIRAHUB';
+  const authorRole = 'Author';
 
   return (
     <div className={styles.previewPage}>
@@ -95,32 +85,54 @@ const CreatePostPreviewPage: React.FC = () => {
           {post.contentCss && <style>{post.contentCss}</style>}
 
           <header className={styles.hero}>
-            <div className={styles.coverFrame}>
-              {post.optimizedCoverUrl || post.coverImageUrl ? (
-                <img src={post.optimizedCoverUrl || post.coverImageUrl || ''} alt={post.title} />
-              ) : (
-                <div className={styles.coverPlaceholder}>{getCategoryInitials(categoryName)}</div>
-              )}
-            </div>
+            <div className={styles.heroGlow} aria-hidden="true" />
 
             <div className={styles.heroContent}>
               <span className={styles.category}>{categoryName}</span>
-              <h1>{post.title}</h1>
-              {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
+              <h1 className={styles.previewTitle}>{post.title}</h1>
+              {post.subtitle && <p className={styles.previewSubtitle}>{post.subtitle}</p>}
 
               <div className={styles.metaRow}>
-                <span>{post.author?.name || 'Admin'}</span>
-                <span>{formatDate(post.createdAt)}</span>
-                <span><FiClock /> {post.readingTime} min read</span>
-                <span><FiEye /> {post.views}</span>
+                <div className={styles.author}>
+                  {post.author?.avatarUrl ? (
+                    <img className={styles.avatarImage} src={post.author.avatarUrl} alt="VEXIRAHUB" />
+                  ) : (
+                    <div className={styles.avatarInitials} aria-hidden="true">
+                      VH
+                    </div>
+                  )}
+                  <div className={styles.authorText}>
+                    <span className={styles.authorName}>{authorName}</span>
+                    <span className={styles.authorRole}>{authorRole}</span>
+                  </div>
+                </div>
+
+                <div className={styles.stats}>
+                  <span className={styles.stat}>{formatDate(post.createdAt)}</span>
+                  <span className={styles.stat}><FiClock aria-hidden="true" /> {post.readingTime} min read</span>
+                  <span className={styles.stat}><FiEye aria-hidden="true" /> {formatViews(post.views)} views</span>
+                </div>
               </div>
+            </div>
+
+            <div className={styles.coverFrame}>
+              {coverImage ? (
+                <img className={styles.previewCover} src={coverImage} alt={post.title} />
+              ) : (
+                <div className={styles.coverPlaceholder}>
+                  <span>VH</span>
+                  <small>{categoryName}</small>
+                </div>
+              )}
             </div>
           </header>
 
-          <div
-            className={styles.content}
-            dangerouslySetInnerHTML={{ __html: post.contentHtml || '<p>No preview content available.</p>' }}
-          />
+          <section className={styles.contentWrapper}>
+            <div
+              className={styles.articleBody}
+              dangerouslySetInnerHTML={{ __html: post.contentHtml || '<p>No preview content available.</p>' }}
+            />
+          </section>
         </article>
       )}
     </div>

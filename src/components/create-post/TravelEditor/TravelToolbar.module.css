@@ -25,6 +25,11 @@
   padding-right: 0;
 }
 
+.moreToolsGroup {
+  border-right: none;
+  position: relative;
+}
+
 .toolbarBtn {
   display: flex;
   align-items: center;
@@ -48,6 +53,28 @@
 .toolbarBtn.active {
   background: rgba(109, 93, 246, 0.15);
   color: var(--accent-primary);
+}
+
+.colorBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.colorBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.colorBtn input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  position: absolute;
 }
 
 .toolbarSelect {
@@ -93,4 +120,23 @@
   height: 1px;
   background: var(--border-color);
   margin: 0.25rem 0;
+}
+
+@media (max-width: 900px) {
+  .alignmentGroup,
+  .secondaryGroup {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .formatGroup .toolbarSelect:first-child,
+  .formatGroup .toolbarSelect:last-child {
+    display: none;
+  }
+
+  .editorToolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
 }

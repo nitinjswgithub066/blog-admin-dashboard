@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { dashboardService } from '../services/dashboard.service';
 import type { DashboardFirstStageResponse } from '../services/dashboard.service';
@@ -21,7 +22,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       const result = await dashboardService.getFirstStage();
       setData(result);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch dashboard data:', err);
       setError('Unable to load dashboard data.');
     } finally {

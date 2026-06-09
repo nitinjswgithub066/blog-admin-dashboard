@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
       }
       
       navigate('/dashboard');
-    } catch (err: any) {
+    } catch {
       setServerError('Unable to reach the server. Please make sure the backend is running.');
     }
   };

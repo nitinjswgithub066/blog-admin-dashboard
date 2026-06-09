@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { HiTrendingUp, HiLightBulb, HiStar } from 'react-icons/hi';
 import { useDashboardStore } from '../../../store/dashboardStore';
 import Skeleton from '../../ui/Skeleton/Skeleton';
@@ -10,6 +10,8 @@ const COLORS = [
   '#F97316', '#94A3B8',
 ];
 
+const CHART_SIZE = 220;
+
 const formatShare = (score: number, total: number) => {
   if (total <= 0) return '0%';
   return `${((score / total) * 100).toFixed(1)}%`;
@@ -17,7 +19,15 @@ const formatShare = (score: number, total: number) => {
 
 const colorClass = (index: number) => styles[`color${index % COLORS.length}` as keyof typeof styles] || '';
 
-const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
+type TrendTooltipPayload = Array<{
+  value?: number;
+  name?: string;
+  payload?: {
+    totalScore?: number;
+  };
+}>;
+
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TrendTooltipPayload }) => {
   if (!active || !payload?.length) return null;
 
   const value = typeof payload[0]?.value === 'number' ? payload[0].value : 0;
@@ -66,30 +76,28 @@ const SearchTrafficCard = () => {
         <>
           <div className={styles.chartPanel}>
             <div className={styles.chartArea}>
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
-                  <Pie
-                    data={chartWithTotal}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius="42%"
-                    outerRadius="82%"
-                    paddingAngle={2}
-                    dataKey="score"
-                    nameKey="label"
-                    stroke="var(--bg-primary)"
-                    strokeWidth={2}
-                    labelLine={false}
-                    label={false}
-                    isAnimationActive={false}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${entry.category}-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
+              <PieChart width={CHART_SIZE} height={CHART_SIZE} margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+                <Pie
+                  data={chartWithTotal}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={46}
+                  outerRadius={90}
+                  paddingAngle={2}
+                  dataKey="score"
+                  nameKey="label"
+                  stroke="var(--bg-primary)"
+                  strokeWidth={2}
+                  labelLine={false}
+                  label={false}
+                  isAnimationActive={false}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${entry.category}-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
             </div>
 
             <div className={styles.legend} aria-label="Search trend categories">

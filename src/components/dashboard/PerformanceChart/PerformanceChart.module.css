@@ -93,7 +93,8 @@
 .chartWrapper {
   width: 100%;
   height: clamp(260px, 32vw, 360px);
-  min-width: 0;
+  min-width: 1px;
+  min-height: 1px;
   margin-top: 1.5rem;
 }
 

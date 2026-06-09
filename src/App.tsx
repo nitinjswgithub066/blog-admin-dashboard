@@ -34,6 +34,7 @@ function App() {
           <Route path="/posts/create/preview/:id" element={<CreatePostPreviewPage />} />
           <Route path="/create-post/preview/:id" element={<CreatePostPreviewPage />} />
           <Route path="/posts" element={<PostsPage />} />
+          <Route path="/all-posts" element={<PostsPage />} />
           <Route path="/stats" element={<StatsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />

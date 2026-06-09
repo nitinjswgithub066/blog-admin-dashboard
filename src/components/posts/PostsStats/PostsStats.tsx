@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiFileText, FiCheckCircle, FiEdit3, FiClock } from 'react-icons/fi';
+import { FiArchive, FiFileText, FiCheckCircle, FiEdit3, FiClock } from 'react-icons/fi';
 import styles from './PostsStats.module.css';
 
 interface PostsStatsProps {
@@ -8,14 +8,16 @@ interface PostsStatsProps {
   published: number;
   drafts: number;
   scheduled: number;
+  archived: number;
 }
 
-const PostsStats: React.FC<PostsStatsProps> = ({ total, published, drafts, scheduled }) => {
+const PostsStats: React.FC<PostsStatsProps> = ({ total, published, drafts, scheduled, archived }) => {
   const stats = [
     { label: 'Total Posts', value: total, icon: FiFileText, color: 'var(--text-primary)' },
     { label: 'Published', value: published, icon: FiCheckCircle, color: 'var(--success)' },
     { label: 'Drafts', value: drafts, icon: FiEdit3, color: 'var(--accent-secondary)' },
     { label: 'Scheduled', value: scheduled, icon: FiClock, color: 'var(--info)' },
+    { label: 'Archived', value: archived, icon: FiArchive, color: 'var(--warning)' },
   ];
 
   return (

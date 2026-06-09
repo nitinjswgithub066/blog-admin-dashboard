@@ -1,8 +1,8 @@
 /* eslint-disable */
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  CartesianGrid, Tooltip, Legend
 } from 'recharts';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import FilterTabs from '../../ui/FilterTabs';
@@ -20,6 +20,32 @@ const TABS: FilterTab[] = [
   { id: 'monthly', label: 'Monthly' },
   { id: 'yearly',  label: 'Yearly'  },
 ];
+
+const useElementSize = () => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const updateSize = () => {
+      const rect = element.getBoundingClientRect();
+      setSize({
+        width: Math.floor(rect.width),
+        height: Math.floor(rect.height),
+      });
+    };
+
+    updateSize();
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(element);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  return { ref, size };
+};
 
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
   if (active && payload && payload.length) {
@@ -55,6 +81,7 @@ const PerformanceChart = () => {
   const [performanceData, setPerformanceData] = useState<BlogPerformanceResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { ref: chartWrapperRef, size: chartSize } = useElementSize();
 
   const fetchPerformance = async (range: string, dateStr?: string) => {
     try {
@@ -150,15 +177,16 @@ const PerformanceChart = () => {
         </div>
       </div>
 
-      <div className={styles.chartWrapper}>
+      <div className={styles.chartWrapper} ref={chartWrapperRef}>
         {loading && !performanceData ? (
           <Skeleton variant="rectangular" width="100%" height="100%" />
         ) : error ? (
           <div className={styles.errorState}>{error}</div>
-        ) : performanceData ? (
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        ) : performanceData && chartSize.width > 0 && chartSize.height > 0 ? (
             <AreaChart
               data={performanceData.series}
+              width={chartSize.width}
+              height={chartSize.height}
             margin={{ top: 5, right: 10, left: -15, bottom: 0 }}
           >
             <defs>
@@ -212,7 +240,6 @@ const PerformanceChart = () => {
               dot={false} activeDot={{ r: 5, strokeWidth: 0, fill: '#10B981' }}
             />
           </AreaChart>
-        </ResponsiveContainer>
         ) : null}
       </div>
     </div>

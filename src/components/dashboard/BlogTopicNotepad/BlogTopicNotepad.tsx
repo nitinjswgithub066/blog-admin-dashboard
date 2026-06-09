@@ -26,10 +26,12 @@ const BlogTopicNotepad: React.FC = () => {
   const fetchTopics = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await dashboardService.getTopicNotes();
       setTopics(data);
     } catch (err: any) {
-      console.error(err);
+      setError(err.message || 'Failed to load topic ideas.');
+      setTopics([]);
     } finally {
       setLoading(false);
     }

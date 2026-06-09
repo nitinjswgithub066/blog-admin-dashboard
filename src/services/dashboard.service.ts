@@ -91,7 +91,7 @@ const fetchDashboardData = async <T>(endpoint: string): Promise<T> => {
     try {
       const errJson = await response.json();
       errorMsg = errJson.message || errorMsg;
-    } catch (e) {
+    } catch {
       // Ignore JSON parse error on error response
     }
     throw new Error(errorMsg);
