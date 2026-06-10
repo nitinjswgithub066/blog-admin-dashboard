@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiTrash2, FiPlus, FiCheck, FiBookOpen } from 'react-icons/fi';
-import { STORAGE_KEYS } from '../../../constants/storageKeys';
-import type { BlogTopicIdea } from '../../../types';
+import { dashboardService } from '../../../services/dashboard.service';
+import type { BlogTopicIdea } from '../../../services/dashboard.service';
 import styles from './BlogTopicNotepad.module.css';
 
 const DEFAULT_CATEGORIES = [
@@ -14,55 +14,60 @@ const BlogTopicNotepad: React.FC = () => {
   const [topics, setTopics] = useState<BlogTopicIdea[]>([]);
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState('');
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize from local storage
+  const activeCount = topics.filter(t => !t.isCompleted).length;
+
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.BLOG_TOPIC_IDEAS);
-    if (saved) {
-      try {
-        setTopics(JSON.parse(saved));
-      } catch (e) {
-        setTopics([]);
-      }
-    } else {
-      setTopics([]);
-    }
-    setIsLoaded(true);
+    fetchTopics();
   }, []);
 
-  // Save to local storage
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(STORAGE_KEYS.BLOG_TOPIC_IDEAS, JSON.stringify(topics));
+  const fetchTopics = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await dashboardService.getTopicNotes();
+      setTopics(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load topic ideas.');
+      setTopics([]);
+    } finally {
+      setLoading(false);
     }
-  }, [topics, isLoaded]);
+  };
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() || topics.length >= 5) return;
+    if (!newTitle.trim() || activeCount >= 5) return;
 
-    const newTopic: BlogTopicIdea = {
-      id: crypto.randomUUID(),
-      title: newTitle.trim(),
-      category: newCategory || undefined,
-      createdAt: new Date().toISOString(),
-      completed: false
-    };
-
-    setTopics([newTopic, ...topics]);
-    setNewTitle('');
-    setNewCategory('');
+    setError(null);
+    try {
+      const newTopic = await dashboardService.createTopicNote(newTitle.trim(), newCategory || undefined);
+      setTopics([newTopic, ...topics]);
+      setNewTitle('');
+      setNewCategory('');
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setTopics(topics.filter(t => t.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await dashboardService.deleteTopicNote(id);
+      setTopics(topics.filter(t => t.id !== id));
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const toggleCompleted = (id: string) => {
-    setTopics(topics.map(t => 
-      t.id === id ? { ...t, completed: !t.completed } : t
-    ));
+  const toggleCompleted = async (topic: BlogTopicIdea) => {
+    try {
+      const updated = await dashboardService.updateTopicNote(topic.id, !topic.isCompleted);
+      setTopics(topics.map(t => t.id === topic.id ? updated : t));
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -80,7 +85,7 @@ const BlogTopicNotepad: React.FC = () => {
             placeholder="Write next blog topic..."
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
-            disabled={topics.length >= 5}
+            disabled={activeCount >= 5}
             maxLength={100}
           />
         </div>
@@ -88,9 +93,10 @@ const BlogTopicNotepad: React.FC = () => {
         <div className={styles.actionsRow}>
           <select
             className={styles.select}
+            aria-label="Topic category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            disabled={topics.length >= 5}
+            disabled={activeCount >= 5}
           >
             <option className={styles.option} value="">Category</option>
             {DEFAULT_CATEGORIES.map(cat => (
@@ -100,14 +106,14 @@ const BlogTopicNotepad: React.FC = () => {
           
           <div className={styles.actionsRight}>
             <AnimatePresence>
-              {topics.length >= 5 && (
+              {(activeCount >= 5 || error) && (
                 <motion.span 
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
-                  className={styles.limitMsg}
+                  className={`${styles.limitMsg} ${error ? styles.errorMsg : ''}`}
                 >
-                  Maximum 5 blog ideas allowed.
+                  {error || "Maximum 5 active blog ideas allowed."}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -115,7 +121,7 @@ const BlogTopicNotepad: React.FC = () => {
             <button 
               type="submit" 
               className={styles.addBtn}
-              disabled={!newTitle.trim() || topics.length >= 5}
+              disabled={!newTitle.trim() || activeCount >= 5}
             >
               <FiPlus /> Add Topic
             </button>
@@ -132,16 +138,16 @@ const BlogTopicNotepad: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className={`${styles.topicItem} ${topic.completed ? styles.completed : ''}`}
+              className={`${styles.topicItem} ${topic.isCompleted ? styles.completed : ''}`}
             >
               <div className={styles.itemMain}>
                 <button 
                   className={styles.checkBtn}
-                  onClick={() => toggleCompleted(topic.id)}
+                  onClick={() => toggleCompleted(topic)}
                   aria-label="Mark complete"
                 >
                   <div className={styles.checkbox}>
-                    {topic.completed && <FiCheck size={12} />}
+                    {topic.isCompleted && <FiCheck size={12} />}
                   </div>
                 </button>
                 
@@ -149,10 +155,10 @@ const BlogTopicNotepad: React.FC = () => {
                   <span className={styles.topicTitle}>{topic.title}</span>
                   <div className={styles.itemMeta}>
                     {topic.category && (
-                      <span className={styles.badge}>{topic.category}</span>
+                      <span className={styles.badge}>{typeof topic.category === 'string' ? topic.category : topic.category.name}</span>
                     )}
                     {topic.category && <span className={styles.dot}>·</span>}
-                    <span className={styles.date}>Today</span>
+                    <span className={styles.date}>{new Date(topic.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
@@ -168,7 +174,9 @@ const BlogTopicNotepad: React.FC = () => {
           ))}
         </AnimatePresence>
         
-        {topics.length === 0 && (
+        {loading ? (
+          <div className={styles.loadingState}>Loading topics...</div>
+        ) : topics.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -180,7 +188,7 @@ const BlogTopicNotepad: React.FC = () => {
             <p className={styles.emptyTitle}>No ideas saved yet</p>
             <p className={styles.emptyHint}>Write a topic above and save it before you forget.</p>
           </motion.div>
-        )}
+        ) : null}
       </div>
     </div>
   );

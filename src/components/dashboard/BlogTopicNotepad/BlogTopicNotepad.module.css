@@ -137,6 +137,10 @@
   font-weight: 500;
 }
 
+.errorMsg {
+  color: #EF4444;
+}
+
 /* ── Topic List ── */
 .topicList {
   display: flex;
@@ -154,6 +158,13 @@
 .topicList::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 4px;
+}
+
+.loadingState {
+  text-align: center;
+  padding: 2rem 0;
+  color: #9CA3AF;
+  font-size: 13px;
 }
 
 .topicItem {

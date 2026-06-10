@@ -1,8 +1,7 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import type { PieLabelRenderProps } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { HiTrendingUp, HiLightBulb, HiStar } from 'react-icons/hi';
-import { mockPieChartData } from '../../../data/dashboardData';
-import { useMediaQuery } from '../../../hooks';
+import { useDashboardStore } from '../../../store/dashboardStore';
+import Skeleton from '../../ui/Skeleton/Skeleton';
 import styles from './SearchTrafficCard.module.css';
 
 const COLORS = [
@@ -11,40 +10,47 @@ const COLORS = [
   '#F97316', '#94A3B8',
 ];
 
-const total = mockPieChartData.reduce((s, d) => s + (d.value ?? 0), 0);
-const sorted = [...mockPieChartData].sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+const CHART_SIZE = 220;
 
-// Compute insights from data
-const topCategory  = sorted[0];
-const secondCategory = sorted[1];
+const formatShare = (score: number, total: number) => {
+  if (total <= 0) return '0%';
+  return `${((score / total) * 100).toFixed(1)}%`;
+};
 
-// Mock growth — in production this would come from analytics API
-const growthMock = { name: 'Startups', pct: '+18%' };
-const suggested   = `${topCategory?.name} / ${secondCategory?.name}`;
+const colorClass = (index: number) => styles[`color${index % COLORS.length}` as keyof typeof styles] || '';
 
-// Inline label — only shown when there's enough room
-const RADIAN = Math.PI / 180;
-const renderLabel = (props: PieLabelRenderProps) => {
-  const { cx, cy, midAngle, innerRadius, outerRadius, percent, name } = props;
-  if ((percent ?? 0) < 0.07) return null;
-  const r = (Number(innerRadius ?? 0) + Number(outerRadius ?? 0)) * 0.5;
-  const x = Number(cx ?? 0) + r * Math.cos(-Number(midAngle ?? 0) * RADIAN);
-  const y = Number(cy ?? 0) + r * Math.sin(-Number(midAngle ?? 0) * RADIAN);
-  const short = String(name ?? '').split(' ')[0].slice(0, 5);
+type TrendTooltipPayload = Array<{
+  value?: number;
+  name?: string;
+  payload?: {
+    totalScore?: number;
+  };
+}>;
+
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TrendTooltipPayload }) => {
+  if (!active || !payload?.length) return null;
+
+  const value = typeof payload[0]?.value === 'number' ? payload[0].value : 0;
+  const totalValue = payload[0]?.payload?.totalScore || 0;
+
   return (
-    <text x={x} y={y} fill="#fff" textAnchor="middle"
-      dominantBaseline="central" fontSize={10} fontWeight={600}>
-      {short}
-    </text>
+    <div className={styles.tooltip}>
+      <div className={styles.tooltipTitle}>{payload[0]?.name}</div>
+      <div className={styles.tooltipValue}>{formatShare(value, totalValue)} - Score: {value.toLocaleString()}</div>
+    </div>
   );
 };
 
 const SearchTrafficCard = () => {
-  const isMobile = useMediaQuery('(max-width: 767px)');
+  const { data, isLoading, error } = useDashboardStore();
+
+  const searchTrends = data?.searchTrends;
+  const chartData = searchTrends?.chart || [];
+  const total = chartData.reduce((s, d) => s + (d.score ?? 0), 0);
+  const chartWithTotal = chartData.map((entry) => ({ ...entry, totalScore: total }));
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <h3 className={styles.title}>Google Daily Search Trends</h3>
         <p className={styles.subtitle}>
@@ -52,84 +58,91 @@ const SearchTrafficCard = () => {
         </p>
       </div>
 
-      {/* Donut chart */}
-      <div className={styles.chartArea}>
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-          <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-            <Pie
-              data={mockPieChartData}
-              cx="50%"
-              cy="50%"
-              innerRadius="35%"
-              outerRadius="70%"
-              paddingAngle={2}
-              dataKey="value"
-              stroke="none"
-              labelLine={false}
-              label={!isMobile ? renderLabel : false}
-            >
-              {mockPieChartData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                background: 'var(--bg-secondary, #0d1f38)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '10px',
-                color: 'var(--text-primary)',
-                fontSize: '12px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-              }}
-              itemStyle={{ color: 'var(--text-primary)' }}
-              formatter={(value, name) => {
-                const v = typeof value === 'number' ? value : 0;
-                return [
-                  `${((v / total) * 100).toFixed(1)}%  ·  ${v.toLocaleString()} views`,
-                  String(name),
-                ] as [string, string];
-              }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Mobile-only compact legend */}
-      {isMobile && (
-        <div className={styles.mobileLegend}>
-          {mockPieChartData.map((entry, i) => (
-            <div key={entry.name} className={styles.legendItem}>
-              <span className={styles.legendDot} style={{ background: COLORS[i % COLORS.length] }} />
-              <span className={styles.legendName}>{String(entry.name ?? '').split(' ')[0]}</span>
+      {isLoading && !data ? (
+        <div className={styles.loadingState}>
+          <Skeleton height="150px" width="150px" variant="circular" className={styles.skeletonCenter} />
+          <Skeleton height="20px" width="100%" />
+          <Skeleton height="20px" width="100%" />
+        </div>
+      ) : error ? (
+        <div className={styles.messageState}>
+          {error}
+        </div>
+      ) : !searchTrends || chartData.length === 0 ? (
+        <div className={styles.emptyState}>
+          No trend data yet.
+        </div>
+      ) : (
+        <>
+          <div className={styles.chartPanel}>
+            <div className={styles.chartArea}>
+              <PieChart width={CHART_SIZE} height={CHART_SIZE} margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+                <Pie
+                  data={chartWithTotal}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={46}
+                  outerRadius={90}
+                  paddingAngle={2}
+                  dataKey="score"
+                  nameKey="label"
+                  stroke="var(--bg-primary)"
+                  strokeWidth={2}
+                  labelLine={false}
+                  label={false}
+                  isAnimationActive={false}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${entry.category}-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* Insight strip */}
-      <div className={styles.insights}>
-        <div className={styles.insight}>
-          <HiStar className={styles.insightIcon} style={{ color: '#F59E0B' }} />
-          <div>
-            <div className={styles.insightLabel}>Top Category</div>
-            <div className={styles.insightValue}>{topCategory?.name}</div>
+            <div className={styles.legend} aria-label="Search trend categories">
+              {chartData.map((entry, i) => (
+                <div key={entry.category} className={styles.legendItem} title={entry.category}>
+                  <span className={`${styles.legendDot} ${colorClass(i)}`} />
+                  <span className={styles.legendName}>{entry.label}</span>
+                  <span className={styles.legendValue}>{formatShare(entry.score, total)}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className={styles.insight}>
-          <HiTrendingUp className={styles.insightIcon} style={{ color: '#10B981' }} />
-          <div>
-            <div className={styles.insightLabel}>Fastest Growing</div>
-            <div className={styles.insightValue}>{growthMock.name} <span className={styles.pct}>{growthMock.pct}</span></div>
+
+          <div className={styles.insights}>
+            <div className={styles.insight}>
+              <HiStar className={`${styles.insightIcon} ${styles.topIcon}`} />
+              <div>
+                <div className={styles.insightLabel}>Top Category</div>
+                <div className={styles.insightValue}>{searchTrends.topCategory?.category || '-'}</div>
+              </div>
+            </div>
+            <div className={styles.insight}>
+              <HiTrendingUp className={`${styles.insightIcon} ${styles.growthIcon}`} />
+              <div>
+                <div className={styles.insightLabel}>Fastest Growing</div>
+                <div className={styles.insightValue}>
+                  {searchTrends.fastestGrowing?.category || '-'}
+                  {searchTrends.fastestGrowing && (
+                    <span className={styles.pct}>+{searchTrends.fastestGrowing.growth.toFixed(0)}%</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className={styles.insight}>
+              <HiLightBulb className={`${styles.insightIcon} ${styles.ideaIcon}`} />
+              <div>
+                <div className={styles.insightLabel}>Suggested Next</div>
+                <div className={styles.insightValue} title={searchTrends.suggestedNext?.reason}>
+                  {searchTrends.suggestedNext?.title || '-'}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className={styles.insight}>
-          <HiLightBulb className={styles.insightIcon} style={{ color: '#6D5DF6' }} />
-          <div>
-            <div className={styles.insightLabel}>Suggested Next</div>
-            <div className={styles.insightValue}>{suggested}</div>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

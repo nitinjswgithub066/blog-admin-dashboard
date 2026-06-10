@@ -45,7 +45,7 @@ const BudgetBoxBlock: React.FC<BudgetBoxBlockProps> = ({
             <div className={styles.breakdownValue}>$500</div>
           </div>
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: '40%' }}></div>
+            <div className={`${styles.progressFill} ${styles.progressAccommodation}`}></div>
           </div>
         </div>
 
@@ -55,7 +55,7 @@ const BudgetBoxBlock: React.FC<BudgetBoxBlockProps> = ({
             <div className={styles.breakdownValue}>$350</div>
           </div>
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: '28%' }}></div>
+            <div className={`${styles.progressFill} ${styles.progressFood}`}></div>
           </div>
         </div>
 
@@ -65,7 +65,7 @@ const BudgetBoxBlock: React.FC<BudgetBoxBlockProps> = ({
             <div className={styles.breakdownValue}>$250</div>
           </div>
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: '20%' }}></div>
+            <div className={`${styles.progressFill} ${styles.progressActivities}`}></div>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ const BudgetBoxBlock: React.FC<BudgetBoxBlockProps> = ({
             <div className={styles.breakdownValue}>$150</div>
           </div>
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: '12%' }}></div>
+            <div className={`${styles.progressFill} ${styles.progressTransport}`}></div>
           </div>
         </div>
       </div>

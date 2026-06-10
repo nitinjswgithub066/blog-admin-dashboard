@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import type { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form';
-import { FiImage, FiX, FiClock, FiCalendar } from 'react-icons/fi';
+import { FiImage, FiX, FiClock, FiCalendar, FiTrash2 } from 'react-icons/fi';
 import { slugify } from '../../../utils/slugify';
 import type { AdminCategory } from '../../../types/category.types';
 import type { PostFormData } from '../../../pages/create-post/CreatePostPage';
@@ -12,7 +12,9 @@ interface PostDetailsPanelProps {
   watch: UseFormWatch<PostFormData>;
   setValue: UseFormSetValue<PostFormData>;
   categories: AdminCategory[];
-  onAddCategory: (name: string) => void;
+  onAddCategory: (name: string) => Promise<void> | void;
+  onDeleteCategory?: (id: string) => Promise<void> | void;
+  onUploadCoverImage: (file: File) => Promise<void>;
   onSaveDraft: () => void;
   onReset: () => void;
   onBack?: () => void;
@@ -25,25 +27,46 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
   setValue,
   categories,
   onAddCategory,
+  onDeleteCategory,
+  onUploadCoverImage,
   onSaveDraft,
   onReset,
   onBack
 }) => {
   const [newCat, setNewCat] = useState('');
   const [tagInput, setTagInput] = useState('');
+  const [categoryMessage, setCategoryMessage] = useState('');
   
   const heading = watch('title');
+  const selectedCategoryId = watch('category');
   const tags = watch('tags') || [];
   const coverImage = watch('coverImage');
   const status = watch('status') || 'draft';
+  const subtitle = watch('subtitle') || '';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const selectedCategory = categories.find((category) => category.id === selectedCategoryId);
   const slugPreview = heading ? slugify(heading) : 'auto-generated-slug';
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (newCat.trim()) {
-      onAddCategory(newCat.trim());
+      setCategoryMessage('');
+      await onAddCategory(newCat.trim());
       setNewCat('');
+    }
+  };
+
+  const handleDeleteSelectedCategory = async () => {
+    if (!selectedCategory || !onDeleteCategory) return;
+    const confirmed = window.confirm(`Delete category "${selectedCategory.name}"?`);
+    if (!confirmed) return;
+
+    setCategoryMessage('');
+    try {
+      await onDeleteCategory(selectedCategory.id);
+      setCategoryMessage('Category deleted successfully.');
+    } catch (error) {
+      setCategoryMessage(error instanceof Error ? error.message : 'Failed to delete category.');
     }
   };
 
@@ -51,7 +74,10 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
     if (e.key === 'Enter') {
       e.preventDefault();
       const val = tagInput.trim();
-      if (val && !tags.includes(val)) {
+      if (tags.length >= 10) {
+        return;
+      }
+      if (val && !tags.some((tag: string) => tag.toLowerCase() === val.toLowerCase())) {
         setValue('tags', [...tags, val]);
         setTagInput('');
       }
@@ -65,8 +91,7 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setValue('coverImage', url);
+      onUploadCoverImage(file);
     }
   };
 
@@ -79,15 +104,16 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
   return (
     <div className={styles.panel}>
       <div className={styles.panelScroll}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div className={styles.panelContent}>
           
           {/* 1. Post Basics (Visible) */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Post Details</h3>
             
             <div className={styles.formGroup}>
-              <label className={styles.label}>Post Heading</label>
+              <label className={styles.label} htmlFor="post-heading">Post Heading</label>
               <input 
+                id="post-heading"
                 className={styles.input} 
                 placeholder="Enter blog post heading..." 
                 {...register('title')} 
@@ -98,17 +124,20 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
             <div className={styles.formGroup}>
               <label className={styles.label}>SEO Slug Preview</label>
               <div className={styles.slugPreview}>
-                /category/{slugPreview}
+                /{selectedCategory?.slug || 'category'}/{slugPreview}
               </div>
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Post Subheading</label>
+              <label className={styles.label} htmlFor="post-subheading">Post Subheading</label>
               <textarea 
+                id="post-subheading"
                 className={styles.textarea} 
                 placeholder="Write a short summary for this post..." 
+                maxLength={450}
                 {...register('subtitle')} 
               />
+              <span className={styles.charCount}>{subtitle.length}/450</span>
               {errors.subtitle && <span className={styles.errorText}>{errors.subtitle.message as string}</span>}
             </div>
           </div>
@@ -129,6 +158,7 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
                 </div>
               )}
               <input 
+                aria-label="Upload cover image"
                 type="file" 
                 accept="image/*" 
                 className={styles.hiddenInput} 
@@ -152,18 +182,38 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
             <h3 className={styles.sectionTitle}>Organization</h3>
             
             <div className={styles.formGroup}>
-              <label className={styles.label}>Category</label>
-              <select className={styles.select} {...register('category')}>
-                <option value="">Select a category</option>
-                {categories.map(c => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
-                ))}
-              </select>
+              <label className={styles.label} htmlFor="post-category">Category</label>
+              <div className={styles.selectActionRow}>
+                <select id="post-category" className={styles.select} {...register('category')}>
+                  <option value="">Select a category</option>
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                {selectedCategory && onDeleteCategory && (
+                  <button
+                    type="button"
+                    className={styles.deleteCategoryIconBtn}
+                    title={`Delete ${selectedCategory.name}`}
+                    aria-label={`Delete category ${selectedCategory.name}`}
+                    onClick={handleDeleteSelectedCategory}
+                  >
+                    <FiTrash2 />
+                  </button>
+                )}
+              </div>
+              {categoryMessage && (
+                <span className={`${styles.categoryMessage} ${categoryMessage.includes('used by posts') ? styles.categoryError : ''}`}>
+                  {categoryMessage}
+                </span>
+              )}
               {errors.category && <span className={styles.errorText}>{errors.category.message as string}</span>}
             </div>
             
             <div className={styles.addCategoryRow}>
               <input 
+                id="new-category"
+                aria-label="Add new category"
                 type="text" 
                 className={styles.input} 
                 placeholder="Add new category" 
@@ -180,8 +230,9 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Tags</label>
+              <label className={styles.label} htmlFor="post-tags">Tags ({tags.length}/10)</label>
               <input 
+                id="post-tags"
                 type="text" 
                 className={styles.input} 
                 placeholder="Type tag and press Enter" 
@@ -194,7 +245,13 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
                   {tags.map((tag: string) => (
                     <span key={tag} className={styles.tagChip}>
                       {tag}
-                      <button type="button" className={styles.removeTagBtn} onClick={() => removeTag(tag)}>
+                      <button
+                        type="button"
+                        className={styles.removeTagBtn}
+                        title={`Remove tag ${tag}`}
+                        aria-label={`Remove tag ${tag}`}
+                        onClick={() => removeTag(tag)}
+                      >
                         <FiX />
                       </button>
                     </span>
@@ -209,8 +266,8 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
             <h3 className={styles.sectionTitle}>Publishing Options</h3>
             
             <div className={styles.formGroup}>
-              <label className={styles.label}>Status</label>
-              <select className={styles.select} {...register('status')}>
+              <label className={styles.label} htmlFor="post-status">Status</label>
+              <select id="post-status" className={styles.select} {...register('status')}>
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
                 <option value="scheduled">Scheduled</option>
@@ -220,12 +277,12 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
             {status === 'scheduled' && (
               <div className={styles.scheduleGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}><FiCalendar style={{ display: 'inline' }} /> Date</label>
-                  <input type="date" className={styles.input} />
+                  <label className={styles.label} htmlFor="scheduled-date"><FiCalendar className={styles.labelIcon} /> Date</label>
+                  <input id="scheduled-date" type="date" className={styles.input} {...register('scheduledDate')} />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}><FiClock style={{ display: 'inline' }} /> Time</label>
-                  <input type="time" className={styles.input} />
+                  <label className={styles.label} htmlFor="scheduled-time"><FiClock className={styles.labelIcon} /> Time</label>
+                  <input id="scheduled-time" type="time" className={styles.input} {...register('scheduledTime')} />
                 </div>
               </div>
             )}

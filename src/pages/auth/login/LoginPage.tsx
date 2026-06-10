@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -6,6 +6,9 @@ import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
+import { useAuth } from '../../../context/AuthContext';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -16,6 +19,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
+  const [serverError, setServerError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -25,11 +30,31 @@ const LoginPage: React.FC = () => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Login data:', data);
-    // Navigate to dashboard after login (to be implemented later)
-    navigate('/dashboard');
+    setServerError(null);
+    try {
+      const response = await fetch(API_BASE_URL + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Important: allows cookie to be set
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setServerError(json.message || 'Login failed. Please check your credentials.');
+        return;
+      }
+
+      // Update auth context state with the returned admin object
+      if (json.data && json.data.admin) {
+        setAuth(json.data.admin);
+      }
+      
+      navigate('/dashboard');
+    } catch {
+      setServerError('Unable to reach the server. Please make sure the backend is running.');
+    }
   };
 
   return (
@@ -120,6 +145,24 @@ const LoginPage: React.FC = () => {
               Forgot password?
             </Link>
           </motion.div>
+
+          {serverError && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'rgba(239,68,68,0.12)',
+                border: '1px solid rgba(239,68,68,0.4)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                color: '#FCA5A5',
+                fontSize: '13px',
+                marginBottom: '4px',
+              }}
+            >
+              {serverError}
+            </motion.div>
+          )}
 
           <motion.button
             type="submit"

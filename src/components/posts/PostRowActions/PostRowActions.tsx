@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiMoreVertical, FiEdit3, FiEye, FiCopy, FiArchive, FiTrash2 } from 'react-icons/fi';
+import { FiMoreVertical, FiEdit3, FiEye, FiCopy, FiArchive, FiTrash2, FiRotateCcw } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PostRowActions.module.css';
 
@@ -9,10 +9,12 @@ interface PostRowActionsProps {
   onDuplicate: () => void;
   onArchive: () => void;
   onDelete: () => void;
+  onRestore?: () => void;
+  isArchived?: boolean;
 }
 
 const PostRowActions: React.FC<PostRowActionsProps> = ({
-  onEdit, onPreview, onDuplicate, onArchive, onDelete
+  onEdit, onPreview, onDuplicate, onArchive, onDelete, onRestore, isArchived = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -61,9 +63,15 @@ const PostRowActions: React.FC<PostRowActionsProps> = ({
               <FiCopy /> Duplicate
             </button>
             <div className={styles.divider} />
-            <button className={styles.menuItem} onClick={() => handleAction(onArchive)}>
-              <FiArchive /> Archive
-            </button>
+            {isArchived && onRestore ? (
+              <button className={styles.menuItem} onClick={() => handleAction(onRestore)}>
+                <FiRotateCcw /> Restore
+              </button>
+            ) : (
+              <button className={styles.menuItem} onClick={() => handleAction(onArchive)}>
+                <FiArchive /> Archive
+              </button>
+            )}
             <button className={`${styles.menuItem} ${styles.danger}`} onClick={() => handleAction(onDelete)}>
               <FiTrash2 /> Delete
             </button>

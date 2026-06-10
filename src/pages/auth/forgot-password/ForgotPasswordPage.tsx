@@ -7,6 +7,8 @@ import { FiMail, FiSend, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import styles from './ForgotPasswordPage.module.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
 });
@@ -15,6 +17,8 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPasswordPage: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('We have sent a password reset link to your email address.');
 
   const {
     register,
@@ -25,10 +29,27 @@ const ForgotPasswordPage: React.FC = () => {
   });
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Password reset requested for:', data.email);
-    setIsSuccess(true);
+    setServerError(null);
+    try {
+      const response = await fetch(API_BASE_URL + '/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: data.email }),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setServerError(json.message || 'Unable to send reset link. Please try again.');
+        return;
+      }
+
+      setSuccessMessage(json.message || 'We have sent a password reset link to your email address.');
+      setIsSuccess(true);
+    } catch {
+      setServerError('Unable to reach the server. Please make sure the backend is running.');
+    }
   };
 
   return (
@@ -96,6 +117,16 @@ const ForgotPasswordPage: React.FC = () => {
                   {errors.email && <span className={styles.errorText}>{errors.email.message}</span>}
                 </motion.div>
 
+                {serverError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={styles.serverError}
+                  >
+                    {serverError}
+                  </motion.div>
+                )}
+
                 <motion.button
                   type="submit"
                   className={styles.submitBtn}
@@ -122,7 +153,7 @@ const ForgotPasswordPage: React.FC = () => {
               <FiCheckCircle className={styles.successIcon} />
               <h2 className={styles.successTitle}>Check your inbox</h2>
               <p className={styles.successText}>
-                We have sent a password reset link to your email address.
+                {successMessage}
               </p>
             </motion.div>
           )}
@@ -134,7 +165,7 @@ const ForgotPasswordPage: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          <Link to="/auth/login" className={styles.footerLink} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginLeft: 0 }}>
+          <Link to="/auth/login" className={`${styles.footerLink} ${styles.backLink}`}>
             <FiArrowLeft /> Back to Login
           </Link>
         </motion.div>

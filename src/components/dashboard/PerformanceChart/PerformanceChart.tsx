@@ -1,19 +1,16 @@
 /* eslint-disable */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  CartesianGrid, Tooltip, Legend
 } from 'recharts';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import FilterTabs from '../../ui/FilterTabs';
 import type { FilterTab } from '../../ui/FilterTabs';
-import {
-  generateDailyData,
-  generateWeeklyData,
-  generateMonthlyData,
-  generateYearlyData,
-} from '../../../data/dashboardData';
+import { dashboardService } from '../../../services/dashboard.service';
+import type { BlogPerformanceResponse } from '../../../services/dashboard.service';
 import styles from './PerformanceChart.module.css';
+import Skeleton from '../../ui/Skeleton/Skeleton';
 
 type FilterId = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -24,22 +21,48 @@ const TABS: FilterTab[] = [
   { id: 'yearly',  label: 'Yearly'  },
 ];
 
+const useElementSize = () => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const updateSize = () => {
+      const rect = element.getBoundingClientRect();
+      setSize({
+        width: Math.floor(rect.width),
+        height: Math.floor(rect.height),
+      });
+    };
+
+    updateSize();
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(element);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  return { ref, size };
+};
+
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
       <div className={styles.customTooltip}>
-        <p className={styles.tooltipLabel}>{data.timestamp}</p>
+        <p className={styles.tooltipLabel}>{data.label}</p>
         <div className={styles.tooltipMetrics}>
           <div className={styles.tooltipRow}>
-            <span className={styles.tooltipDot} style={{ background: '#10B981' }}></span>
+            <span className={`${styles.tooltipDot} ${styles.clicksDot}`}></span>
             <span className={styles.tooltipName}>Clicks:</span>
             <span className={styles.tooltipValue}>
               {payload.find((p: any) => p.dataKey === 'clicks')?.value?.toLocaleString() || 0}
             </span>
           </div>
           <div className={styles.tooltipRow}>
-            <span className={styles.tooltipDot} style={{ background: '#6D5DF6' }}></span>
+            <span className={`${styles.tooltipDot} ${styles.trafficDot}`}></span>
             <span className={styles.tooltipName}>Traffic:</span>
             <span className={styles.tooltipValue}>
               {payload.find((p: any) => p.dataKey === 'traffic')?.value?.toLocaleString() || 0}
@@ -54,49 +77,64 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] 
 
 const PerformanceChart = () => {
   const [filter, setFilter] = useState<FilterId>('daily');
-  const [offset, setOffset] = useState(0);
+  const [currentDate, setCurrentDate] = useState<string | undefined>(undefined);
+  const [performanceData, setPerformanceData] = useState<BlogPerformanceResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { ref: chartWrapperRef, size: chartSize } = useElementSize();
+
+  const fetchPerformance = async (range: string, dateStr?: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await dashboardService.getBlogPerformance(range, dateStr);
+      setPerformanceData(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load performance data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPerformance(filter, currentDate);
+    
+    // Polling intervals
+    const intervalMs = filter === 'daily' ? 60000 : 120000;
+    const intervalId = setInterval(() => {
+      fetchPerformance(filter, currentDate);
+    }, intervalMs);
+    
+    return () => clearInterval(intervalId);
+  }, [filter, currentDate]);
 
   const handleFilterChange = (id: string) => {
     setFilter(id as FilterId);
-    setOffset(0);
+    setCurrentDate(undefined); // reset to latest when changing filter
   };
 
-  const { data, label, canPrev, canNext } = useMemo(() => {
-    let d;
-    let l = '';
-    let p = true;
-    const n = offset > 0;
-
-    switch (filter) {
-      case 'daily':
-        d = generateDailyData(offset);
-        l = offset === 0 ? 'Today' : offset === 1 ? 'Yesterday' : `${offset} days ago`;
-        p = offset < 7;
-        break;
-      case 'weekly':
-        d = generateWeeklyData(offset);
-        l = offset === 0 ? 'This Week' : offset === 1 ? 'Previous Week' : `${offset} Weeks Ago`;
-        p = offset < 12; // Arbitrary limit for mock data
-        break;
-      case 'monthly':
-        d = generateMonthlyData(offset);
-        l = offset === 0 ? 'This Month' : offset === 1 ? 'Previous Month' : `${offset} Months Ago`;
-        p = offset < 12; // Arbitrary limit for mock data
-        break;
-      case 'yearly':
-        d = generateYearlyData(offset);
-        l = offset === 0 ? 'This Year' : 'Previous Year';
-        p = offset < 1; // Only this year and previous year
-        break;
+  const handlePrev = () => {
+    if (performanceData?.navigation.previousDate) {
+      setCurrentDate(performanceData.navigation.previousDate);
     }
+  };
 
-    return { data: d, label: l, canPrev: p, canNext: n };
-  }, [filter, offset]);
+  const handleNext = () => {
+    if (performanceData?.navigation.nextDate) {
+      setCurrentDate(performanceData.navigation.nextDate);
+    }
+  };
 
-  // Extract clean ticks that we want to show on the X-axis
   const activeTicks = useMemo(() => {
-    return data.filter(d => d.name !== '').map(d => d.name);
-  }, [data]);
+    if (!performanceData) return [];
+    const rawTicks = performanceData.series.filter(d => d.label !== '').map(d => d.label);
+    
+    // For daily range with 24 hours, only show every 4th hour to prevent label overlapping
+    if (performanceData.range === 'daily' && rawTicks.length > 12) {
+      return rawTicks.filter((_, idx) => idx % 4 === 0 || idx === rawTicks.length - 1);
+    }
+    return rawTicks;
+  }, [performanceData]);
 
   return (
     <div className={styles.performanceCard}>
@@ -110,17 +148,19 @@ const PerformanceChart = () => {
           <div className={styles.periodControl}>
             <button
               className={styles.navBtn}
-              onClick={() => setOffset(i => i + 1)}
-              disabled={!canPrev}
+              onClick={handlePrev}
+              disabled={!performanceData?.navigation.previousDate || loading}
               aria-label="Previous period"
             >
               <MdChevronLeft />
             </button>
-            <span className={styles.periodLabel}>{label}</span>
+            <span className={styles.periodLabel}>
+              {loading && !performanceData ? 'Loading...' : (performanceData?.currentLabel || '...')}
+            </span>
             <button
               className={styles.navBtn}
-              onClick={() => setOffset(i => i - 1)}
-              disabled={!canNext}
+              onClick={handleNext}
+              disabled={!performanceData?.navigation.nextDate || loading}
               aria-label="Next period"
             >
               <MdChevronRight />
@@ -137,10 +177,16 @@ const PerformanceChart = () => {
         </div>
       </div>
 
-      <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-          <AreaChart
-            data={data}
+      <div className={styles.chartWrapper} ref={chartWrapperRef}>
+        {loading && !performanceData ? (
+          <Skeleton variant="rectangular" width="100%" height="100%" />
+        ) : error ? (
+          <div className={styles.errorState}>{error}</div>
+        ) : performanceData && chartSize.width > 0 && chartSize.height > 0 ? (
+            <AreaChart
+              data={performanceData.series}
+              width={chartSize.width}
+              height={chartSize.height}
             margin={{ top: 5, right: 10, left: -15, bottom: 0 }}
           >
             <defs>
@@ -156,7 +202,7 @@ const PerformanceChart = () => {
 
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
             <XAxis 
-              dataKey="name" 
+              dataKey="label" 
               stroke="#9CA3AF" 
               fontSize={11} 
               tickLine={false} 
@@ -181,7 +227,6 @@ const PerformanceChart = () => {
               verticalAlign="top"
               height={28}
               iconType="circle"
-              wrapperStyle={{ fontSize: '11px', color: '#9CA3AF', paddingBottom: '8px' }}
             />
 
             <Area type="monotone" name="Traffic" dataKey="traffic"
@@ -195,7 +240,7 @@ const PerformanceChart = () => {
               dot={false} activeDot={{ r: 5, strokeWidth: 0, fill: '#10B981' }}
             />
           </AreaChart>
-        </ResponsiveContainer>
+        ) : null}
       </div>
     </div>
   );

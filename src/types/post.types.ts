@@ -1,4 +1,4 @@
-export type PostStatus = 'draft' | 'published' | 'scheduled' | 'archived';
+export type PostStatus = 'draft' | 'published' | 'scheduled' | 'archived' | 'deleted';
 
 export type AdminPost = {
   id: string;
@@ -6,12 +6,17 @@ export type AdminPost = {
   subtitle: string;
   slug: string;
   category: string;
+  categoryId?: string | null;
   categorySlug: string;
   tags: string[];
   contentType: 'text' | 'document';
   contentPreview: string;
   excerpt?: string;
   coverImage?: string;
+  coverImageUrl?: string | null;
+  coverImagePublicId?: string | null;
+  optimizedCoverUrl?: string | null;
+  optimizedThumbnailUrl?: string | null;
   author: string;
   status: PostStatus;
   readingTime: number;
@@ -21,6 +26,15 @@ export type AdminPost = {
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
+  scheduledAt?: string | null;
+  deletedAt?: string | null;
+  contentHtml?: string;
+  contentCss?: string | null;
+  contentJson?: unknown;
+  sourceType?: 'TEXT_EDITOR' | 'DOC_UPLOAD' | 'HTML_UPLOAD';
+  conversionStatus?: 'NONE' | 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  originalDocumentUrl?: string | null;
+  originalDocumentPublicId?: string | null;
 };
 
 export interface Post {

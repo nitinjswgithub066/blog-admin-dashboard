@@ -31,6 +31,12 @@
   gap: 1.25rem;
 }
 
+.panelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .sectionTitle {
   font-size: var(--font-size-md);
   font-weight: 600;
@@ -62,6 +68,10 @@
   gap: 0.25rem;
 }
 
+.labelIcon {
+  display: inline;
+}
+
 .input, .select, .textarea {
   width: 100%;
   background: var(--bg-primary);
@@ -73,6 +83,15 @@
   font-size: var(--font-size-sm);
   transition: border-color 0.2s ease;
   box-sizing: border-box;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%2318273d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 1.15rem center;
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  padding-right: 3.25rem;
 }
 
 .textarea {
@@ -89,6 +108,12 @@
   color: #EF4444;
   font-size: var(--font-size-xs);
   margin-top: 0.25rem;
+}
+
+.charCount {
+  align-self: flex-end;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
 }
 
 .slugPreview {
@@ -161,6 +186,47 @@
   gap: 0.5rem;
 }
 
+.selectActionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selectActionRow .select {
+  flex: 1;
+  min-width: 0;
+}
+
+.deleteCategoryIconBtn {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-md);
+  color: var(--danger, #ef4444);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.deleteCategoryIconBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.65);
+}
+
+.categoryMessage {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+.categoryError {
+  color: var(--danger, #ef4444);
+}
+
 .addCategoryBtn {
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -176,6 +242,17 @@
   background: var(--accent-primary);
   border-color: var(--accent-primary);
   color: white;
+}
+
+.deleteCategoryBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--danger, #ef4444);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
 }
 
 .tagsContainer {

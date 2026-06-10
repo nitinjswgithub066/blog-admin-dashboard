@@ -1,28 +1,183 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { FiClock, FiEye, FiEdit2, FiExternalLink, FiPlus, FiBookOpen } from 'react-icons/fi';
+import { FiArchive, FiClock, FiEye, FiEdit2, FiExternalLink, FiPlus, FiBookOpen, FiTrash2, FiRefreshCw, FiAlertCircle, FiRotateCcw } from 'react-icons/fi';
 import type { AdminPost } from '../../../types/post.types';
+import type { RecentPostFilter } from '../../../services/post.service';
 import { formatDate } from '../../../utils/formatDate';
 import styles from './RecentPostsPanel.module.css';
 
 interface RecentPostsPanelProps {
   posts: AdminPost[];
+  activeFilter: RecentPostFilter;
+  isLoading: boolean;
+  error: string;
   onWritePost: () => void;
+  onFilterChange: (filter: RecentPostFilter) => void;
+  onEditPost: (id: string) => void;
+  onPreviewPost: (id: string) => void;
+  onDeletePost: (id: string) => void;
+  onArchivePost: (id: string) => void;
+  onRestorePost: (id: string) => void;
 }
 
-const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({ posts, onWritePost }) => {
-  const [filter, setFilter] = useState('all');
+const categoryInitials: Record<string, string> = {
+  technology: 'TE',
+  ai: 'AI',
+  'web development': 'WD',
+  thoughts: 'TH',
+};
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+const getCategoryInitials = (category: string) => {
+  const normalized = category.trim().toLowerCase();
+  if (categoryInitials[normalized]) return categoryInitials[normalized];
+  return category
+    .split(/\s+/)
+    .map((word) => word[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'PO';
+};
 
-  const filteredPosts = posts.filter(post => {
-    // Only show posts from last 30 days
-    if (new Date(post.createdAt) < thirtyDaysAgo) return false;
-    
-    if (filter === 'all') return true;
-    return post.status === filter;
-  });
+const filters: { label: string; value: RecentPostFilter }[] = [
+  { label: 'All', value: 'all' },
+  { label: 'Published', value: 'published' },
+  { label: 'Draft', value: 'draft' },
+  { label: 'Scheduled', value: 'scheduled' },
+  { label: 'Archive', value: 'archive' },
+];
+
+const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({
+  posts,
+  activeFilter,
+  isLoading,
+  error,
+  onWritePost,
+  onFilterChange,
+  onEditPost,
+  onPreviewPost,
+  onDeletePost,
+  onArchivePost,
+  onRestorePost,
+}) => {
+  const renderState = () => {
+    if (isLoading) {
+      return (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateContent}>
+            <FiRefreshCw className={`${styles.emptyIcon} ${styles.spinIcon}`} />
+            <p>Loading recent posts...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className={`${styles.emptyState} ${styles.errorState}`}>
+          <div className={styles.emptyStateContent}>
+            <FiAlertCircle className={styles.emptyIcon} />
+            <p>{error}</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (posts.length === 0) {
+      return (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateContent}>
+            <FiBookOpen className={styles.emptyIcon} />
+            <p>{activeFilter === 'archive' ? 'No archived or deleted posts.' : 'No posts added in the last 30 days.'}</p>
+            <p>{activeFilter === 'archive' ? 'Deleted posts will appear here until cleanup.' : 'Click "Write Post" to create a new blog post.'}</p>
+          </div>
+        </div>
+      );
+    }
+
+    return posts.map((post, i) => (
+      <motion.div
+        key={post.id}
+        className={styles.card}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, delay: i * 0.05 }}
+      >
+        <div className={styles.cardImage}>
+          {post.optimizedCoverUrl || post.coverImage ? (
+            <img src={post.optimizedCoverUrl || post.coverImage} alt={post.title} />
+          ) : (
+            <div className={styles.imagePlaceholder}>
+              {getCategoryInitials(post.category)}
+            </div>
+          )}
+          <span className={`${styles.cardBadge} ${
+            post.status === 'published' ? styles.badgePublished :
+            post.status === 'scheduled' ? styles.badgeScheduled :
+            styles.badgeDraft
+          }`}>
+            {post.status}
+          </span>
+          {activeFilter !== 'archive' && (
+            <button
+              type="button"
+              className={styles.cardDeleteBtn}
+              title="Delete post"
+              aria-label={`Delete ${post.title}`}
+              onClick={() => onDeletePost(post.id)}
+            >
+              <FiTrash2 />
+            </button>
+          )}
+        </div>
+
+        <div className={styles.cardBody}>
+          <span className={styles.cardCategory}>{post.category}</span>
+          <h4 className={styles.cardTitle} title={post.title}>{post.title}</h4>
+
+          <div className={styles.cardMetrics}>
+            <span className={styles.metricItem}>
+              <FiClock /> {formatDate(post.createdAt)}
+            </span>
+            <span className={styles.metricItem}>
+              <FiEye /> {post.views}
+            </span>
+          </div>
+
+          <div className={styles.cardActions}>
+            <button type="button" className={styles.actionBtn} onClick={() => onEditPost(post.id)}>
+              <FiEdit2 /> Edit
+            </button>
+            <button type="button" className={styles.actionBtnSecondary} onClick={() => onPreviewPost(post.id)}>
+              <FiExternalLink /> Preview
+            </button>
+            {activeFilter === 'archive' ? (
+              <button
+                type="button"
+                className={styles.actionBtnSecondary}
+                title="Restore post"
+                aria-label={`Restore ${post.title}`}
+                onClick={() => onRestorePost(post.id)}
+              >
+                <FiRotateCcw />
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={styles.actionBtnSecondary}
+                  title="Archive post"
+                  aria-label={`Archive ${post.title}`}
+                  onClick={() => onArchivePost(post.id)}
+                >
+                  <FiArchive />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    ));
+  };
 
   return (
     <div className={styles.panel}>
@@ -37,93 +192,20 @@ const RecentPostsPanel: React.FC<RecentPostsPanelProps> = ({ posts, onWritePost 
       </div>
 
       <div className={styles.filters}>
-        <button 
-          className={`${styles.filterBtn} ${filter === 'all' ? styles.active : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button 
-          className={`${styles.filterBtn} ${filter === 'published' ? styles.active : ''}`}
-          onClick={() => setFilter('published')}
-        >
-          Published
-        </button>
-        <button 
-          className={`${styles.filterBtn} ${filter === 'draft' ? styles.active : ''}`}
-          onClick={() => setFilter('draft')}
-        >
-          Draft
-        </button>
-        <button 
-          className={`${styles.filterBtn} ${filter === 'scheduled' ? styles.active : ''}`}
-          onClick={() => setFilter('scheduled')}
-        >
-          Scheduled
-        </button>
+        {filters.map((filter) => (
+          <button
+            key={filter.value}
+            type="button"
+            className={`${styles.filterBtn} ${activeFilter === filter.value ? styles.active : ''}`}
+            onClick={() => onFilterChange(filter.value)}
+          >
+            {filter.label}
+          </button>
+        ))}
       </div>
 
       <div className={styles.list}>
-        {filteredPosts.length === 0 ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyStateContent}>
-              <FiBookOpen className={styles.emptyIcon} />
-              <p>No posts added in the last 30 days.</p>
-              <p>Click "Write Post" to create a new blog post.</p>
-            </div>
-          </div>
-        ) : (
-          filteredPosts.map((post, i) => (
-            <motion.div 
-              key={post.id} 
-              className={styles.card}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: i * 0.05 }}
-            >
-              <div className={styles.cardImage}>
-                {post.coverImage ? (
-                  <img src={post.coverImage} alt={post.title} />
-                ) : (
-                  <div className={styles.imagePlaceholder}>
-                    {post.category ? post.category.substring(0, 2).toUpperCase() : 'PO'}
-                  </div>
-                )}
-                <span className={`${styles.cardBadge} ${
-                  post.status === 'published' ? styles.badgePublished : 
-                  post.status === 'scheduled' ? styles.badgeScheduled : 
-                  styles.badgeDraft
-                }`}>
-                  {post.status}
-                </span>
-              </div>
-              
-              <div className={styles.cardBody}>
-                <span className={styles.cardCategory}>{post.category}</span>
-                <h4 className={styles.cardTitle} title={post.title}>{post.title}</h4>
-                
-                <div className={styles.cardMetrics}>
-                  <span className={styles.metricItem}>
-                    <FiClock /> {formatDate(post.createdAt)}
-                  </span>
-                  <span className={styles.metricItem}>
-                    <FiEye /> {post.views}
-                  </span>
-                </div>
-                
-                <div className={styles.cardActions}>
-                  <button className={styles.actionBtn}><FiEdit2 /> Edit</button>
-                  <button className={styles.actionBtnSecondary}><FiExternalLink /> Preview</button>
-                  {(post.status === 'draft' || post.status === 'scheduled') && (
-                    <button className={`${styles.actionBtnSecondary} ${styles.actionBtnDanger}`} title="Delete Post">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                    </button>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))
-        )}
+        {renderState()}
       </div>
     </div>
   );

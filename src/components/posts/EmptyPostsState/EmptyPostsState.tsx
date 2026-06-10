@@ -27,7 +27,7 @@ const EmptyPostsState: React.FC<EmptyPostsStateProps> = ({ onImportWord }) => {
       <div className={styles.actions}>
         <button 
           className={styles.primaryBtn} 
-          onClick={() => navigate('/posts/create')}
+          onClick={() => navigate('/create-post?method=text')}
         >
           <FiEdit3 /> Create New Post
         </button>
