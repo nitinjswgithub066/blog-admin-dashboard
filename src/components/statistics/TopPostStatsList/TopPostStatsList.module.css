@@ -21,10 +21,11 @@
 }
 
 .postRow {
+  position: relative;
   display: flex;
   align-items: center;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--surface-card);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: 1rem 1.25rem;
   gap: 1rem;
@@ -82,7 +83,8 @@
 }
 
 .categoryBadge {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-primary);
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
@@ -93,15 +95,36 @@
   color: var(--border-color);
 }
 
-.trendIcon {
-  font-size: 1.2rem;
+.statusText {
+  text-transform: capitalize;
+}
+
+.trendBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.65rem;
   margin-left: auto;
   flex-shrink: 0;
 }
 
-.trendIcon.up { color: #10B981; }
-.trendIcon.down { color: #EF4444; }
-.trendIcon.stable { color: #9CA3AF; }
+.trendBadge.up {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.trendBadge.down {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.trendBadge.stable {
+  color: var(--text-muted);
+  background: rgba(148, 163, 184, 0.12);
+}
 
 .loadMoreBtn {
   background: transparent;
@@ -127,13 +150,23 @@
 
 /* Skeleton Loading */
 .skeletonRow {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--surface-card);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   display: flex;
   gap: 1.5rem;
   animation: pulse 1.5s infinite ease-in-out;
+}
+
+.emptyState {
+  min-height: 160px;
+  border: 1px dashed var(--border-primary);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .skeletonRank {
@@ -183,7 +216,7 @@
     font-size: var(--font-size-md);
   }
   
-  .trendIcon {
+  .trendBadge {
     position: absolute;
     top: 1rem;
     right: 1rem;

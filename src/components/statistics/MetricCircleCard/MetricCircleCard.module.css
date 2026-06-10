@@ -1,6 +1,6 @@
 .card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--surface-card);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-xl);
   padding: 1.5rem;
   display: flex;
@@ -87,6 +87,7 @@
 .change {
   display: inline-flex;
   align-items: center;
+  gap: 0.25rem;
   font-size: var(--font-size-xs);
   font-weight: 600;
   padding: 0.25rem 0.5rem;
@@ -95,24 +96,33 @@
 }
 
 .change.positive {
-  color: #10B981;
+  color: var(--success);
   background: rgba(16, 185, 129, 0.1);
 }
 
 .change.negative {
-  color: #EF4444;
+  color: var(--danger);
   background: rgba(239, 68, 68, 0.1);
 }
 
+.change.stable {
+  color: var(--text-muted);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.changeText {
+  letter-spacing: 0;
+}
+
 /* Color Themes */
-.card.purple .progressCircle { stroke: #8B5CF6; }
-.card.purple .iconWrapper { color: #8B5CF6; }
+.card.purple .progressCircle { stroke: var(--chart-clicks); }
+.card.purple .iconWrapper { color: var(--chart-clicks); }
 
-.card.blue .progressCircle { stroke: #3B82F6; }
-.card.blue .iconWrapper { color: #3B82F6; }
+.card.blue .progressCircle { stroke: var(--chart-views); }
+.card.blue .iconWrapper { color: var(--chart-views); }
 
-.card.green .progressCircle { stroke: #10B981; }
-.card.green .iconWrapper { color: #10B981; }
+.card.green .progressCircle { stroke: var(--success); }
+.card.green .iconWrapper { color: var(--success); }
 
-.card.orange .progressCircle { stroke: #F59E0B; }
-.card.orange .iconWrapper { color: #F59E0B; }
+.card.orange .progressCircle { stroke: var(--chart-shares); }
+.card.orange .iconWrapper { color: var(--chart-shares); }

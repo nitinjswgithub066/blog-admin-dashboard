@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { MdTrendingUp, MdTrendingDown, MdMouse, MdVisibility, MdAccessTime, MdShare } from 'react-icons/md';
+import { MdTrendingUp, MdTrendingDown, MdTrendingFlat, MdMouse, MdVisibility, MdAccessTime, MdShare } from 'react-icons/md';
 import type { StatisticsMetric } from '../../../types/statistics.types';
 import styles from './MetricCircleCard.module.css';
 import { cn } from '../../../utils/cn';
@@ -64,10 +64,10 @@ const MetricCircleCard: React.FC<MetricCircleCardProps> = ({ metric }) => {
         <div className={styles.value}>{metric.value}</div>
         <div className={styles.label}>{metric.label}</div>
         
-        <div className={cn(styles.change, metric.change >= 0 ? styles.positive : styles.negative)}>
-          {metric.change >= 0 ? <MdTrendingUp /> : <MdTrendingDown />}
-          <span style={{ marginLeft: '4px' }}>
-            {Math.abs(metric.change)}%
+        <div className={cn(styles.change, metric.change > 0 ? styles.positive : metric.change < 0 ? styles.negative : styles.stable)}>
+          {metric.change > 0 ? <MdTrendingUp /> : metric.change < 0 ? <MdTrendingDown /> : <MdTrendingFlat />}
+          <span className={styles.changeText}>
+            {metric.change > 0 ? '+' : ''}{metric.change}%
           </span>
         </div>
       </div>

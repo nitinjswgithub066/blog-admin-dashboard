@@ -36,6 +36,7 @@ function App() {
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/all-posts" element={<PostsPage />} />
           <Route path="/stats" element={<StatsPage />} />
+          <Route path="/statistics" element={<StatsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
