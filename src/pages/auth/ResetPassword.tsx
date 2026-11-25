@@ -7,7 +7,7 @@ import { FiArrowLeft, FiCheckCircle, FiKey, FiLock, FiMail, FiShield } from 'rea
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './ResetPassword.module.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const passwordRule = /^[A-Za-z0-9@_#!]{6,12}$/;
 

@@ -110,8 +110,12 @@ const CreatePostPage: React.FC = () => {
   };
 
   const handleAddCategory = async (name: string) => {
-    if (categories.some(c => c.name.toLowerCase() === name.toLowerCase())) return;
-    const created = await postService.createCategory(name);
+    const existing = categories.find(c => c.name.toLowerCase() === name.trim().toLowerCase());
+    if (existing) {
+      setValue('category', existing.id);
+      return;
+    }
+    const created = await postService.createCategory(name.trim());
     const newCat: AdminCategory = {
       ...created,
       icon: generateCategoryIcon(name),

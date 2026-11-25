@@ -7,7 +7,7 @@ import { FiMail, FiLock, FiUser, FiUserPlus, FiAtSign } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const registerSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters' }),
