@@ -49,10 +49,16 @@ const PostDetailsPanel: React.FC<PostDetailsPanelProps> = ({
   const slugPreview = heading ? slugify(heading) : 'auto-generated-slug';
 
   const handleAddCategory = async () => {
-    if (newCat.trim()) {
-      setCategoryMessage('');
-      await onAddCategory(newCat.trim());
+    const categoryName = newCat.trim();
+    if (!categoryName) return;
+
+    setCategoryMessage('');
+    try {
+      await onAddCategory(categoryName);
+      setCategoryMessage('Category saved and selected.');
       setNewCat('');
+    } catch (error) {
+      setCategoryMessage(error instanceof Error ? error.message : 'Failed to add category.');
     }
   };
 
