@@ -1,10 +1,10 @@
 export const ROUTES = {
-  LOGIN: "/admin/login",
-  REGISTER: "/admin/register",
-  FORGOT_PASSWORD: "/admin/forgot-password",
-  DASHBOARD: "/admin/dashboard",
-  CREATE_POST: "/admin/create-post",
-  POSTS: "/admin/posts",
-  STATS: "/admin/stats",
-  SETTINGS: "/admin/settings",
+  LOGIN: "/auth/login",
+  REGISTER: "/auth/register",
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  DASHBOARD: "/dashboard",
+  CREATE_POST: "/posts/create",
+  POSTS: "/posts",
+  STATS: "/statistics",
+  SETTINGS: "/settings",
 };
