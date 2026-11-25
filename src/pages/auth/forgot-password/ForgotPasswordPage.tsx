@@ -7,7 +7,7 @@ import { FiMail, FiSend, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import styles from './ForgotPasswordPage.module.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
